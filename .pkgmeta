@@ -1,0 +1,53 @@
+package-as: LUI4
+
+externals:
+  libs/LibStub:
+    url: https://repos.wowace.com/wow/libstub/mainline/trunk
+    tag: latest
+  libs/CallbackHandler-1.0:
+    url: https://repos.wowace.com/wow/callbackhandler/mainline/trunk/CallbackHandler-1.0
+    tag: latest
+  libs/AceAddon-3.0:
+    url: https://repos.wowace.com/wow/ace3/mainline/trunk/AceAddon-3.0
+  libs/AceComm-3.0:
+    url: https://repos.wowace.com/wow/ace3/mainline/trunk/AceComm-3.0
+  libs/AceConfig-3.0:
+    url: https://repos.wowace.com/wow/ace3/mainline/trunk/AceConfig-3.0
+  libs/AceConsole-3.0:
+    url: https://repos.wowace.com/wow/ace3/mainline/trunk/AceConsole-3.0
+  libs/AceDBOptions-3.0:
+    url: https://repos.wowace.com/wow/ace3/mainline/trunk/AceDBOptions-3.0
+  libs/AceDB-3.0:
+    url: https://repos.wowace.com/wow/ace3/mainline/trunk/AceDB-3.0
+  libs/AceEvent-3.0:
+    url: https://repos.wowace.com/wow/ace3/mainline/trunk/AceEvent-3.0
+  libs/AceGUI-3.0:
+    url: https://repos.wowace.com/wow/ace3/mainline/trunk/AceGUI-3.0
+  libs/AceHook-3.0:
+    url: https://repos.wowace.com/wow/ace3/mainline/trunk/AceHook-3.0
+  libs/AceLocale-3.0:
+    url: https://repos.wowace.com/wow/ace3/mainline/trunk/AceLocale-3.0
+  libs/AceSerializer-3.0:
+    url: https://repos.wowace.com/wow/ace3/mainline/trunk/AceSerializer-3.0
+  libs/AceTimer-3.0:
+    url: https://repos.wowace.com/wow/ace3/mainline/trunk/AceTimer-3.0
+  libs/AceBucket-3.0:
+    url: https://repos.wowace.com/wow/ace3/mainline/trunk/AceBucket-3.0
+  libs/AceGUI-3.0-SharedMediaWidgets:
+    url: https://repos.wowace.com/wow/ace-gui-3-0-shared-media-widgets/mainline/trunk
+  libs/LibSharedMedia-3.0:
+    url: https://repos.wowace.com/wow/libsharedmedia-3-0/mainline/trunk/LibSharedMedia-3.0
+  libs/LibCompress:
+    url: https://repos.wowace.com/wow/libcompress/mainline/trunk
+  libs/LibWindow-1.1:
+    url: https://repos.wowace.com/wow/libwindow-1-1/trunk
+
+enable-nolib-creation: no
+
+license-output: docs/License.txt
+
+ignore:
+  - docs/ToDo.txt
+  
+tools-used:
+  - oUF
