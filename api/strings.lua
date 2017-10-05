@@ -30,6 +30,8 @@ local UNIT_NAME_FONT_CYRILLIC = UNIT_NAME_FONT_CYRILLIC  -- Russian Font
 -- / MODULE FUNCTIONS / --
 ------------------------------------------------------
 
+-- Should most of these functions be moved to the colors file? 
+
 --- String Functions
 -- @section stringfunc
 
@@ -191,24 +193,24 @@ LUI.PowerTypes = {
 	"RAGE",
 	"FOCUS",
 	"ENERGY",
-	"RUNIC_POWER",
-	"RUNES",
-	"FUEL",
 	"COMBO_POINTS",
-	"ARCANE_CHARGES",
-	"HOLY_POWER",
+	"RUNES",
+	"RUNIC_POWER",
 	"SOUL_SHARDS",
+	"LUNAR_POWER",
+	"HOLY_POWER",
+	"MAELSTROM",
 	"CHI",
-	"SHADOW_ORB",
-	"BURNING_EMBERS",
-	"DEMONIC_FURY",
-	"BLOOD_RUNES",
-	"UNHOLY_RUNES",
-	"FROST_RUNES",
-	"DEATH_RUNES",
-	"LUNAR_ECLIPSE",
-	"SOLAR_ECLIPSE",
+	"INSANITY",
+	"ARCANE_CHARGES",
+	"FURY",
+	"PAIN",
+	"FUEL",
 }
+
+-- Cleanup Note: Should I actually bother with this? This function was written back before most modules were written.
+-- As shown by how much I stopped caring at the end of the table. This seems to be too high maintenance to be worth it.
+-- Probably a good idea for have a select set of strings that are used hundreds of time (like Background or Color), but this is a bit much.
 
 --CommonStrings should go lower-lower, lower-upper, upper-lower, upper-upper case in order.
 --Try not to have different cases on the same group as to avoid headaches later on.
