@@ -1,5 +1,5 @@
 # Project-Specific
-/libs
+libs/
 
 # Compiled Lua sources
 luac.out
