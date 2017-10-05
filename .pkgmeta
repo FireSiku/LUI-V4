@@ -41,6 +41,9 @@ externals:
     url: https://repos.wowace.com/wow/libcompress/mainline/trunk
   libs/LibWindow-1.1:
     url: https://repos.wowace.com/wow/libwindow-1-1/trunk
+  libs/LibDataBroker-1.1:
+    url: https://repos.wowace.com/wow/libdatabroker-1-1
+
 
 enable-nolib-creation: no
 
