@@ -1,0 +1,65 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+
+	<!-- Initialize LUI -->
+
+	<Script file="LUI.lua"/>
+	<Script file="libs\rev.lua"/>
+	<Include file="api\oUF\oUF.xml"/>
+	<Script file="api\coreapi.lua"/>
+	<Script file="api\modapi.lua"/>
+	<Script file="api\options.lua"/>
+	<Script file="api\strings.lua"/>
+	<Script file="api\cpanel.lua"/>
+	<Script file="api\addons.lua"/>
+	
+	<!-- Core Modules -->
+	<script file="modules\colors.lua"/>
+	<Script file="modules\layout.lua"/>
+	<Script file="modules\artwork.lua"/>
+
+	<!-- Single Modules -->
+	<Script file="modules\minimap.lua"/>
+	<Script file="modules\tooltip.lua"/>
+	<Script file="modules\micromenu.lua"/>
+	<Script file="modules\nameplates.lua"/>
+	<Script file="modules\expbar.lua"/>
+	<!-- <script file="modules\bars.lua"/> Delayed -->
+	<Include file="modules\aura.xml"/>
+	
+	<!-- Bags -->
+	<Script file="modules\bags\container.lua"/>
+	<Script file="modules\bags\templates.lua"/>
+	<Script file="modules\bags\bags.lua"/>
+	<Script file="modules\bags\bank.lua"/>
+	<Script file="modules\bags\reagents.lua"/>
+	
+	<!-- Infotext -->
+	<Script file="modules\infotext\infotext.lua"/>
+	<Script file="modules\infotext\infotip.lua"/>
+	<Script file="modules\infotext\durability.lua"/>
+	<Script file="modules\infotext\memory.lua"/>
+	<Script file="modules\infotext\fps.lua"/>
+	<Script file="modules\infotext\bags.lua"/>
+	<Script file="modules\infotext\clock.lua"/>
+	<Script file="modules\infotext\currency.lua"/>
+	<Script file="modules\infotext\dualspec.lua"/>
+	<Script file="modules\infotext\gold.lua"/>
+	<Script file="modules\infotext\guild.lua"/>
+	<Script file="modules\infotext\friends.lua"/>
+	<Script file="modules\infotext\archaeology.lua"/>
+
+	<!-- UI Elements -->
+	<Script file="modules\uielements\uielements.lua"/>
+	<Script file="modules\uielements\colorpicker.lua"/>
+	
+	<!-- Unitframes -->
+	<Script file="modules\unitframes\unitframes.lua"/>
+	<Script file="modules\unitframes\style.lua"/>
+	<Script file="modules\unitframes\class.lua"/>
+	<Script file="modules\unitframes\player.lua"/>
+	<Script file="modules\unitframes\target.lua"/>
+	<Script file="modules\unitframes\focus.lua"/>
+	
+	<!-- Addons -->
+	<Script file="addons\bartender4.lua"/>
+</Ui>

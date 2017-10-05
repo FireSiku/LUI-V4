@@ -1,0 +1,91 @@
+------------------------------------------------------------------------
+r61 | nevcairiel | 2015-01-16 16:12:05 +0000 (Fri, 16 Jan 2015) | 1 line
+Changed paths:
+   A /tags/r60-release (from /trunk:60)
+
+Tagging as r60-release
+------------------------------------------------------------------------
+r60 | nevcairiel | 2015-01-16 16:11:11 +0000 (Fri, 16 Jan 2015) | 1 line
+Changed paths:
+   M /trunk/LibCompress.lua
+   M /trunk/LibCompress.toc
+
+Missed a few spots of removing the 1.0
+------------------------------------------------------------------------
+r58 | nevcairiel | 2015-01-16 16:06:07 +0000 (Fri, 16 Jan 2015) | 3 lines
+Changed paths:
+   M /trunk/.pkgmeta
+   D /trunk/LibCompress-1.0.lua
+   D /trunk/LibCompress-1.0.toc
+   A /trunk/LibCompress.lua (from /trunk/LibCompress-1.0.lua:57)
+   A /trunk/LibCompress.toc (from /trunk/LibCompress-1.0.toc:57)
+   M /trunk/lib.xml
+
+Revert changes to library name.
+
+Projects not belonging to oneself shouldn't be broken in these ways for no reason but cosmetic changes.
+------------------------------------------------------------------------
+r56 | myrroddin | 2015-01-16 14:43:34 +0000 (Fri, 16 Jan 2015) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/LibCompress-1.0.lua
+   M /trunk/LibCompress-1.0.toc
+   M /trunk/lib.xml
+
+- Typo fixes
+------------------------------------------------------------------------
+r55 | myrroddin | 2015-01-16 13:11:01 +0000 (Fri, 16 Jan 2015) | 1 line
+Changed paths:
+   M /trunk/LibCompress-1.0.lua
+
+- Annoyed now. Read instructions from LibStub's page and it isn't working as intended. Trying repo keyword subs instead
+------------------------------------------------------------------------
+r54 | myrroddin | 2015-01-16 13:03:25 +0000 (Fri, 16 Jan 2015) | 2 lines
+Changed paths:
+   M /trunk/LibCompress-1.0.lua
+   M /trunk/lib.xml
+
+- Replace strmatch with string.match
+- Redo Revision and EOL because they didn't stick
+------------------------------------------------------------------------
+r53 | myrroddin | 2015-01-16 12:53:30 +0000 (Fri, 16 Jan 2015) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/LibCompress-1.0.lua
+   M /trunk/LibCompress-1.0.toc
+   M /trunk/lib.xml
+
+- Silly me, forgot SVN's properties to set Revision...
+------------------------------------------------------------------------
+r52 | myrroddin | 2015-01-16 12:44:39 +0000 (Fri, 16 Jan 2015) | 2 lines
+Changed paths:
+   M /trunk/.pkgmeta
+   D /trunk/LibStub
+
+- pkgmeta should disable lib-stripping
+- (test) remove embedded LibStub folder
+------------------------------------------------------------------------
+r51 | myrroddin | 2015-01-16 12:33:03 +0000 (Fri, 16 Jan 2015) | 5 lines
+Changed paths:
+   M /trunk/.pkgmeta
+   A /trunk/LibCompress-1.0.lua
+   A /trunk/LibCompress-1.0.toc
+   D /trunk/LibCompress.lua
+   D /trunk/LibCompress.toc
+   A /trunk/LibStub
+   A /trunk/LibStub/Changelog-LibStub-1.0.2.60000.txt
+   A /trunk/LibStub/LibStub.lua
+   A /trunk/LibStub/LibStub.toc
+   A /trunk/LibStub/tests
+   A /trunk/LibStub/tests/test.lua
+   A /trunk/LibStub/tests/test2.lua
+   A /trunk/LibStub/tests/test3.lua
+   A /trunk/LibStub/tests/test4.lua
+   M /trunk/lib.xml
+
+- Bump ToC
+- LibStub doesn't need to be buried inside a folder inside a folder etc
+- Use Revision keyword for MINOR version incrementation
+- Clean up for readability purposes (no code changes)
+- Append "-1.0" to lib name where appropriate
+------------------------------------------------------------------------

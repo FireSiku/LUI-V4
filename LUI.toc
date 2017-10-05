@@ -1,0 +1,14 @@
+## Interface: 70100
+## Version: 4.0
+## Title: LUI
+## Author: Siku, Mule
+## eMail: chaoslux [at] gmail [dot] com
+## Notes: User Interface Modification
+## SavedVariables: LUI4DB
+## X-Website: http://www.wowlui.com
+## X-Credits: Loui, Hix, Zista, Thaly, Elyne
+## X-oUF: oUF_LUI
+
+libs\libs.xml
+locale\locale.xml
+LUI.xml
