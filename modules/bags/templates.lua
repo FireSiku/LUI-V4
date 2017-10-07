@@ -6,7 +6,7 @@ local module = LUI:GetModule("Bags")
 
 local CLEANUP_TEXTURE_ATLAS = "bags-button-autosort-up"
 local CLEANUP_TEXTURE = "Interface\\ContainerFrame\\Bags"
-local CLEANUP_SOUND = "UI_BagSorting_01"
+local CLEANUP_SOUND = SOUNDKIT.UI_BAG_SORTING_01
 
 ------------------------------------------------------
 -- / BagBarSlotButtonTemplate / --

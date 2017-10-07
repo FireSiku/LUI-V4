@@ -11,7 +11,7 @@ local format = format
 -- Constants
 local REAGENTS_SLOT_TEMPLATE = "ReagentBankItemButtonGenericTemplate"
 local REAGENTS_SLOT_NAME_FORMAT = "LUIReagent_Item%d_%d"
-local REAGENTS_DEPOSIT_SOUND = "igMainMenuOption"
+local REAGENTS_DEPOSIT_SOUND = SOUNDKIT.IG_MAINMENU_OPTION
 local REAGENTS_DEPOSIT_ICON = 413587 -- Mobile Banking Icon
 
 -- Container object
@@ -116,7 +116,7 @@ function Reagent:CreateUnlockInfo()
 	button:SetText(BANKSLOTPURCHASE)
 	button:SetPoint("LEFT", tabCost, "RIGHT", 10, 0)
 	button:SetScript("OnClick", function()
-		PlaySound("igMainMenuOption");
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
         StaticPopup_Show("CONFIRM_BUY_REAGENTBANK_TAB");
 	end)
 	button:Show()
