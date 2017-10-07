@@ -1,5 +1,8 @@
 # Project-Specific
 libs/
+CHANGES.txt
+api/oUF/.pkgmeta
+api/oUF/.travis.yml
 
 # Compiled Lua sources
 luac.out
@@ -41,4 +44,3 @@ luac.out
 *.i*86
 *.x86_64
 *.hex
-
