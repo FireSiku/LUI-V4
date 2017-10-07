@@ -54,6 +54,7 @@
 	
 	<!-- Unitframes -->
 	<Script file="modules\unitframes\unitframes.lua"/>
+	<Script file="modules\unitframes\defaults.lua"/>
 	<Script file="modules\unitframes\style.lua"/>
 	<Script file="modules\unitframes\class.lua"/>
 	<Script file="modules\unitframes\player.lua"/>

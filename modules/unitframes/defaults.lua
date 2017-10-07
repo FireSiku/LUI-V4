@@ -2,7 +2,7 @@
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
 local addonname, LUI = ...
-local module = LUI:NewModule("Unitframes", "AceHook-3.0")
+local module = LUI:GetModule("Unitframes", "AceHook-3.0")
 local L = LUI.L
 local db
 
