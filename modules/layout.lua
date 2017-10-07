@@ -6,15 +6,17 @@
 	Rev Date...: 19/08/12 [dd/mm/yy]
 ]]
 
+-- Todo: Redesign this page.
+
 local addonName, LUI = ...
 
 local module = LUI:NewModule("Layout") -- Create module
 local db, layoutDB
 local L = LUI.L
 
-local NS = LibStub("LibSerialize")
-local LibC = LibStub:GetLibrary("LibCompress")
-local LibCE = LibC:GetAddonEncodeTable()
+--local NS = LibStub("LibSerialize")
+--local LibC = LibStub:GetLibrary("LibCompress")
+--local LibCE = LibC:GetAddonEncodeTable()
 
 local bypassList = { "Api", "Layout", }
 
