@@ -193,7 +193,7 @@ function LUI:LoadOptions()
 								IntroText = LUI:NewDesc(L["Core_IntroText"],3),
 
 								VerText = LUI:NewDesc(format("%s: %s", GAME_VERSION_LABEL, GetAddOnMetadata(addonName, "Version")), 4),
-								RevText = LUI:NewDesc(format(L["Core_Revision_Format"], revision or "???"), 5),
+								RevText = LUI:NewDesc(format(L["Core_Revision_Format"], LUI.curseVersion or "???"), 5),
 							},
 						},
 					},
