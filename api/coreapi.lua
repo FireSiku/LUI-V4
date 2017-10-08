@@ -227,7 +227,7 @@ end
 function LUI:HighlightBorder(frame)
 	local glowBackdrop = {
 		bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
-		edgeFile="Interface\\AddOns\\LUI\\media\\statusbar\\glowTex.tga",
+		edgeFile="Interface\\AddOns\\LUI4\\media\\statusbar\\glowTex.tga",
 		--tile=0, tileSize=0,
 		edgeSize=5,
 		insets={left=3, right=3, top=3, bottom=3}

@@ -16,7 +16,7 @@ local db
 local select, pairs = select, pairs
 
 -- constants
-local INFOPANEL_TEXTURE = "Interface\\AddOns\\LUI\\media\\textures\\infopanel"
+local INFOPANEL_TEXTURE = "Interface\\AddOns\\LUI4\\media\\textures\\infopanel"
 
 -- local variables
 local elementFrames = {} -- Holds all the LDB frames.

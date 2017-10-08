@@ -133,7 +133,7 @@ local setPanels = {}
 local PanelMixin = {}
 
 -- LUI Textures Directory
-local LUI_TEX_DIR = "Interface\\AddOns\\LUI\\media\\textures\\"
+local LUI_TEX_DIR = "Interface\\AddOns\\LUI4\\media\\textures\\"
 
 ------------------------------------------------------
 -- / PANELS FUNCTIONS / --

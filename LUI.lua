@@ -83,26 +83,26 @@ LUI.defaults = {
 ------------------------------------------------------
 
 -- REGISTER FONTS
-Media:Register("font", "vibrocen", [[Interface\Addons\LUI\media\fonts\vibrocen.ttf]])
-Media:Register("font", "vibroceb", [[Interface\Addons\LUI\media\fonts\vibroceb.ttf]])
-Media:Register("font", "Prototype", [[Interface\Addons\LUI\media\fonts\prototype.ttf]])
-Media:Register("font", "neuropol", [[Interface\AddOns\LUI\media\fonts\neuropol.ttf]])
-Media:Register("font", "AvantGarde_LT_Medium", [[Interface\AddOns\LUI\media\fonts\AvantGarde_LT_Medium.ttf]])
-Media:Register("font", "Arial Narrow", [[Interface\AddOns\LUI\media\fonts\ARIALN.TTF]])
+Media:Register("font", "vibrocen", [[Interface\Addons\LUI4\media\fonts\vibrocen.ttf]])
+Media:Register("font", "vibroceb", [[Interface\Addons\LUI4\media\fonts\vibroceb.ttf]])
+Media:Register("font", "Prototype", [[Interface\Addons\LUI4\media\fonts\prototype.ttf]])
+Media:Register("font", "neuropol", [[Interface\AddOns\LUI4\media\fonts\neuropol.ttf]])
+Media:Register("font", "AvantGarde_LT_Medium", [[Interface\AddOns\LUI4\media\fonts\AvantGarde_LT_Medium.ttf]])
+Media:Register("font", "Arial Narrow", [[Interface\AddOns\LUI4\media\fonts\ARIALN.TTF]])
 
 -- REGISTER BORDERS
-Media:Register("border", "glow", [[Interface\Addons\LUI\media\borders\glow.tga]])
-Media:Register("border", "Stripped", [[Interface\Addons\LUI\media\borders\Stripped.tga]])
-Media:Register("border", "Stripped_hard", [[Interface\Addons\LUI\media\borders\Stripped_hard.tga]])
-Media:Register("border", "Stripped_medium", [[Interface\Addons\LUI\media\borders\Stripped_medium.tga]])
+Media:Register("border", "glow", [[Interface\Addons\LUI4\media\borders\glow.tga]])
+Media:Register("border", "Stripped", [[Interface\Addons\LUI4\media\borders\Stripped.tga]])
+Media:Register("border", "Stripped_hard", [[Interface\Addons\LUI4\media\borders\Stripped_hard.tga]])
+Media:Register("border", "Stripped_medium", [[Interface\Addons\LUI4\media\borders\Stripped_medium.tga]])
 
 -- REGISTER STATUSBARS
-Media:Register("statusbar", "oUF LUI", [[Interface\AddOns\LUI\media\statusbar\oUF_LUI.tga]])
-Media:Register("statusbar", "LUI_Gradient", [[Interface\AddOns\LUI\media\statusbar\gradient.tga]])
-Media:Register("statusbar", "LUI_Minimalist", [[Interface\AddOns\LUI\media\statusbar\Minimalist.tga]])
-Media:Register("statusbar", "Ruben", [[Interface\AddOns\LUI\media\statusbar\Ruben.tga]])
+Media:Register("statusbar", "oUF LUI", [[Interface\AddOns\LUI4\media\statusbar\oUF_LUI.tga]])
+Media:Register("statusbar", "LUI_Gradient", [[Interface\AddOns\LUI4\media\statusbar\gradient.tga]])
+Media:Register("statusbar", "LUI_Minimalist", [[Interface\AddOns\LUI4\media\statusbar\Minimalist.tga]])
+Media:Register("statusbar", "Ruben", [[Interface\AddOns\LUI4\media\statusbar\Ruben.tga]])
 
-LUI.blank = [[Interface\AddOns\LUI\media\blank]]
+LUI.blank = [[Interface\AddOns\LUI4\media\blank]]
 
 ------------------------------------------------------
 -- / INSTALL FUNCTIONS / --

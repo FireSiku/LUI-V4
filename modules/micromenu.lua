@@ -31,8 +31,8 @@ local microList = {
 }
 
 -- Constants
-local TEXTURE_PATH_FORMAT = "Interface\\AddOns\\LUI\\media\\textures\\micro_%s.tga"
-local BACKGROUND_TEXTURE_PATH = "Interface\\AddOns\\LUI\\media\\textures\\micro_background.tga"
+local TEXTURE_PATH_FORMAT = "Interface\\AddOns\\LUI4\\media\\textures\\micro_%s.tga"
+local BACKGROUND_TEXTURE_PATH = "Interface\\AddOns\\LUI4\\media\\textures\\micro_background.tga"
 local RIGHT_TEXTURE_SIZE_WIDTH = 46
 local LEFT_TEXTURE_SIZE_WIDTH = 48
 local TEXTURE_SIZE_HEIGHT = 28
