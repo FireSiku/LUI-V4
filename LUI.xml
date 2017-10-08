@@ -21,7 +21,6 @@
 	<Script file="modules\minimap.lua"/>
 	<Script file="modules\tooltip.lua"/>
 	<Script file="modules\micromenu.lua"/>
-	<Script file="modules\nameplates.lua"/>
 	<Script file="modules\expbar.lua"/>
 	<!-- <script file="modules\bars.lua"/> Delayed -->
 	<Include file="modules\aura.xml"/>
