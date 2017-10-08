@@ -1,4 +1,4 @@
-## Interface: 70100
+## Interface: 70300
 ## Version: 4.0
 ## Title: LUI4
 ## Author: Siku, Mule

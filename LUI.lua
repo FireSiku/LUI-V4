@@ -36,8 +36,8 @@ local GAME_VERSION_LABEL = GAME_VERSION_LABEL
 local GENERAL = GENERAL
 
 
-local LIVE_BUILD = "24015" -- 7.2.0 Apr 27th. Need to keep updated every patch.
-local LIVE_TOC = 70200
+local LIVE_BUILD = "25195" -- 7.2.0 Apr 27th. Need to keep updated every patch.
+local LIVE_TOC = 70300
 -- Check the TOC number and then compare builds. Live version can end up with a build higher than Beta. 
 local _, CURRENT_BUILD, _, CURRENT_TOC = GetBuildInfo()
 if CURRENT_TOC > LIVE_TOC then
