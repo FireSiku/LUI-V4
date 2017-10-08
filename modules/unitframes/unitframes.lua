@@ -100,7 +100,7 @@ oUF_LUI:RegisterMetaFunction("FormatName", FormatName)
 -- / STYLE FUNCTIONS / --
 ------------------------------------------------------
 local function SpawnUnit(self, unit, ...)
-	self:SetActiveStyle("LUI")
+	self:SetActiveStyle("LUI4")
 	local spawn = self:Spawn(unit)
 	spawn:SetPoint(...)
 	spawn:RegisterForClicks("AnyUp")
@@ -119,7 +119,7 @@ module.enableButton = true
 
 function module:OnInitialize()
 	LUI:RegisterModule(module)
-	oUF_LUI:RegisterStyle("LUI", module.SetStyle)
+	oUF_LUI:RegisterStyle("LUI4", module.SetStyle)
 end
 
 function module:OnEnable()

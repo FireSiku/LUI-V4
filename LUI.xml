@@ -3,7 +3,7 @@
 	<!-- Initialize LUI -->
 
 	<Script file="LUI.lua"/>
-	<Script file="libs\rev.lua"/>
+	<Script file="api\curse.lua"/>
 	<Include file="api\oUF\oUF.xml"/>
 	<Script file="api\coreapi.lua"/>
 	<Script file="api\modapi.lua"/>

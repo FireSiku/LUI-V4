@@ -171,6 +171,7 @@ end
 -- @tparam[opt] ?string extra The name of a table in the database to return.
 function ModuleMixin:GetDB(scope, extra)
 	local scope = scope or "profile"
+	local db
 	if self:IsElement() then
 		local _, parent = self:GetParent()
 		db = parent.db[scope][self:GetName()]
@@ -184,7 +185,7 @@ end
 -- @treturn bool Returns true if it's an element, false if it's a module (or the LUI object)
 function ModuleMixin:IsElement()
 	if not self.GetParent then return false end
-	return (self:GetParent() ~= "LUI") and true or false
+	return (self:GetParent() ~= addonname) and true or false
 end
 
 --- Print exclusively for Module Messages.
