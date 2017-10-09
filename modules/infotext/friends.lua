@@ -165,7 +165,10 @@ end
 -- / BNFRIENDS FUNCTIONS / --
 ------------------------------------------------------
 function element:CreateBNFriend(index)
-	if infotip.BNFriends[index] then return infotip.BNFriends[index] end
+	if infotip.BNFriends[index] then 
+		infotip.BNFriends[index]:ResetHeight()
+		return infotip.BNFriends[index]
+	end
 	local bnfriend = infotip:NewLine()
 	bnfriend.index = index
 
@@ -209,15 +212,16 @@ function element:GetBNFriendStatusString(isAFK, isDND)
 end
 
 function element:UpdateBNFriendAnchorPoints(i)
+	local bnfriend = infotip.BNFriends[i]
 	if i == 1 then
-		infotip.BNFriends[i]:SetPoint("TOPLEFT", infotip.sep, "BOTTOMLEFT", GAP)
+		bnfriend:SetPoint("TOPLEFT", infotip.sep, "BOTTOMLEFT", GAP)
 	else
-		--Check if the previous BNFriend has a broadcast.
+		-- Check if the previous BNFriend has a broadcast.
 		local offset = 0
 		if infotip.BNFriends[i-1].hasBroadcast then
 			offset = infotip.BNFriends[i-1].broadcast:GetHeight()
 		end
-		infotip.BNFriends[i]:SetPoint("TOPLEFT", infotip.BNFriends[i-1], "BOTTOMLEFT", 0, -offset)
+		bnfriend:SetPoint("TOPLEFT", infotip.BNFriends[i-1], "BOTTOMLEFT", 0, -offset)
 	end
 end
 
@@ -315,6 +319,12 @@ function element:DisplayBNFriends()
 			infotip.bcIndex = infotip.bcIndex + 1
 			bnfriend.broadcast = element:CreateFriendBroadcast(infotip.bcIndex)
 			bnfriend.broadcast.text:SetText(broadcast)
+			-- Adjust height if string gets wrapped. 
+			if bnfriend.broadcast:GetHeight() < bnfriend.broadcast.text:GetStringHeight() then
+			-- 3 seems to be the difference between StringHeight and Height for non-wrapped lines
+			-- Keep that difference to prevent the text from looking squeezed.
+				bnfriend.broadcast:SetHeight(bnfriend.broadcast.text:GetStringHeight() + 3)
+			end
 			bnfriend.broadcast:SetPoint("TOPLEFT", bnfriend, "BOTTOMLEFT")
 		else
 			bnfriend.hasBroadcast = false

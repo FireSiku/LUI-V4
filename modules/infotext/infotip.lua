@@ -39,11 +39,11 @@ local highlight
 ------------------------------------------------------
 -- / INFOTIP FUNCTIONS / --
 ------------------------------------------------------
-local LineMxin = {}
+local LineMixin = {}
 local InfotipMixin = {}
 
 -- What's the need for anchor already?
-function LineMxin:AddTexture(anchor, offsetX)
+function LineMixin:AddTexture(anchor, offsetX)
 	local tex = self:CreateTexture()
 	tex:SetWidth(ICON_SIZE)
 	tex:SetHeight(ICON_SIZE)
@@ -51,13 +51,13 @@ function LineMxin:AddTexture(anchor, offsetX)
 	return tex
 end
 
-function LineMxin:SetClassIcon(tex, class)
+function LineMixin:SetClassIcon(tex, class)
 	tex:SetTexture(CLASS_ICONS_TEXTURE)
 	local offset, left, right, bottom, top = 0.025, unpack(CLASS_ICON_TCOORDS[class])
 	tex:SetTexCoord(left+offset, right-offset, bottom+offset, top-offset)
 end
 
-function LineMxin:AddFontString(justify, anchor, offsetX, r, g, b)
+function LineMixin:AddFontString(justify, anchor, offsetX, r, g, b)
 	--If anchor is a number, shift anchor and offset to be RGB
 	if type(anchor) == "number" then
 		r, g, b = anchor, offsetX, r
@@ -74,13 +74,17 @@ function LineMxin:AddFontString(justify, anchor, offsetX, r, g, b)
 	return fs
 end
 
-function LineMxin:AddHighlight()
+function LineMixin:AddHighlight()
 	self:SetScript("OnEnter", element.OnLineEnter)
+end
+
+function LineMixin:ResetHeight()
+	self:SetHeight(BUTTON_HEIGHT)
 end
 
 function InfotipMixin:NewLine()
 	local newline = CreateFrame("Button", nil, self)
-	for k, v in pairs(LineMxin) do
+	for k, v in pairs(LineMixin) do
 		newline[k] = v
 	end
 	newline:SetHeight(BUTTON_HEIGHT)
