@@ -83,7 +83,8 @@ function LineMixin:ResetHeight()
 end
 
 function InfotipMixin:NewLine()
-	local newline = CreateFrame("Button", nil, self)
+	local lineName = format("%sLine%d",self:GetName(),self.totalLines + 1)
+	local newline = CreateFrame("Button", lineName, self)
 	for k, v in pairs(LineMixin) do
 		newline[k] = v
 	end
