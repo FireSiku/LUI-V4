@@ -12,6 +12,7 @@ local db
 -- local copies
 local format, gsub, wipe = format, gsub, wipe
 local FriendsFrame_BattlenetInvite = FriendsFrame_BattlenetInvite
+local BNet_GetClientTexture = BNet_GetClientTexture
 local BNGetFriendToonInfo = BNGetFriendToonInfo
 local BNGetNumFriendToons = BNGetNumFriendToons
 local ToggleFriendsFrame = ToggleFriendsFrame
@@ -51,20 +52,15 @@ local GAP = 10
 
 -- BNET_CLIENT Constants
 local BNET_CLIENT_WOW       = BNET_CLIENT_WOW
+local BNET_CLIENT_SC        = BNET_CLIENT_SC
 local BNET_CLIENT_SC2       = BNET_CLIENT_SC2
 local BNET_CLIENT_D3        = BNET_CLIENT_D3
 local BNET_CLIENT_WTCG      = BNET_CLIENT_WTCG
 local BNET_CLIENT_APP       = BNET_CLIENT_APP
 local BNET_CLIENT_HEROES    = BNET_CLIENT_HEROES
 local BNET_CLIENT_OVERWATCH = BNET_CLIENT_OVERWATCH
-local BNET_ICONS = {}
-BNET_ICONS[BNET_CLIENT_WOW]       = [[Interface\FriendsFrame\Battlenet-WoWicon]]
-BNET_ICONS[BNET_CLIENT_SC2]       = [[Interface\FriendsFrame\Battlenet-Sc2icon]]
-BNET_ICONS[BNET_CLIENT_D3]        = [[Interface\FriendsFrame\Battlenet-D3icon]]
-BNET_ICONS[BNET_CLIENT_WTCG]      = [[Interface\FriendsFrame\Battlenet-WTCGicon]]
-BNET_ICONS[BNET_CLIENT_APP]       = [[Interface\FriendsFrame\Battlenet-Battleneticon]]
-BNET_ICONS[BNET_CLIENT_HEROES]    = [[Interface\FriendsFrame\Battlenet-HotSicon]]
-BNET_ICONS[BNET_CLIENT_OVERWATCH] = [[Interface\FriendsFrame\Battlenet-Overwatchicon]]
+local BNET_CLIENT_DESTINY2  = BNET_CLIENT_DESTINY2
+local BNET_CLIENT_MOBILE    = "BSAp" -- Doesnt seem to have an official constant yet.
 
 -- locals
 local friendEntries = {}
@@ -165,10 +161,7 @@ end
 -- / BNFRIENDS FUNCTIONS / --
 ------------------------------------------------------
 function element:CreateBNFriend(index)
-	if infotip.BNFriends[index] then 
-		infotip.BNFriends[index]:ResetHeight()
-		return infotip.BNFriends[index]
-	end
+	if infotip.BNFriends[index] then return infotip.BNFriends[index] end
 	local bnfriend = infotip:NewLine()
 	bnfriend.index = index
 
@@ -187,7 +180,9 @@ function element:CreateBNFriend(index)
 end
 
 function element:CreateFriendBroadcast(index)
-	if infotip.FriendsBC[index] then return infotip.FriendsBC[index] end
+	if infotip.FriendsBC[index] then
+		infotip.FriendsBC[index]:ResetHeight()
+		return infotip.FriendsBC[index] end
 	local bc = infotip:NewLine()
 	bc.index = index
 	--Broadcast Icon
@@ -235,7 +230,6 @@ function element:SetFactionIcon(bnfriend, faction)
 	end
 end
 
--- // Copied from DisplayFriend, need to edit.
 function element:DisplayBNFriends()
 	local classIconWidth, nameColumnWidth, noteColumnWidth, gameColumnWidth = 0, 0, 0, 0
 	local levelColumnWidth, factionIconWidth, zoneColumnWidth = 0, 0, 0
@@ -251,7 +245,7 @@ function element:DisplayBNFriends()
 		
 		for accountIndex = 1, numAccounts do
 			local _, charName, client, realmName, _, faction, race, class, _, zone, level, gameText = BNGetFriendGameAccountInfo(i, accountIndex)
-			if numAccounts == 1 or (numAccounts > 1 and client ~= BNET_CLIENT_APP) then
+			if numAccounts == 1 or (numAccounts > 1 and client ~= BNET_CLIENT_APP and client ~= BNET_CLIENT_MOBILE) then
 				infotip.bnIndex = infotip.bnIndex + 1
 				local bnfriend = element:CreateBNFriend(infotip.bnIndex)
 				bnfriend.unit = charName
@@ -286,7 +280,7 @@ function element:DisplayBNFriends()
 					bnfriend.faction:Show()
 					bnfriend.zone:Show()
 				else 
-					bnfriend.class:SetTexture(BNET_ICONS[client])
+					bnfriend.class:SetTexture(BNet_GetClientTexture(client))
 					bnfriend.class:SetTexCoord(0.2, 0.8, 0.2, 0.8)
 					-- if no character name is given, it will be an empty string instead of nil. 
 					if charName and not charName == "" then
@@ -313,7 +307,7 @@ function element:DisplayBNFriends()
 		end
 		
 		local bnfriend = infotip.BNFriends[infotip.bnIndex]
-		--Make sure to only display broadcast once per friend.
+		--Make sure to only display broaawdcast once per friend.
 		if broadcast and broadcast ~= "" then
 			bnfriend.hasBroadcast = true
 			infotip.bcIndex = infotip.bcIndex + 1
