@@ -230,6 +230,26 @@ function element:SetFactionIcon(bnfriend, faction)
 	end
 end
 
+-- Boolean function to see if a given client for BNFriend should be shown.
+-- Note: This could allow for not filtering out app clients in the future.
+function element:IsBNClientShown(i, index)
+	local numAccounts = BNGetNumFriendGameAccounts(i)
+	local _, _, client = BNGetFriendGameAccountInfo(i, index)
+
+	-- Friend only has one account
+	if numAccounts == 1 then return true end
+
+	-- If connected on a client and also on the app.
+	if (numAccounts > 1 and client ~= BNET_CLIENT_APP and client ~= BNET_CLIENT_MOBILE) then return true end
+
+	--Previous check filters out people connected on mobile and app at same time, or connected on two apps.
+	local _, _, nextClient = BNGetFriendGameAccountInfo(i, index + 1)
+	if numAccounts == 2 and client == BNET_CLIENT_APP and (nextClient == BNET_CLIENT_MOBILE or nextClient == BNET_CLIENT_APP) then return true end
+
+	return false
+
+end
+
 function element:DisplayBNFriends()
 	local classIconWidth, nameColumnWidth, noteColumnWidth, gameColumnWidth = 0, 0, 0, 0
 	local levelColumnWidth, factionIconWidth, zoneColumnWidth = 0, 0, 0
@@ -245,7 +265,7 @@ function element:DisplayBNFriends()
 		
 		for accountIndex = 1, numAccounts do
 			local _, charName, client, realmName, _, faction, race, class, _, zone, level, gameText = BNGetFriendGameAccountInfo(i, accountIndex)
-			if numAccounts == 1 or (numAccounts > 1 and client ~= BNET_CLIENT_APP and client ~= BNET_CLIENT_MOBILE) then
+			if element:IsBNClientShown(i, accountIndex) then
 				infotip.bnIndex = infotip.bnIndex + 1
 				local bnfriend = element:CreateBNFriend(infotip.bnIndex)
 				bnfriend.unit = charName
