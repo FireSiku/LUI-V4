@@ -4,7 +4,6 @@
 local addonname, LUI = ...
 local module = LUI:NewModule("Unitframes", "AceHook-3.0")
 local L = LUI.L
-local db
 
 local unitSpawns = { "player", "target", }
 
@@ -13,6 +12,10 @@ local unitSpawns = { "player", "target", }
 ------------------------------------------------------
 -- / MODULE FUNCTIONS / --
 ------------------------------------------------------
+
+function module:GetUnitDB(unit)
+	return module:GetDB().Units[unit]
+end
 
 --TODO: Fix color system so we don't have to create new tables every call.
 function module:SetOUFColors()
@@ -123,11 +126,10 @@ function module:OnInitialize()
 end
 
 function module:OnEnable()
-	db = module:GetDB()
 	module:SetOUFColors()
 	for i = 1, #unitSpawns do
 		local unit = unitSpawns[i]
-		local db = module:GetModule(unit):GetDB()
+		local db = module:GetUnitDB(unit)
 		local spawn = SpawnUnit(oUF_LUI, unit, db.Point, db.X, db.Y)
 	end
 end

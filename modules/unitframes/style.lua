@@ -1,20 +1,16 @@
 local addonname, LUI = ...
 local module = LUI:GetModule("Unitframes")
+local Media = LibStub("LibSharedMedia-3.0")
 local L = LUI.L
 
 -- SetStyle is called as soon as a unit is spawned. This is where the basic, non-specific parts of the unitframes are made.
 -- Self is the spawned object, as returned by SpawnUnit.
 -- Unit is the actual unit token as per Blizzard API (ex: "player", "target", ...)
 
---The goal of this is that I fetch the module by the same unit name, grabs its db, do all the generic layout stuff
---once that's done, call the element:SetSpecificStyle function 
-
 function module.SetStyle(self, unit, isSingle)
 	
-	--Fetch settings from unit module
-	local element = module:GetModule(unit)
-	self.db = element:GetDB()
-	self.element = element
+	--Fetch settings for the unit
+	self.db = module:GetUnitDB(unit)
 	
 	if(isSingle) then
 		self:SetSize(self.db.Width, self.db.Height)
@@ -22,34 +18,31 @@ function module.SetStyle(self, unit, isSingle)
 	
 	-- // Frame Backdrop
 	local backdrop = {
-		bgFile = element:FetchBackground("Frame"),
-		edgeFile = element:FetchBorder("Frame"),
+		bgFile = Media:Fetch("background", self.db.Backdrop.Texture),
+		edgeFile = Media:Fetch("border", self.db.Border.EdgeFile),
 		edgeSize = self.db.Border.EdgeSize,
-		insets = {
-			left = self.db.Border.Insets.Left,
-			right = self.db.Border.Insets.Right,
-			top = self.db.Border.Insets.Top,
-			bottom = self.db.Border.Insets.Bottom,
-		},
+		insets = { left = -4, right = 4, top = 4, bottom = -4, }, 
 	}
 	self:SetBackdrop(backdrop)
 	--Need to convert to :Color()
-	self:SetBackdropColor(element:AlphaColor("Background"))
-	self:SetBackdropBorderColor(element:AlphaColor("Border"))
+	self:SetBackdropColor(unpack(self.db.Colors.Background))
+	self:SetBackdropBorderColor(unpack(self.db.Colors.Border))
 	
 	-- // Health Bar
-	module.SetHealth(self, element)
+	module.SetHealth(self)
 	
 	-- // Power Bar
-	module.SetPower(self, element)
+	module.SetPower(self)
 
 	-- creating a frame as anchor for icons, texts etc
 	self.Overlay = CreateFrame("Frame", nil, self)
 	self.Overlay:SetAllPoints(self.Health)
 	
-	local name = element:SetFontString(self.Overlay, nil, "NameText")
-	element:RefreshFontString(name, "NameText")
+	local name = self.Overlay:CreateFontString()
+	local nameFont = self.db.Fonts.NameText
+	name:SetFont(Media:Fetch("font", self.db.Fonts.NameText.Name), self.db.Fonts.NameText.Size, self.db.Fonts.NameText.Flag)
 	name:SetPoint(self.db.Texts.Name.Point, self.Health, self.db.Texts.Name.RelativePoint, self.db.Texts.Name.X, self.db.Texts.Name.Y)
+	name:SetTextColor(unpack(self.db.Colors.NameText))
 	name:SetShadowOffset(1.25, -1.25)
 	name:SetShadowColor(0, 0, 0)
 	name.ColorNameByClass = self.db.Texts.Name.ColorNameByClass
@@ -105,20 +98,19 @@ function module.SetStyle(self, unit, isSingle)
 		end
     end
 	
-	--Check for any unit-specific additions
-	if element.SetUnitStyle then
-		element.SetUnitStyle(self, unit, isSingle)
-	end
+	--Check for any unit-specific additions here
 	
+	--TODO:AddClassPower Call
+
 end
 
-function module.SetHealth(self, element)
+function module.SetHealth(self)
 	local health = CreateFrame("StatusBar", nil, self)
 	
 	-- Position and Size
 	local db = self.db.Bars.Health
 	health:SetSize(db.Width, db.Height)
-	health:SetStatusBarTexture(element:FetchStatusBar("Health"))
+	health:SetStatusBarTexture(Media:Fetch("statusbar", db.Texture))
 	health:SetPoint("TOPLEFT", self, "TOPLEFT")
 	
 	--oUF Options
@@ -129,25 +121,31 @@ function module.SetHealth(self, element)
 	-- Background
 	local healthBG = health:CreateTexture(nil, "BORDER")
 	healthBG:SetAllPoints(health)
-	healthBG:SetTexture(element:FetchStatusBar("HealthBG"))
+	healthBG:SetTexture(Media:Fetch("statusbar", db.TextureBG))
 	healthBG:SetAlpha(db.BGAlpha)
 	healthBG.multiplier = db.BGMultiplier
 	
 	-- Health Text
 	local db = self.db.Texts.Health
-	local healthText = element:SetFontString(health, nil, "HealthText", "OVERLAY", "CENTER")
+	local fdb = self.db.Fonts.HealthText
+	local healthText = health:CreateFontString(nil, "OVERLAY")
+	healthText:SetFont(Media:Fetch("font", fdb.Name), fdb.Size, fdb.Flag)
 	healthText:SetPoint(db.Point, self, db.RelativePoint, db.X, db.Y)
+	healthText:SetJustifyH("CENTER")
 	healthText:SetTextColor(1,1,1)
 	healthText:Show()
 	
 	local db = self.db.Texts.HealthPercent
-	local healthPercText = element:SetFontString(health, nil, "HealthPerc", "OVERLAY", "CENTER")
+	local fdb = self.db.Fonts.HealthPercent
+	local healthPercText = health:CreateFontString(nil, "OVERLAY")
+	healthPercText:SetFont(Media:Fetch("font", fdb.Name), fdb.Size, fdb.Flag)
 	healthPercText:SetPoint(db.Point, self, db.RelativePoint, db.X, db.Y)
+	healthPercText:SetJustifyH("CENTER")
 	healthPercText:SetTextColor(1,1,1)
 	healthPercText:Show()
 	
 	health.PostUpdate = function(health, unit, min, max)
-		local percent = max == 0 and 0 or 100 * (min/max)
+		local percent = (max == 0 and 0) or 100 * (min/max)
 		healthPercText:SetFormattedText("%.1f%%", percent)
 		if min == max then healthPercText:Hide()
 		else healthPercText:Show()
@@ -163,12 +161,12 @@ function module.SetHealth(self, element)
 	self.Health.value = healthText
 end
 
-function module.SetPower(self, element)
+function module.SetPower(self)
 	local power = CreateFrame("StatusBar", nil, self)
 	
 	local db = self.db.Bars.Power
 	power:SetSize(db.Width, db.Height)
-	power:SetStatusBarTexture(element:FetchStatusBar("Power"))
+	power:SetStatusBarTexture(Media:Fetch("statusbar", db.Texture))
 	power:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", db.X, db.Y)
 	--power.colorPower = true
 	power.colorClass = true
@@ -177,20 +175,26 @@ function module.SetPower(self, element)
 	
 	local powerBG = power:CreateTexture(nil, "BORDER")
 	powerBG:SetAllPoints(power)
-	powerBG:SetTexture(element:FetchStatusBar("PowerBG"))
+	powerBG:SetTexture(Media:Fetch("statusbar", db.Texture))
 	powerBG:SetAlpha(db.BGAlpha)
 	powerBG.multiplier = db.BGMultiplier
 	
 	-- Power Text
 	local db = self.db.Texts.Power
-	local powerText = element:SetFontString(power, nil, "PowerText", "OVERLAY", "CENTER")
+	local fdb = self.db.Fonts.PowerText
+	local powerText = power:CreateFontString(nil, "OVERLAY")
+	powerText:SetFont(Media:Fetch("font", fdb.Name), fdb.Size, fdb.Flag)
 	powerText:SetPoint(db.Point, power, db.RelativePoint, db.X, db.Y)
+	powerText:SetJustifyH("CENTER")
 	powerText:SetTextColor(1,1,1)
 	powerText:Show()
 	
 	local db = self.db.Texts.PowerPercent
-	local powerPercText = element:SetFontString(power, nil, "PowerPerc", "OVERLAY", "CENTER")
+	local fdb = self.db.Fonts.PowerPercent
+	local powerPercText = power:CreateFontString(nil, "OVERLAY")
+	powerPercText:SetFont(Media:Fetch("font", fdb.Name), fdb.Size, fdb.Flag)
 	powerPercText:SetPoint(db.Point, power, db.RelativePoint, db.X, db.Y)
+	powerPercText:SetJustifyH("CENTER")
 	powerPercText:SetTextColor(1,1,1)
 	powerPercText:Show()
 	

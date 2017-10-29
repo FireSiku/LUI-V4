@@ -56,9 +56,6 @@
 	<Script file="modules\unitframes\defaults.lua"/>
 	<Script file="modules\unitframes\style.lua"/>
 	<Script file="modules\unitframes\class.lua"/>
-	<Script file="modules\unitframes\player.lua"/>
-	<Script file="modules\unitframes\target.lua"/>
-	<Script file="modules\unitframes\focus.lua"/>
 	
 	<!-- Addons -->
 	<Script file="addons\bartender4.lua"/>
