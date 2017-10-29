@@ -71,11 +71,30 @@ oUF_LUI.Tags.Methods['ClassColor'] = function(unit)
 end
 
 ------------------------------------------------------
--- / META FUNCTIONS / --
+-- / MIXIN FUNCTIONS / --
 ------------------------------------------------------
--- oUF Meta Functions are functions available under every spawned unit object, similar to Tag.
+-- Every function under SpawnMixin will become available to all spawned unitframes. 
+local SpawnMixin = {}
 
-local function FormatName(self)
+-- Version of module:Color tailored for unitframes, with support for additional types (ie: Color Based On Type)
+function SpawnMixin:Color(colorName)
+	local color
+	if self.db and self.db[colorName] then
+		if self.db[colorName].t and self.db[colorName].t == "Class" then
+			return LUI:Color(LUI.playerClass)
+		else
+			color = db[colorName]
+		end
+	else
+		local colorDB = LUI:GetModule("Colors"):GetDB()
+		color = colorDB.Colors[colorName]
+	end
+	if color then
+		return color.r, color.g, color.b
+	end
+end
+
+function SpawnMixin:FormatName()
 	if not self or not self.Name then return end
 	
 	local name = (self.Name.ColorNameByClass) and "[ClassColor][name]|r" or "[name]"
@@ -96,8 +115,6 @@ local function FormatName(self)
 	self:Tag(self.Name, tagStr)
 	--self:UpdateAllElements()
 end
-
-oUF_LUI:RegisterMetaFunction("FormatName", FormatName)
 
 ------------------------------------------------------
 -- / STYLE FUNCTIONS / --
@@ -123,6 +140,10 @@ module.enableButton = true
 function module:OnInitialize()
 	LUI:RegisterModule(module)
 	oUF_LUI:RegisterStyle("LUI4", module.SetStyle)
+
+	for k, v in pairs(SpawnMixin) do
+		oUF_LUI:RegisterMetaFunction(k, v)
+	end
 end
 
 function module:OnEnable()
