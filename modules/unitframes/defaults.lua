@@ -375,8 +375,8 @@ module.defaults = {
         Units = {
             ["**"] = {
                 Enable = true,
-                Height = 24,
-                Width = 130,
+                Height = 40,
+                Width = 250,
                 X = 0,
                 Y = 0,
                 Point = "CENTER",
@@ -404,15 +404,10 @@ module.defaults = {
                     PowerMiss     = { Name = "Prototype", Size = 14, Flag = "NONE", }, 
                     Combat        = { Name = "Prototype", Size = 20, Flag = "NONE", }, 
                 },
-                Border = {
-                    Aggro = false,
+                Backdrop = {
+                    Texture = "Solid",
                     EdgeFile = "glow",
                     EdgeSize = 5,
-                    Insets = { Left = 3, Right = 3, Top = 3, Bottom = 3, }, 
-                },
-                Backdrop = {
-                    Texture = "Blizzard Tooltip",
-                    Padding = { Left = -4, Right = 4, Top = 4, Bottom = -4, }, 
                 },
                 Bars = {
                     Health = {
@@ -432,7 +427,7 @@ module.defaults = {
                         Height = 10,
                         Width = 250,
                         X = 0,
-                        Y = -32,
+                        Y = -2,
                         Texture = "LUI_Minimalist",
                         TextureBG = "LUI_Minimalist",
                         BGAlpha = 1,
@@ -585,7 +580,7 @@ module.defaults = {
     ------------------------------------------------------
             player = {
                 Enable = true,
-                Height = 43,
+                Height = 40,
                 Width = 250,
                 X = -200,
                 Y = -200,
@@ -673,7 +668,7 @@ module.defaults = {
     -- / TARGET SETTINGS / --
     ------------------------------------------------------
             target = {
-                Height = 43,
+                Height = 40,
                 Width = 250,
                 X = 200,
                 Y = -200,

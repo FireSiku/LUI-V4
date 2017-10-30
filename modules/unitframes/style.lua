@@ -15,24 +15,27 @@ function module.SetStyle(self, unit, isSingle)
 	if(isSingle) then
 		self:SetSize(self.db.Width, self.db.Height)
 	end
-	
-	-- // Frame Backdrop
-	local backdrop = {
-		bgFile = Media:Fetch("background", self.db.Backdrop.Texture),
-		edgeFile = Media:Fetch("border", self.db.Border.EdgeFile),
-		edgeSize = self.db.Border.EdgeSize,
-		insets = { left = -4, right = 4, top = 4, bottom = -4, }, 
-	}
-	self:SetBackdrop(backdrop)
-	--Need to convert to :Color()
-	self:SetBackdropColor(unpack(self.db.Colors.Background))
-	self:SetBackdropBorderColor(unpack(self.db.Colors.Border))
-	
+
 	-- // Health Bar
 	module.SetHealth(self)
 	
 	-- // Power Bar
 	module.SetPower(self)
+
+	-- // Frame Backdrop
+	local backdrop = {
+		bgFile = Media:Fetch("background", self.db.Backdrop.Texture),
+		edgeFile = Media:Fetch("border", self.db.Backdrop.EdgeFile),
+		edgeSize = self.db.Backdrop.EdgeSize,
+		insets = { left = 3, right = 3, top = 3, bottom = 3, }, 
+	}
+	local backdropFrame = CreateFrame("Frame", nil, self)
+	--Need to convert to :Color()
+	backdropFrame:SetBackdrop(backdrop)
+	backdropFrame:SetBackdropColor(unpack(self.db.Colors.Background))
+	backdropFrame:SetBackdropBorderColor(unpack(self.db.Colors.Border))
+	backdropFrame:SetPoint("TOPLEFT", self.Health, "TOPLEFT", -4, 4)
+	backdropFrame:SetPoint("BOTTOMRIGHT", self.Power, "BOTTOMRIGHT", 4, -4)
 
 	-- creating a frame as anchor for icons, texts etc
 	self.Overlay = CreateFrame("Frame", nil, self)
@@ -55,7 +58,7 @@ function module.SetStyle(self, unit, isSingle)
 	
 	self.Name = name
 	self:FormatName()
-	
+
 	-- // Dropdown
 	-- Credit for this bit of code goes to Zork. 
 	local dropdown = CreateFrame("Frame", "oUF_LUI_Dropdown", UIParent, "UIDropDownMenuTemplate")
