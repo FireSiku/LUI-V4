@@ -83,11 +83,11 @@ local SpawnMixin = {}
 -- Version of module:Color tailored for unitframes, with support for additional types (ie: Color Based On Type)
 function SpawnMixin:Color(colorName)
 	local color
-	if self.db and self.db[colorName] then
-		if self.db[colorName].t and self.db[colorName].t == "Class" then
+	if self.db and self.db.Colors[colorName] then
+		if self.db.Colors[colorName].t and self.db.Colors[colorName].t == "Class" then
 			return LUI:Color(LUI.playerClass)
 		else
-			color = db[colorName]
+			color = self.db.Colors[colorName]
 		end
 	else
 		local colorDB = LUI:GetModule("Colors"):GetDB()
