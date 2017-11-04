@@ -51,6 +51,10 @@ local siValue = function(val)
 	end
 end
 
+------------------------------------------------------
+-- / OUF TAGS METHODS / --
+------------------------------------------------------
+
 oUF_LUI.Tags.Methods['LUI:health'] = function(unit)
 	if(not UnitIsConnected(unit) or UnitIsDead(unit) or UnitIsGhost(unit)) then return end
 	--return siValue(UnitHealth(unit)) .. '/' .. siValue(UnitHealthMax(unit))

@@ -48,26 +48,24 @@ module.defaults = {
                 arena        = { r = 0.13, g = 0.59, b = 1   , a = 0.68, t = "Individual", }, 
             }, 
 
-            -- Player 
-            player = {
+            ["**"] = {
                 General = {
                     Enable = true,
-                    Height = 33,
-                    Width = 360,
-                    X = 13,
-                    Y = 155,
+                    Height = 20,
+                    Width = 100,
+                    X = 0,
+                    Y = 0,
                     Point = "BOTTOM",
                     Texture = "LUI_Gradient",
                     TextureBG = "LUI_Minimalist",
-                    Latency = true,
-                    Icon = true,
+                    Icon = false,
                     Shield = true,
                 },
                 Text = {
                     Name = {
                         Enable = true,
                         Font = "neuropol",
-                        Size = 15,
+                        Size = 13,
                         OffsetX = 5,
                         OffsetY = 1,
                     },
@@ -95,277 +93,49 @@ module.defaults = {
                     Inset = {    left = 3,    right = 3,    top = 3,    bottom = 3,},
                 },
             },
-
-            -- Target
+            player = {
+                General = {
+                    Height = 33,
+                    Width = 360,
+                    X = 13,
+                    Y = 155,
+                    Latency = true,
+                    Icon = true,
+                },
+                Text = {
+                    Name = {
+                        Size = 15,
+                    },
+                },
+            },
             target = {
                 General = {
-                    Enable = true,
                     Height = 33,
                     Width = 360,
                     X = 13,
                     Y = 205,
-                    Point = "BOTTOM",
-                    Texture = "LUI_Gradient",
-                    TextureBG = "LUI_Minimalist",
                     Icon = true,
-                    Shield = true,
                 },
                 Text = {
                     Name = {
-                        Enable = true,
-                        Font = "neuropol",
                         Size = 15,
-                        OffsetX = 5,
-                        OffsetY = 1,
                     },
-                    Time = {
-                        Enable = true,
-                        ShowMax = true,
-                        Font = "neuropol",
-                        Size = 13,
-                        OffsetX = -5,
-                        OffsetY = 1,
-                    },
-                },
-                Border = {
-                    Texture = "glow",
-                    Thickness = 4,
-                    Inset = {    left = 3,    right = 3,    top = 3,    bottom = 3,},
-                },
-                Shield = {
-                    Enable = true,
-                    Text = true,
-                    Border = false,
-                    Texture = "glow",
-                    Thickness = 4,
-                    Inset = {    left = 3,    right = 3,    top = 3,    bottom = 3,},
                 },
             },
-
-            -- Focus
             focus = {
-                General = {
-                    Enable = true,
-                    Height = 26,
-                    Width = 200,
-                    X = 0,
-                    Y = 70,
-                    Texture = "LUI_Gradient",
-                    TextureBG = "LUI_Minimalist",
-                    Icon = false,
-                    Shield = true,
-                },
-                Text = {
-                    Name = {
-                        Enable = true,
-                        Font = "neuropol",
-                        Size = 13,
-                        OffsetX = 5,
-                        OffsetY = 1,
-                    },
-                    Time = {
-                        Enable = true,
-                        ShowMax = false,
-                        Font = "neuropol",
-                        Size = 13,
-                        OffsetX = -5,
-                        OffsetY = 1,
-                    },
-                },
-                Border = {
-                    Texture = "glow",
-                    Thickness = 4,
-                    Inset = {    left = 3,    right = 3,    top = 3,    bottom = 3,},
-                },
-                Shield = {
-                    Enable = true,
-                    Text = true,
-                    Border = false,
-                    Texture = "glow",
-                    Thickness = 4,
-                    Inset = {    left = 3,    right = 3,    top = 3,    bottom = 3,},
-                },
+                General = {  X = 0, Y = 70, },
             },
-
-            --Pet
             pet = {
-                General = {
-                    Enable = false,
-                    UseBlizzard = true,
-                    Height = 26,
-                    Width = 130,
-                    X = 0,
-                    Y = 80,
-                    Texture = "LUI_Gradient",
-                    TextureBG = "LUI_Minimalist",
-                    Icon = false,
-                    Shield = true,
-                },
-                Text = {
-                    Name = {
-                        Enable = true,
-                        Font = "neuropol",
-                        Size = 13,
-                        OffsetX = 5,
-                        OffsetY = 1,
-                    },
-                    Time = {
-                        Enable = true,
-                        ShowMax = false,
-                        Font = "neuropol",
-                        Size = 13,
-                        OffsetX = -5,
-                        OffsetY = 1,
-                    },
-                },
-                Border = {
-                    Texture = "glow",
-                    Thickness = 4,
-                    Inset = {    left = 3,    right = 3,    top = 3,    bottom = 3,},
-                },
-                Shield = {
-                    Enable = true,
-                    Text = true,
-                    Border = false,
-                    Texture = "glow",
-                    Thickness = 4,
-                    Inset = {    left = 3,    right = 3,    top = 3,    bottom = 3,},
-                },
+                General = { X = 0, Y = 80, Enable = false, },
             },
-
-            --Party
             party = {
-                General = {
-                    Enable = true,
-                    Height = 20,
-                    Width = 100,
-                    X = 10,
-                    Y = 0,
-                    Texture = "LUI_Gradient",
-                    TextureBG = "LUI_Minimalist",
-                    Icon = false,
-                    Shield = true,
-                },
-                Text = {
-                    Name = {
-                        Enable = true,
-                        Font = "neuropol",
-                        Size = 13,
-                        OffsetX = 5,
-                        OffsetY = 1,
-                    },
-                    Time = {
-                        Enable = false,
-                        ShowMax = true,
-                        Font = "neuropol",
-                        Size = 13,
-                        OffsetX = -5,
-                        OffsetY = 1,
-                    },
-                },
-                Border = {
-                    Texture = "glow",
-                    Thickness = 4,
-                    Inset = {    left = 3,    right = 3,    top = 3,    bottom = 3,},
-                },
-                Shield = {
-                    Enable = true,
-                    Text = true,
-                    Border = false,
-                    Texture = "glow",
-                    Thickness = 4,
-                    Inset = {    left = 3,    right = 3,    top = 3,    bottom = 3,},
-                },
+                General = { X = 10, Y = 0, },
             },
-
-            -- Boss
             boss = {
-                General = {
-                    Enable = false,
-                    Height = 20,
-                    Width = 140,
-                    X = -140,
-                    Y = -35,
-                    Texture = "LUI_Gradient",
-                    TextureBG = "LUI_Minimalist",
-                    Icon = false,
-                    Shield = true,
-                },
-                Text = {
-                    Name = {
-                        Enable = true,
-                        Font = "neuropol",
-                        Size = 13,
-                        OffsetX = 5,
-                        OffsetY = 1,
-                    },
-                    Time = {
-                        Enable = false,
-                        ShowMax = true,
-                        Font = "neuropol",
-                        Size = 13,
-                        OffsetX = -5,
-                        OffsetY = 1,
-                    },
-                },
-                Border = {
-                    Texture = "glow",
-                    Thickness = 4,
-                    Inset = {    left = 3,    right = 3,    top = 3,    bottom = 3,},
-                },
-                Shield = {
-                    Enable = true,
-                    Text = true,
-                    Border = false,
-                    Texture = "glow",
-                    Thickness = 4,
-                    Inset = {    left = 3,    right = 3,    top = 3,    bottom = 3,},
-                },
+                General = { X = -140, Y = -35, Enable = false, },
             },
-
-            -- Arena
             arena = {
-                General = {
-                    Enable = true,
-                    Height = 20,
-                    Width = 100,
-                    X = -10,
-                    Y = 0,
-                    Texture = "LUI_Gradient",
-                    TextureBG = "LUI_Minimalist",
-                    Icon = false,
-                    Shield = true,
-                },
-                Text = {
-                    Name = {
-                        Enable = true,
-                        Font = "neuropol",
-                        Size = 13,
-                        OffsetX = 5,
-                        OffsetY = 1,
-                    },
-                    Time = {
-                        Enable = false,
-                        ShowMax = true,
-                        Font = "neuropol",
-                        Size = 13,
-                        OffsetX = -5,
-                        OffsetY = 1,
-                    },
-                },
-                Border = {
-                    Texture = "glow",
-                    Thickness = 4,
-                    Inset = {    left = 3,    right = 3,    top = 3,    bottom = 3,},
-                },
-                Shield = {
-                    Enable = true,
-                    Text = true,
-                    Border = false,
-                    Texture = "glow",
-                    Thickness = 4,
-                    Inset = {    left = 3,    right = 3,    top = 3,    bottom = 3,},
-                },
+                General = { X = -10, Y = 0, },
             },
         },
 
