@@ -32,20 +32,21 @@ function module.SetStyle(self, unit, isSingle)
 	local backdropFrame = CreateFrame("Frame", nil, self)
 	--Need to convert to :Color()
 	backdropFrame:SetBackdrop(backdrop)
-	backdropFrame:SetBackdropColor(unpack(self.db.Colors.Background))
-	backdropFrame:SetBackdropBorderColor(unpack(self.db.Colors.Border))
+	backdropFrame:SetBackdropColor(self:Color("Background"))
+	backdropFrame:SetBackdropBorderColor(self:Color("Border"))
 	backdropFrame:SetPoint("TOPLEFT", self.Health, "TOPLEFT", -4, 4)
 	backdropFrame:SetPoint("BOTTOMRIGHT", self.Power, "BOTTOMRIGHT", 4, -4)
 
-	-- creating a frame as anchor for icons, texts etc
+	-- creating a frame as anchor for icons, other texts etc
 	self.Overlay = CreateFrame("Frame", nil, self)
 	self.Overlay:SetAllPoints(self.Health)
 	
+	-- // Name
 	local name = self.Overlay:CreateFontString()
 	local nameFont = self.db.Fonts.NameText
 	name:SetFont(Media:Fetch("font", self.db.Fonts.NameText.Name), self.db.Fonts.NameText.Size, self.db.Fonts.NameText.Flag)
-	name:SetPoint(self.db.Texts.Name.Point, self.Health, self.db.Texts.Name.RelativePoint, self.db.Texts.Name.X, self.db.Texts.Name.Y)
-	name:SetTextColor(unpack(self.db.Colors.NameText))
+	name:SetPoint(self.db.Texts.Name.Point, self.Overlay, self.db.Texts.Name.RelativePoint, self.db.Texts.Name.X, self.db.Texts.Name.Y)
+	name:SetTextColor(self:Color("NameText"))
 	name:SetShadowOffset(1.25, -1.25)
 	name:SetShadowColor(0, 0, 0)
 	name.ColorNameByClass = self.db.Texts.Name.ColorNameByClass
