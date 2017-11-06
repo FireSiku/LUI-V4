@@ -44,17 +44,18 @@ function module.SetStyle(self, unit, isSingle)
 	-- // Name
 	local name = self.Overlay:CreateFontString()
 	local nameFont = self.db.Fonts.NameText
-	name:SetFont(Media:Fetch("font", self.db.Fonts.NameText.Name), self.db.Fonts.NameText.Size, self.db.Fonts.NameText.Flag)
-	name:SetPoint(self.db.Texts.Name.Point, self.Overlay, self.db.Texts.Name.RelativePoint, self.db.Texts.Name.X, self.db.Texts.Name.Y)
+	local db = self.db.NameText
+	name:SetFont(Media:Fetch("font", nameFont.Name), nameFont.Size, nameFont.Flag)
+	name:SetPoint(db.Point, self.Overlay, db.RelativePoint, db.X, db.Y)
 	name:SetTextColor(self:Color("NameText"))
 	name:SetShadowOffset(1.25, -1.25)
 	name:SetShadowColor(0, 0, 0)
-	name.ColorNameByClass = self.db.Texts.Name.ColorNameByClass
-	name.ColorClassByClass = self.db.Texts.Name.ColorClassByClass
-	name.ColorLevelByDifficulty = self.db.Texts.Name.ColorLevelByDifficulty
-	name.ShowClassification = self.db.Texts.Name.ShowClassification
-	name.ShortClassification = self.db.Texts.Name.ShortClassification
-	name.Format = self.db.Texts.Name.Format
+	name.ColorNameByClass = db.ColorNameByClass
+	name.ColorClassByClass = db.ColorClassByClass
+	name.ColorLevelByDifficulty = db.ColorLevelByDifficulty
+	name.ShowClassification = db.ShowClassification
+	name.ShortClassification = db.ShortClassification
+	name.Format = db.Format
 	name:Show()
 	
 	self.Name = name
@@ -112,7 +113,7 @@ function module.SetHealth(self)
 	local health = CreateFrame("StatusBar", nil, self)
 	
 	-- Position and Size
-	local db = self.db.Bars.Health
+	local db = self.db.HealthBar
 	health:SetSize(db.Width, db.Height)
 	health:SetStatusBarTexture(Media:Fetch("statusbar", db.Texture))
 	health:SetPoint("TOPLEFT", self, "TOPLEFT")
@@ -130,7 +131,7 @@ function module.SetHealth(self)
 	healthBG.multiplier = db.BGMultiplier
 	
 	-- Health Text
-	local db = self.db.Texts.Health
+	local db = self.db.HealthText
 	local fdb = self.db.Fonts.HealthText
 	local healthText = health:CreateFontString(nil, "OVERLAY")
 	healthText:SetFont(Media:Fetch("font", fdb.Name), fdb.Size, fdb.Flag)
@@ -139,7 +140,7 @@ function module.SetHealth(self)
 	healthText:SetTextColor(1,1,1)
 	healthText:Show()
 	
-	local db = self.db.Texts.HealthPercent
+	local db = self.db.HealthPercent
 	local fdb = self.db.Fonts.HealthPercent
 	local healthPercText = health:CreateFontString(nil, "OVERLAY")
 	healthPercText:SetFont(Media:Fetch("font", fdb.Name), fdb.Size, fdb.Flag)
@@ -168,7 +169,7 @@ end
 function module.SetPower(self)
 	local power = CreateFrame("StatusBar", nil, self)
 	
-	local db = self.db.Bars.Power
+	local db = self.db.PowerBar
 	power:SetSize(db.Width, db.Height)
 	power:SetStatusBarTexture(Media:Fetch("statusbar", db.Texture))
 	power:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", db.X, db.Y)
@@ -184,7 +185,7 @@ function module.SetPower(self)
 	powerBG.multiplier = db.BGMultiplier
 	
 	-- Power Text
-	local db = self.db.Texts.Power
+	local db = self.db.PowerText
 	local fdb = self.db.Fonts.PowerText
 	local powerText = power:CreateFontString(nil, "OVERLAY")
 	powerText:SetFont(Media:Fetch("font", fdb.Name), fdb.Size, fdb.Flag)
@@ -193,7 +194,7 @@ function module.SetPower(self)
 	powerText:SetTextColor(1,1,1)
 	powerText:Show()
 	
-	local db = self.db.Texts.PowerPercent
+	local db = self.db.PowerPercent
 	local fdb = self.db.Fonts.PowerPercent
 	local powerPercText = power:CreateFontString(nil, "OVERLAY")
 	powerPercText:SetFont(Media:Fetch("font", fdb.Name), fdb.Size, fdb.Flag)
