@@ -130,6 +130,23 @@ function module.SetHealth(self)
 	healthBG:SetAlpha(db.BGAlpha)
 	healthBG.multiplier = 0.4
 	
+	-- Testing Absorb
+	local absorbBar = CreateFrame('StatusBar', nil, health)
+	absorbBar:SetPoint('TOP')
+	absorbBar:SetPoint('BOTTOM')
+	absorbBar:SetPoint('LEFT', health:GetStatusBarTexture(), 'RIGHT')
+	absorbBar:SetWidth(health:GetWidth())
+	absorbBar:SetStatusBarTexture(Media:Fetch("statusbar", db.Texture))
+	absorbBar:SetAlpha(.6)
+
+	local overAbsorbBar = CreateFrame('StatusBar', nil, health)
+	overAbsorbBar:SetPoint('TOP')
+	overAbsorbBar:SetPoint('BOTTOM')
+	overAbsorbBar:SetPoint('LEFT', health:GetStatusBarTexture(), 'LEFT')
+	overAbsorbBar:SetWidth(health:GetWidth())
+	overAbsorbBar:SetStatusBarTexture(Media:Fetch("statusbar", db.Texture))
+	overAbsorbBar:SetAlpha(.6)
+
 	-- Health Text
 	local db = self.db.HealthText
 	local fdb = self.db.Fonts.HealthText
@@ -164,6 +181,24 @@ function module.SetHealth(self)
 	self.Health.bg = healthBG
 	self:Tag(healthText, '[dead][offline][LUI:health] [LUI:Absorb]')
 	self.Health.value = healthText
+
+	self.HealthPrediction = {
+        absorbBar = absorbBar,
+        overAbsorb = overAbsorbBar,
+        frequentUpdates = true,
+	}
+	
+	function self.HealthPrediction:PostUpdate(unit, myIncomingHeal, otherIncomingHeal, absorb, healAbsorb, hasOverAbsorb, hasOverHealAbsorb)
+		if hasOverAbsorb then
+			local health, maxHealth = UnitHealth(unit), UnitHealthMax(unit)
+			local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0
+			local overAbsorb = totalAbsorb - absorb
+			self.overAbsorb:SetMinMaxValues(0, maxHealth)
+			self.overAbsorb:SetValue(overAbsorb)
+			self.overAbsorb:Show()
+		end
+	end
+
 end
 
 function module.SetPower(self)
