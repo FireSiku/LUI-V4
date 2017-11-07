@@ -128,7 +128,7 @@ function module.SetHealth(self)
 	healthBG:SetAllPoints(health)
 	healthBG:SetTexture(Media:Fetch("statusbar", db.TextureBG))
 	healthBG:SetAlpha(db.BGAlpha)
-	healthBG.multiplier = db.BGMultiplier
+	healthBG.multiplier = 0.4
 	
 	-- Health Text
 	local db = self.db.HealthText
@@ -182,7 +182,7 @@ function module.SetPower(self)
 	powerBG:SetAllPoints(power)
 	powerBG:SetTexture(Media:Fetch("statusbar", db.Texture))
 	powerBG:SetAlpha(db.BGAlpha)
-	powerBG.multiplier = db.BGMultiplier
+	powerBG.multiplier = 0.4
 	
 	-- Power Text
 	local db = self.db.PowerText
