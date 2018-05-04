@@ -41,13 +41,15 @@ function module:SetOUFColors()
 end
 
 
-local siValue = function(val)
-	if(val >= 1e6) then
-		return format("%.1fm", val / 1e6)
-	elseif(val >= 1e4) then
-		return format("%.1fk", val / 1e3)
+local function ShortValue(value)
+	if(value >= 1e9) then
+		return format("%.1fb", value / 1e9)
+	elseif(value >= 1e6) then
+		return format("%.1fm", value / 1e6)
+	elseif(value >= 1e4) then
+		return format("%.1fk", value / 1e3)
 	else
-		return val
+		return value
 	end
 end
 
@@ -58,13 +60,13 @@ end
 oUF_LUI.Tags.Methods['LUI:health'] = function(unit)
 	if(not UnitIsConnected(unit) or UnitIsDead(unit) or UnitIsGhost(unit)) then return end
 	--return siValue(UnitHealth(unit)) .. '/' .. siValue(UnitHealthMax(unit))
-	return siValue(UnitHealth(unit))
+	return ShortValue(UnitHealth(unit))
 end
 oUF_LUI.Tags.Methods['LUI:Absorb'] = function(unit)
 	if(not UnitIsConnected(unit) or UnitIsDead(unit) or UnitIsGhost(unit)) then return end
 	local totalAbsorb = UnitGetTotalAbsorbs(unit)
 	if totalAbsorb < 1 then return end
-	return format("(+%s)",siValue(totalAbsorb))
+	return format("(+%s)",ShortValue(totalAbsorb))
 end
 oUF_LUI.Tags.Methods['ClassColor'] = function(unit)
 	local _, class = UnitClass(unit)
@@ -121,8 +123,124 @@ function SpawnMixin:FormatName()
 end
 
 ------------------------------------------------------
--- / STYLE FUNCTIONS / --
+-- / OPTIONS FUNCTIONS / --
 ------------------------------------------------------
+
+module.childGroups = "tree"
+
+-- Function to create an option menu for a given unit.
+-- Takes: unit id and option order
+function module:NewUnitOptionGroup(unit, order)
+	-- Create an object to represent the unit, GetDB is the only function we need to recreate for the Options API.
+	local opt = {}
+	function opt:GetDB(scope, extra)
+		local db = module:GetDB()
+		return (extra and db.Units[unit][extra]) or db.Units[unit]
+	end
+	LUI:EmbedOptions(opt)
+	
+	-- Boolean shortcut, since many options are player-specific.
+	local isPlayer = (unit == "player")
+
+	local unitOptions = opt:NewGroup(unit, order, "tab", nil, {
+		General = opt:NewGroup("General", 1, "tab", nil, {
+			sillyDesc = opt:NewDesc("General Settings will go here", 1),
+		}),
+
+		Bars = opt:NewGroup("Bars", 2, "tab", nil, {
+			HealthBar = opt:NewGroup("Health", 1, "tab", nil, {
+				sillyDesc = opt:NewDesc("Health Bar Settings will go here", 1),
+			}),
+			PowerBar = opt:NewGroup("Power", 2, "tab", nil, {
+				sillyDesc = opt:NewDesc("Power Bar Settings will go here", 1),
+			}),
+			AbsorbBar = opt:NewGroup("Absorb", 2, "tab", nil, {
+				sillyDesc = opt:NewDesc("Absorb Bar Settings will go here. Coming Soon.", 1),
+			}),
+			ClassPower = isPlayer and opt:NewGroup("Class Powers", 3, "tab", nil, {
+				sillyDesc = opt:NewDesc("Class Power Settings will go here. Coming Soon.", 1),
+			}) or nil,
+		}),
+
+		Texts = opt:NewGroup("Texts", 3, "tab", nil, {
+			Nametext = opt:NewGroup("Name", 1, "tab", nil, {
+				sillyDesc = opt:NewDesc("Nametext Settings will go here", 1),
+			}),
+			HealthText = opt:NewGroup("Health Value", 2, "tab", nil, {
+				sillyDesc = opt:NewDesc("HealthText Settings will go here", 1),
+			}),
+			PowerText = opt:NewGroup("Power Value", 3, "tab", nil, {
+				sillyDesc = opt:NewDesc("PowerText Settings will go here", 1),
+			}),
+			HealthPercent = opt:NewGroup("Health Percent", 4, "tab", nil, {
+				sillyDesc = opt:NewDesc("HealthPercent Settings will go here", 1),
+			}),
+			PowerPercent = opt:NewGroup("Power Percent", 5, "tab", nil, {
+				sillyDesc = opt:NewDesc("PowerPercent Settings will go here", 1),
+			}),
+			HealthMissing = opt:NewGroup("Health Missing", 6, "tab", nil, {
+				sillyDesc = opt:NewDesc("HealthMissing Settings will go here", 1),
+			}),
+			PowerMissing = opt:NewGroup("Power Missing", 7, "tab", nil, {
+				sillyDesc = opt:NewDesc("PowerMissing Settings will go here", 1),
+			}),
+			CombatText = opt:NewGroup("Combat", 8, "tab", nil, {
+				sillyDesc = opt:NewDesc("Combat Settings will go here", 1),
+			}),
+		}),
+		
+		Portrait = opt:NewGroup("Portrait", 4, "tab", nil, {
+			sillyDesc = opt:NewDesc("Portrait Settings will go here", 1),
+		}),
+
+		Buffs = opt:NewGroup("Buffs", 5, "tab", nil, {
+			sillyDesc = opt:NewDesc("Buffs Settings will go here", 1),
+		}),
+
+		Debuffs = opt:NewGroup("Debuffs", 6, "tab", nil, {
+			sillyDesc = opt:NewDesc("Debuffs Settings will go here", 1),
+		}),
+
+		Icons = opt:NewGroup("Icons", 7, "tab", nil, {
+			LootmasterIcon = opt:NewGroup("LootmasterIcon", 1, "tab", nil, {
+				sillyDesc = opt:NewDesc("LootmasterIcon Settings will go here", 1),
+			}),
+			LeaderIcon = opt:NewGroup("LeaderIcon", 2, "tab", nil, {
+				sillyDesc = opt:NewDesc("LeaderIcon Settings will go here", 1),
+			}),
+			RoleIcon = opt:NewGroup("RoleIcon", 3, "tab", nil, {
+				sillyDesc = opt:NewDesc("RoleIcon Settings will go here", 1),
+			}),
+			RaidIcon = opt:NewGroup("RaidIcon", 4, "tab", nil, {
+				sillyDesc = opt:NewDesc("RaidIcon Settings will go here", 1),
+			}),
+			PvPIcon = opt:NewGroup("PvPIcon", 5, "tab", nil, {
+				sillyDesc = opt:NewDesc("PvPIcon Settings will go here", 1),
+			}),
+		}),
+	})
+
+	return unitOptions
+end
+
+function module:LoadOptions()
+	local options = {
+		Header = module:NewHeader("Unitframes", 1),
+	}
+
+	for i = 1, #unitSpawns do
+		local unit = unitSpawns[i]
+		options[unit] = module:NewUnitOptionGroup(unit, i+10)
+		--module:NewGroup(unit, i+10, "tab", nil, )
+	end
+
+	return options
+end
+
+------------------------------------------------------
+-- / FRAMEWORK FUNCTIONS / --
+------------------------------------------------------
+
 local function SpawnUnit(self, unit, ...)
 	self:SetActiveStyle("LUI4")
 	local spawn = self:Spawn(unit)
@@ -134,10 +252,6 @@ local function SpawnUnit(self, unit, ...)
 	
 	return spawn
 end
-
-------------------------------------------------------
--- / FRAMEWORK FUNCTIONS / --
-------------------------------------------------------
 
 module.enableButton = true
 
