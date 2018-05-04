@@ -23,7 +23,7 @@ _G["LUI"] = LUI
 local Media = LibStub("LibSharedMedia-3.0")
 local ACD = LibStub("AceConfigDialog-3.0")
 
-local strmatch = string.match
+--local strmatch = string.match
 local strgsub = string.gsub
 local format, type = format, type
 local ipairs, select = ipairs, select
@@ -38,7 +38,7 @@ local GENERAL = GENERAL
 
 local LIVE_BUILD = "25195" -- 7.2.0 Apr 27th. Need to keep updated every patch.
 local LIVE_TOC = 70300
--- Check the TOC number and then compare builds. Live version can end up with a build higher than Beta. 
+-- Check the TOC number and then compare builds. Live version can end up with a build higher than Beta.
 local _, CURRENT_BUILD, _, CURRENT_TOC = GetBuildInfo()
 if CURRENT_TOC > LIVE_TOC then
 	LUI.PTR = true
@@ -169,8 +169,8 @@ function LUI:LoadOptions()
 	if not LUI.options then
 
 		--Pattern will match "r" followed by a number, a svn rev.
-		local revision = LUI.revision
-		--if revision then revision = strmatch(revision,"r%d+") end
+		-- local revision = LUI.revision
+		-- if revision then revision = strmatch(revision,"r%d+") end
 
 		LUI.options = {
 			name = "LUI",
@@ -338,9 +338,6 @@ function LUI:RegisterModule(module)
 	end
 	module.db = self.db:RegisterNamespace(mName, module.defaults)
 
-	--TODO: Conflict checker will not be done through a hook. It'll be an actual system that may or may not call :OnConflict if needed.
-	--	A default version if such command is not found will have a simple "Conflicting addon, do you want to disable module" dialog.
-
 	-- Register Callbacks
 	--TODO: Recheck Register Callbacks
 	--if type(module.Refresh) == "function" then
@@ -383,9 +380,10 @@ function LUI:Refresh()
 	if not IsLoggedIn() then return end -- in case of db callbacks fires before OnEnable function
 
 	--Failsafe calling OnEnable/OnDisable on Profile change to
-	for name, module in self:IterateModules() do
-		if module.db and module.db.profile and module.db.profile.Enable ~= nil then
-			module[module.db.profile.Enable and "Enable" or "Disable"](module)
+	for name_, module in self:IterateModules() do
+		local mdb = module.db
+		if mdb and mdb.profile and mdb.profile.Enable ~= nil then
+			module[mdb.profile.Enable and "Enable" or "Disable"](module)
 		end
 	end
 end
