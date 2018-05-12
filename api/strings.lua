@@ -7,9 +7,9 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("API")
-local element = module:NewModule("Strings")
+local element_ = module:NewModule("Strings")
 local L = LUI.L
 
 --local copies
@@ -22,15 +22,15 @@ local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE
 -- Default fonts used for specialized character sets. Currently here for documentation purposes.
 -- TODO: Whenever a FontString may potentially get those characters, use an api call to detect those.
 --           We could then detect those and replace the font with the correct font to keep support.
-local UNIT_NAME_FONT_KOREAN = UNIT_NAME_FONT_KOREAN      -- Korean font
-local UNIT_NAME_FONT_CHINESE = UNIT_NAME_FONT_CHINESE    -- Chinese/Japanese Font
-local UNIT_NAME_FONT_CYRILLIC = UNIT_NAME_FONT_CYRILLIC  -- Russian Font
+-- local UNIT_NAME_FONT_KOREAN = UNIT_NAME_FONT_KOREAN      -- Korean font
+-- local UNIT_NAME_FONT_CHINESE = UNIT_NAME_FONT_CHINESE    -- Chinese/Japanese Font
+-- local UNIT_NAME_FONT_CYRILLIC = UNIT_NAME_FONT_CYRILLIC  -- Russian Font
 
 ------------------------------------------------------
 -- / MODULE FUNCTIONS / --
 ------------------------------------------------------
 
--- Should most of these functions be moved to the colors file? 
+-- Should most of these functions be moved to the colors file?
 
 --- String Functions
 -- @section stringfunc
@@ -76,13 +76,14 @@ function LUI:LUIColorToString(color)
 end
 
 function LUI:StringToLUIColor(s)
-	local ihex, rhex, ghex, bhex, ahex = strsub(s, 1, 1), strsub(s, 2, 3), strsub(s, 4, 5), strsub(s, 6, 7), strsub(s, 8, 9)
+	local rhex, ghex, bhex, ahex = strsub(s, 2, 3), strsub(s, 4, 5), strsub(s, 6, 7), strsub(s, 8, 9)
+	local type_hex = strsub(s, 1, 1)
 	local color = {}
 	color.r = format("%.2f",tonumber(rhex, 16)/255)
 	color.g = format("%.2f",tonumber(ghex, 16)/255)
 	color.b = format("%.2f",tonumber(bhex, 16)/255)
 	if ahex and tonumber(ahex, 16) then color.a = format("%.2f",tonumber(ahex, 16)/255) end
-	color.t = ReverseTypes[ihex]
+	color.t = ReverseTypes[type_hex]
 	return color
 end
 
@@ -210,7 +211,8 @@ LUI.PowerTypes = {
 
 -- Cleanup Note: Should I actually bother with this? This function was written back before most modules were written.
 -- As shown by how much I stopped caring at the end of the table. This seems to be too high maintenance to be worth it.
--- Probably a good idea for have a select set of strings that are used hundreds of time (like Background or Color), but this is a bit much.
+-- Probably a good idea for have a select set of strings that are used hundreds of time (like Background or Color),
+-- but this is a bit much.
 
 --CommonStrings should go lower-lower, lower-upper, upper-lower, upper-upper case in order.
 --Try not to have different cases on the same group as to avoid headaches later on.
@@ -221,7 +223,7 @@ function LUI:GenerateCommonStrings()
 		--1                        2                          3                          4
 		Au = "author",
 		aS = "alwaysShow",         aT = "alwaysShowText",
-		Al = "Alliance", 
+		Al = "Alliance",
 		bt = "Bottom",
 		Ba = "Bags",               Bc = "Broadcast",          Bd = "Bad",                Bk = "Bank",
 		bS = "BugSack",            bT = "backgroundTex",      brS = "borderSize",        brT = "borderTex",
@@ -235,7 +237,7 @@ function LUI:GenerateCommonStrings()
 		De = "DiffEasy",           Dh = "DiffHard",           Dk = "Death Knight",       Dl = "DiffLow",
 		Dq = "DiffEqual",          Dr = "Druid",              Ds = "Dualspec",           Du = "Durability",
 		DK = "DEATHKNIGHT",        DR = "DRUID",              DS = "DiffSkull",
-		Ex = "Exalted", 
+		Ex = "Exalted",
 		EN = "Enable",
 		Fn = "Fonts",              Fr = "Friends",
 		Gn = "General",            Go = "Good",               Gt = "GameText",           Gu = "Guild",
@@ -244,7 +246,7 @@ function LUI:GenerateCommonStrings()
 		Ha = "Hatred",             Hi = "Hint",               Hn = "Honored",            Ho = "Hostile",
 		Hc = "hideCombat",         Hu = "Hunter",
 		HO = "Horde",              HP = "Health",             HU = "HUNTER",
-		iD = "instanceDifficulty", 
+		iD = "instanceDifficulty",
 		It = "Infotext",
 		iT = "Infotip",
 		IS = "Insets",             IQ = "ItemQuality",
@@ -266,9 +268,9 @@ function LUI:GenerateCommonStrings()
 		rt = "Right",
 		Re = "Revered",            Ro = "Rogue",
 		RO = "ROGUE",              RP = "RelativePoint",      RT = "RIGHT",
-		sC = "showCombat",         sH = "Shaman",             sO = "showCoord",          
+		sC = "showCombat",         sH = "Shaman",             sO = "showCoord",
 		sR = "showRealm",          sS = "showSavedRaids",     sT = "showTextures",       sU = "showUF",
-		sW = "showWorldBosses", 
+		sW = "showWorldBosses",
 		Sa = "Sanctuary",          Sc = "Scale",
 		SH = "SHAMAN",             SM = "Stripped_medium",    SZ = "Size",               SC = "showCopper",
 		ST = "showTotal",          SW = "showWorldPVP",
@@ -277,31 +279,32 @@ function LUI:GenerateCommonStrings()
 		TA = "Tapped",             TL = "TOPLEFT",            TP = "TOP",
 		TR = "TOPRIGHT",           TO = "THICKOUTLINE",       TT = "Tooltip",            TX = "Texture",
 		uB = "useBlizzard",
-		Un = "Unfriendly", 
+		Un = "Unfriendly",
 		UI = "UI Elements",
 		vb = "vibroceb",           vn = "vibrocen",
 		Wa = "Warrior",            Wl = "Warlock",
 		WA = "WARRIOR",            WL = "WARLOCK",
 		Zo = "Zone",
-		
+
 		--Need to redo CommonString to use 3 letter for most options otherwise will run out of letters.
 		aa = "hideRealm", ab = "Rank", ac = "Flag", ad = "Panels", ae = "Clock",
 		af = "Friendly", ag = "Hated", ah = "Auras", ai = "Debuffs", aj = "HorizontalSpacing",
-		ak = "ReverseSort", al = "NumRows", am = "SortMethod", an = "Time", ao = "Anchor", 
+		ak = "ReverseSort", al = "NumRows", am = "SortMethod", an = "Time", ao = "Anchor",
 		ap = "VerticalSpacing", aq = "AurasPerRow", ar = "BuffsCount", as = "BuffsDur", at = "DebuffsDur",
 		au = "DebuffsCount", av = "Disease", aw = "Curse", ax = "Poison", ay = "Magic", az = "None",
 		aA = "BackgroundTexture", aB = "Spacing", aC = "ShowNew", aD = "Textures", aE = "BackgroundMenu",
 		aF = "Gold", aG = "MOTD", aH = "FPS", aI = "Scale", aJ = "BorderSize",
 		aK = "BorderTexture", aL = "Professions", aM  = "RowSize", aN = "Search", aO = "Lock",
-		aP = "BagBar", aQ = "BagNewline", aR = "AvantGarge_LT_Medium", 
-		aU = "Buffs", aV = "alwaysShowText", aW = "showSex", aX = "Blizzard Dialog Background Dark", aY = "healthBar", aZ = "hideUF",
+		aP = "BagBar", aQ = "BagNewline", aR = "AvantGarge_LT_Medium",
+		aU = "Buffs", aV = "alwaysShowText", aW = "showSex", aX = "Blizzard Dialog Background Dark", aY = "healthBar",
+		aZ = "hideUF",
 		Aa = "hideCombatSkills",  Ab = "ShowQuest", Ac = "Micromenu",
-		
+
 	}
-	
+
 	LUI.ReverseStrings = {}
 	for k, v in pairs(LUI.CommonStrings) do
 		LUI.ReverseStrings[v] = k
 	end
-	
+
 end

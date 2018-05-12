@@ -10,7 +10,6 @@ local addonname, LUI = ...
 local module = LUI:GetModule("API")
 local element = module:NewModule("Modules")
 local Media = LibStub("LibSharedMedia-3.0")
-local db
 
 --local copies
 local pairs = pairs
@@ -49,7 +48,7 @@ function ModuleMixin:Color(colorName)
 	if db and db[colorName] then
 		-- TODO: Check for all planned types (.t)
 		if db[colorName].t and db[colorName].t == "Class" then
-			return LUI:Color(LUI.playerClass)	
+			return LUI:Color(LUI.playerClass)
 		else
 			color = db[colorName]
 		end
@@ -100,10 +99,10 @@ function ModuleMixin:FetchBackground(name)
 	end
 end
 
--- Function that creates a backdrop table for use with SetBackdrop and keeps a copy around based on name. 
+-- Function that creates a backdrop table for use with SetBackdrop and keeps a copy around based on name.
 -- When function is called on an existing backdrop, update it and return it.
 -- If Tile or Insets options aren't found in the DB, they can be optionally be set through parameters.
--- Requires a DB.Backdrop entry based on name. 
+-- Requires a DB.Backdrop entry based on name.
 function ModuleMixin:FetchBackdrop(name, tile, tileSize, l, r, t, b)
 	local db = self:GetDB("profile", "Backdrop")
 	if db and db[name] then
@@ -170,7 +169,7 @@ end
 -- @tparam[opt] ?string scope The scope to look up. Can be one of the nine database types as specified by AceDB.
 -- @tparam[opt] ?string extra The name of a table in the database to return.
 function ModuleMixin:GetDB(scope, extra)
-	local scope = scope or "profile"
+	scope = scope or "profile"
 	local db
 	if self:IsElement() then
 		local _, parent = self:GetParent()
@@ -203,14 +202,14 @@ end
 ------------------------------------------------------
 -- @local here
 function ModuleCreationMixin:NewElement(name, ...)
-	local element = self:NewModule(name, ...)
-	LUI:EmbedModule(element)
-	return element
+	local new_element = self:NewModule(name, ...)
+	LUI:EmbedModule(new_element)
+	return new_element
 end
 
 --Make sure every element also has a :GetParent()
-function ModuleCreationMixin:OnModuleCreated(element)
-	element.GetParent = function()
+function ModuleCreationMixin:OnModuleCreated(new_element)
+	new_element.GetParent = function()
 		return self:GetName(), self
 	end
 end
@@ -225,15 +224,15 @@ end
 -- This function is not avaible to elements or LUI.
 -- @function Toggle
 
-function LUI:OnModuleCreated(module)
-	module.GetParent = function()
+function LUI:OnModuleCreated(new_module)
+	new_module.GetParent = function()
 		return self:GetName(), self
 	end
 	
 	--Only modules with an enableButton should be toggle-able.
-	module.Toggle = function()
-		local name = module:GetName()
-		local state = not module:IsEnabled()
+	new_module.Toggle = function()
+		local name = new_module:GetName()
+		local state = not new_module:IsEnabled()
 		if state then
 			LUI:EnableModule(name)
 		else
@@ -244,7 +243,7 @@ function LUI:OnModuleCreated(module)
 	end
 	
 	for k, v in pairs(ModuleCreationMixin) do
-		module[k] = v
+		new_module[k] = v
 	end
 end
 

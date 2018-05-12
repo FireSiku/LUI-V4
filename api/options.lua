@@ -20,7 +20,7 @@ local LSM_DCONTROL_BACKGROUND = "LSM30_Background"
 local LSM_DCONTROL_STATUSBAR = "LSM30_Statusbar"
 local LSM_DCONTROL_BORDER = "LSM30_Border"
 local LSM_DCONTROL_SOUND = "LSM30_Sound"
-local LSM_DCONTROL_FONT = "LSM30_Font"
+--local LSM_DCONTROL_FONT = "LSM30_Font"
 
 -- Local variables
 local OptionsMixin = {} -- Embed Prototype
@@ -39,9 +39,9 @@ end
 -- @section localfunc
 
 --- Forces a refresh on the options panel.
--- There is a bug that is sometimes causing some items to not properly appear. 
+-- There is a bug that is sometimes causing some items to not properly appear.
 -- Instead of simply calling NotifyChange, we queue it to happen 0.01 later, fixing all issues.
--- An immediately perceivable example is the four colors in ExpBar module options. 
+-- An immediately perceivable example is the four colors in ExpBar module options.
 -- OnUpdate does not happen while the frame is hidden, therefore it does not have an effect on performance.
 local notify = CreateFrame("Frame")
 notify.time = 0
@@ -85,7 +85,7 @@ end
 -- @param info Ace3 info table
 -- @number num
 -- @return true if num is a number, nil otherwise
-local function IsNumber(info, num)
+local function IsNumber(info_, num)
 	if not num or not tonumber(num) then
 		return L["API_InputNumber"]
 	end
@@ -201,7 +201,7 @@ end
 ------------------------------------------------------
 --@local here
 
-function OptionsMixin:getter(info, ...)
+function OptionsMixin:getter(info)
 	local parent = CheckMeta(info, "parent", "string") or info[#info-1]
 	local scope = CheckMeta(info, "scope", "string") or "profile"
 	local root = CheckMeta(info, "root", "boolean")
@@ -217,16 +217,16 @@ function OptionsMixin:setter(info, value, ...)
 	local scope = CheckMeta(info, "scope", "string") or "profile"
 	local root = CheckMeta(info, "root", "boolean")
 	local db = self:GetDB(scope, (not root) and parent)
-	
+
 	--HACK: Inputs always return value as a string.
 	if CheckMeta(info, "isNumber") then value = tonumber(value) end
-	
+
 	db[info[#info]] = value
 	SetFunc(self, info, value, ...)
 end
 
 -- Drop most of the useless bullshit of getter/setter
-function OptionsMixin:GenericGetter(info, ...)
+function OptionsMixin:GenericGetter(info)
 	local db = self:GetDB("profile", info[#info-1])
 	local value = db[info[#info]]
 	--Inputs cannot display numbers. Have to convert to string.
@@ -244,7 +244,7 @@ function OptionsMixin:GenericSetter(info, value, ...)
 	SetFunc(self, info, value, ...)
 end
 
-function OptionsMixin:RootGetter(info, ...)
+function OptionsMixin:RootGetter(info)
 	local db = self:GetDB()
 	local value = db[info[#info]]
 	--Inputs cannot display numbers. Have to convert to string.
@@ -299,7 +299,7 @@ end
 	width (string) - "double", "half", "full", "normal"
 		- "double", "half" - increase/decrease the size of the option
 		- "full" - make the option the full width of the window (or section of the window the option is in)
-		- "normal" - use the default widget width defined for the implementation (useful to overwrite widgets the default to "full")
+		- "normal" - use the default widget width (useful to overwrite widgets that default to "full")
 	disabled (function|boolean) - disabled but visible
 	hidden (function|boolean) - hidden (but usable if you can get to it, i.e. via commandline) --]]
 --[[ meta params:
@@ -322,7 +322,8 @@ end
 -- @tparam string|function desc Description for the option (appears in a tooltip)
 -- @tparam number order Relative position of the option. (0 = first, -1 = last)
 -- @param ... Any specified parameter
--- @tparam boolean|table|function|method meta Used as jack-of-all-trades parameters to combine many lesser-used or situational additional parameters.
+-- @tparam boolean|table|function|method meta Used as jack-of-all-trades parameters
+--                                            to combine many lesser-used or situational additional parameters.
 -- @tparam "double"|"half"|"full"|"normal" width How wide the option needs to be.
 -- @tparam function|method|bool disabled Make the option disabled but visible
 -- @tparam function|method|bool hidden Make the option hidden from view.
@@ -348,11 +349,11 @@ function OptionsMixin:NewGroup(name, order, childGroups, inline, get, set, args,
 		else
 			t.set = "setter"
 		end
-		
+
 		t.args = args
 		SetState(t, nil, disabled, hidden)
 	end
-	
+
 	return t
 end
 
@@ -459,7 +460,7 @@ function OptionsMixin:NewInputNumber(name, desc, order, meta, width, disabled, h
 	--t.validate = IsNumber
 	t.pattern = "%d"
 	t.usage = L["API_InputNumber"]
-	
+
 	local metaTable = SetupMeta(t, meta, true)
 	metaTable.isNumber = true
 	setmetatable(t, metaTable)
@@ -569,7 +570,7 @@ function OptionsMixin:NewSound(name, desc, order, meta, width, disabled, hidden)
 	return t
 end
 
----TODO: Add NewBackdrop, should feature Header, Background, Border, BorderSize, BackdropColor, BackdropBorderColor 
+---TODO: Add NewBackdrop, should feature Header, Background, Border, BorderSize, BackdropColor, BackdropBorderColor
 
 function OptionsMixin:NewPosition(name, order, isXY, meta, width, disabled, hidden)
 	--TODO: Function should be using custom sliders instead.
@@ -591,7 +592,7 @@ end
 -- Generate a Color / Dropdown combo, the dropdown selection determines the color bypass. (Theme, Class, Spec, etc)
 -- TODO/EXAMINE: Should we use Color's alpha slider or use a separate alpha slider considering theme/class
 -- Width arg not respected.
-function OptionsMixin:NewColorMenu(name, order, hasAlpha, meta, width, disabled, hidden)
+function OptionsMixin:NewColorMenu(name, order, hasAlpha, meta, width_, disabled, hidden)
 	local t = ShadowOption()
 	OptionHook(t, function(info, parent)
 		local opt = info[#info]
@@ -600,15 +601,15 @@ function OptionsMixin:NewColorMenu(name, order, hasAlpha, meta, width, disabled,
 		parent[opt] = self:NewColor(name, nil, order+0.2, hasAlpha, meta, nil, disabled, hidden)
 		parent[optMenu] = self:NewSelect(name, nil, order+0.1, LUI.ColorTypes, nil, meta, nil, disabled, hidden)
 		--Custom get/set for the dropdown menu
-		parent[optMenu].get = function(info)
+		parent[optMenu].get = function()
 			return db[opt].t
 		end
-		parent[optMenu].set = function(info, value)
+		parent[optMenu].set = function(set_info, value)
 			db[opt].t = value
-			SetFunc(self, info, value)
+			SetFunc(self, set_info, value)
 		end
 		parent[opt.."Break"] = self:NewLineBreak(order+0.3, hidden)
-		
+
 		--Setting true prevent the setmetatable call and make sure we get a table.
 		local mt = SetupMeta(t, meta, true)
 		if mt and mt.setfunc then
@@ -627,15 +628,15 @@ end
 function(info)
 	local parent = GetParentTable(info)
 	local optName = info[#info]
-	
+
 	--If i were to use this function on both opt and optAlpha, would need to get opt out of optAlpha.
-	--Easy way to do that would be changing the color wheel from opt to optColor and then just subtract 5 letters from name.
+	--Easy way to do that would be changing the color wheel from opt to optColor and then subtract 5 letters from name.
 	local opt = strsub(optName, 1, -6)
 	local curOpt = strsub(optName, -5)
 
 	--How to get self out of the info table?
 	local db = self:GetDB("profile", "Colors")
-	
+
 	--Alpha Slider should be hidden when under Custom/Individual, displayed all other cases.
 	if curOpt == "Alpha" then
 		return (db[opt].t == "Custom")

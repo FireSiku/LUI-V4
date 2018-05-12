@@ -3,15 +3,14 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:NewModule("Addons")
 local L = LUI.L
-local db
 
 local addonStorage = {}
 
 --Defaults
-module.defaults = {   
+module.defaults = {
 	profile = {
 		installed = {
 		},
@@ -39,12 +38,13 @@ function module:OnInitialize()
 end
 
 function module:OnEnable()
-	db = module:GetDB()
+	local db = module:GetDB()
 	for name, element in module:IterateModules() do
 		-- Explicit nil check because false should have a different result
 		if db.installed[name] == nil then
 			StaticPopupDialogs["LUI_ADDON"..name] = {
-				text = format("LUI detected you installed %s and has preset configuration available. Do you want LUI to apply these settings?", name),
+				text = format("LUI detected you installed %s and has preset configuration available."
+				               .. "Do you want LUI to apply these settings?", name),
 				button1 = YES,
 				button2 = NO,
 				OnAccept = element.Install,

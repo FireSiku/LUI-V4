@@ -6,7 +6,7 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:NewModule("API")
 
 local type, pairs = type, pairs
@@ -56,7 +56,7 @@ end
 ------------------------------------------------------
 -- Wrapper around LibWindow for sake of implementation
 
--- This call initializes a frame for use with LibWindow, and tells it where configuration data lives. 
+-- This call initializes a frame for use with LibWindow, and tells it where configuration data lives.
 -- Note: Since LUI supports profiles, it is needed to do a new .RegisterConfig and .RestorePosition to every frame
 --       that is being affected in the :Refresh call.
 -- TODO: Implement a way to remember what frames have been affected, and automatically handle this.
@@ -64,8 +64,8 @@ function LUI:RegisterConfig(frame, storage, names)
 	if not names then
 		--By default, the names need to be lower case, but all of LUI's db options are using PascalCase.
 		names = {
-			x = "X", y = "Y", 
-			point = "Point", 
+			x = "X", y = "Y",
+			point = "Point",
 			scale = "Scale",
 		}
 	end
@@ -79,17 +79,17 @@ function LUI:SavePosition(frame)
 	LibWin.SavePosition(frame)
 end
 
--- Restore frame and scale from config data 
+-- Restore frame and scale from config data
 function LUI:RestorePosition(frame)
 	LibWin.RestorePosition(frame)
 end
 
--- Sets the scale of the frame without causing it to move and saves it. 
+-- Sets the scale of the frame without causing it to move and saves it.
 function LUI:SetScale(frame, scale)
 	LibWin.SetScale(frame, scale)
 end
 
--- Adds drag handlers to the frame and makes it movable. 
+-- Adds drag handlers to the frame and makes it movable.
 -- Positioning information is automatically stored according to :RegisterConfig().
 function LUI:MakeDraggable(frame)
 	LibWin.MakeDraggable(frame)
@@ -176,7 +176,7 @@ function GFind(arg, keyOnly)
 	end
 end
 
-function GFindValue(arg, keyOnly)
+function GFindValue(arg, keyOnly_)
 	for k, v in pairs(_G) do
 		if v == arg then
 			LUI:Print(k)
@@ -237,28 +237,30 @@ function LUI:HighlightBorder(frame)
 	frame:SetBackdropBorderColor(1,1,0,1)
 end
 
+
+
 --Keeping the basic structure of the function for the next time something is needed to profile.
+local function Bench(name, start, finish, mark)
+	LUI:Print(name, finish - start, format("(%.f%%)", ((finish-start)/mark)*100))
+end
+
 function LUI:SpeedTest()
 	--We're using debugprofilestop instead of the original GetTime due to being more precise for profiling.
 	local GetTime = debugprofilestop
 	local start, finish, mark
 	local iter = 1000000
-	
+
 	-- Use Player micro button for Coord testing
 	local player = LUIMicromenu_Player.tex
 	local atlas = "MicroBtn_Left"
-	
-	local function Bench(name, start, finish, mark)
-		LUI:Print(name, finish - start, format("(%.f%%)", ((finish-start)/mark)*100))
-	end
-	
+
 	--[[ We'll use this one as the baseline to compare the others to.
 	start = GetTime()
 	for i = 1, iter do
 		player:SetTexCoord(1/64, 49/64, 2/32, 30/32)
 	end
 	finish = GetTime()
-	
+
 	Bench("player:SetTexCoord(1/64, 49/64, 2/32, 30/32)", start, finish, mark)--]]
 
 	start = GetTime()
@@ -268,7 +270,7 @@ function LUI:SpeedTest()
 	finish = GetTime()
 	mark = finish - start
 	Bench("player:SetTexCoord(LUI:GetCoordAtlas(atlas))", start, finish, mark)
-	
+
 	start = GetTime()
 	for i = 1, iter do
 		LUI:SetCoordAtlas(player, atlas)

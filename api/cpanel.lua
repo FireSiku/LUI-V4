@@ -3,10 +3,9 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:NewModule("Control Panel")
 local L = LUI.L
-local db
 
 -- defaults
 module.defaults = {
@@ -40,7 +39,7 @@ end
 function module:InfotextIterator()
 	local args = {}
 	local infotext = LUI:GetModule("Infotext")
-	for name, dataObj in infotext.LDB:DataObjectIterator() do
+	for name, dataObj_ in infotext.LDB:DataObjectIterator() do
 		args[name] = module:NewEnableButton(name, nil, nil,
 			function() return infotext:IsInfotextEnabled(name) end,
 			function()
@@ -55,9 +54,9 @@ function module:AddonSupportIterator()
 	local addonMod = LUI:GetModule("Addons")
 	args["Desc"] = module:NewDesc(L["CPanel_AddonDesc"], 1)
 	args["Break"] = module:NewLineBreak(2)
-	for name, mod in addonMod:IterateModules() do
-		args[name] = module:NewExecute(format(L["CPanel_AddonReset"], name), nil, nil, 
-			function() 
+	for name, mod_ in addonMod:IterateModules() do
+		args[name] = module:NewExecute(format(L["CPanel_AddonReset"], name), nil, nil,
+			function()
 				addonMod:GetDB().installed[name] = nil
 				addonMod:OnEnable()
 			end)
@@ -77,7 +76,6 @@ function module:OnInitialize()
 end
 
 function module:OnEnable()
-	db = module.db.profile
 end
 
 function module:LoadOptions()
