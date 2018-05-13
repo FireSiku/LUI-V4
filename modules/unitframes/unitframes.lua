@@ -1,7 +1,7 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:NewModule("Unitframes", "AceHook-3.0")
 local L = LUI.L
 
@@ -79,7 +79,7 @@ end
 ------------------------------------------------------
 -- / MIXIN FUNCTIONS / --
 ------------------------------------------------------
--- Every function under SpawnMixin will become available to all spawned unitframes. 
+-- Every function under SpawnMixin will become available to all spawned unitframes.
 local SpawnMixin = {}
 
 -- Version of module:Color tailored for unitframes, with support for additional types (ie: Color Based On Type)
@@ -133,7 +133,7 @@ module.childGroups = "tree"
 function module:NewUnitOptionGroup(unit, order)
 	-- Create an object to represent the unit, GetDB is the only function we need to recreate for the Options API.
 	local opt = {}
-	function opt:GetDB(scope, extra)
+	function opt:GetDB(scope_, extra)
 		local db = module:GetDB()
 		return (extra and db.Units[unit][extra]) or db.Units[unit]
 	end
@@ -269,7 +269,7 @@ function module:OnEnable()
 	for i = 1, #unitSpawns do
 		local unit = unitSpawns[i]
 		local db = module:GetUnitDB(unit)
-		local spawn = SpawnUnit(oUF_LUI, unit, db.Point, db.X, db.Y)
+		local spawn_ = SpawnUnit(oUF_LUI, unit, db.Point, db.X, db.Y)
 	end
 end
 

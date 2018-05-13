@@ -1,4 +1,4 @@
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Unitframes")
 local class = LUI.playerClass
 local db
@@ -52,7 +52,7 @@ end
 -- Local function near the top of the file because it pertains to class balance.
 -- This is the function where we take the base amount of ressource a class can have
 -- and check for spells and talents that may increase those numbers.
-local function GetCount(classPower, event, ...)
+local function GetCount(classPower_, event_)
 	local count = BASE_COUNT[class]
 
 	if class == "MONK" then
@@ -76,7 +76,8 @@ local function GetBarWidth(count)
 	return (db.Width - (db.Padding * (count - 1))) / count
 end
 
--- For the entire file, self will be used to refer to the unitframe, as those functions are called from the style creation.
+-- For the entire file, self will be used to refer to the unitframe
+-- as those functions are called from the style creation.
 -- This function is the entry point of the file, it's where we determined if any bars need creation.
 function module.SetClassPower(self)
 	-- Use the same settings for ClassPower, Rune Bars and such.
@@ -93,7 +94,8 @@ end
 -- classPower is a frame with two parts.
 -- The frame itself is used as a background and also as a parent for the textures.
 -- It's also an array that holds textures for oUF to use for combo points of various kinds.
--- Issue: While oUF's classIcon will deal with the visibility of the textures, it does not take the background into account.
+-- Issue: While oUF's classIcon will deal with the visibility of the textures,
+-- it does not take the background into account.
 function module.SetClassIcon(self)
 	local classPower = CreateFrame("Frame", nil, self)
 	classPower:SetFrameStrata("BACKGROUND")

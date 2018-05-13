@@ -1,9 +1,10 @@
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Unitframes")
 local Media = LibStub("LibSharedMedia-3.0")
 local L = LUI.L
 
--- SetStyle is called as soon as a unit is spawned. This is where the basic, non-specific parts of the unitframes are made.
+-- SetStyle is called as soon as a unit is spawned.
+-- This is where the basic, non-specific parts of the unitframes are made.
 -- Self is the spawned object, as returned by SpawnUnit.
 -- Unit is the actual unit token as per Blizzard API (ex: "player", "target", ...)
 
@@ -27,7 +28,7 @@ function module.SetStyle(self, unit, isSingle)
 		bgFile = Media:Fetch("background", self.db.Backdrop.Texture),
 		edgeFile = Media:Fetch("border", self.db.Backdrop.EdgeFile),
 		edgeSize = self.db.Backdrop.EdgeSize,
-		insets = { left = 3, right = 3, top = 3, bottom = 3, }, 
+		insets = { left = 3, right = 3, top = 3, bottom = 3, },
 	}
 	local backdropFrame = CreateFrame("Frame", nil, self)
 	--Need to convert to :Color()
@@ -62,7 +63,7 @@ function module.SetStyle(self, unit, isSingle)
 	self:FormatName()
 
 	-- // Dropdown
-	-- Credit for this bit of code goes to Zork. 
+	-- Credit for this bit of code goes to Zork.
 	local dropdown = CreateFrame("Frame", "oUF_LUI_Dropdown", UIParent, "UIDropDownMenuTemplate")
 	UIDropDownMenu_Initialize(dropdown, function(self)
 		local unit = self:GetParent().unit
@@ -166,7 +167,7 @@ function module.SetHealth(self)
 	healthPercText:SetTextColor(1,1,1)
 	healthPercText:Show()
 	
-	health.PostUpdate = function(health, unit, min, max)
+	health.PostUpdate = function(health_, unit_, min, max)
 		local percent = (max == 0 and 0) or 100 * (min/max)
 		healthPercText:SetFormattedText("%.1f%%", percent)
 		if min == max then healthPercText:Hide()
@@ -188,9 +189,10 @@ function module.SetHealth(self)
         frequentUpdates = true,
 	}
 	
-	function self.HealthPrediction:PostUpdate(unit, myIncomingHeal, otherIncomingHeal, absorb, healAbsorb, hasOverAbsorb, hasOverHealAbsorb)
+	function self.HealthPrediction:PostUpdate(unit, myIncomingHeal_, otherIncomingHeal_, absorb,
+		                                      healAbsorb_, hasOverAbsorb, hasOverHealAbsorb_)
 		if hasOverAbsorb then
-			local health, maxHealth = UnitHealth(unit), UnitHealthMax(unit)
+			local health_, maxHealth = UnitHealth(unit), UnitHealthMax(unit)
 			local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0
 			local overAbsorb = totalAbsorb - absorb
 			self.overAbsorb:SetMinMaxValues(0, maxHealth)
@@ -238,7 +240,7 @@ function module.SetPower(self)
 	powerPercText:SetTextColor(1,1,1)
 	powerPercText:Show()
 	
-	power.PostUpdate = function(self, unit, cur, min, max)
+	power.PostUpdate = function(self, unit_, cur_, min, max)
 		min = min or 0
 		local percent = (max == 0) and 0 or 100 * (min/max)
 		powerText:SetFormattedText("%d", min)

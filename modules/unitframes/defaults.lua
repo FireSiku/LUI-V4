@@ -1,12 +1,12 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Unitframes", "AceHook-3.0")
 local L = LUI.L
-local db
 
--- Note: As opposed to regular coding style for defaults tables, the tables for every unit must be in lowercase similar to the unitID token
+-- Note: As opposed to regular coding style for defaults tables
+-- the tables for every unit must be in lowercase similar to the unitID token
 
 module.defaults = {
 	profile = {
@@ -31,22 +31,22 @@ module.defaults = {
         CastBar = {
 
             Colors = {
-                Name         = { r = 0.9 , g = 0.9 , b = 0.9 , }, 
-                Time         = { r = 0.9 , g = 0.9 , b = 0.9 , }, 
-                DefaultBar   = { r = 0.13, g = 0.59, b = 1   , a = 0.68, }, 
-                DefaultBG    = { r = 0.15, g = 0.15, b = 0.15, a = 0.67, }, 
-                Latency      = { r = 0.11, g = 0.11, b = 0.11, a = 0.74, }, 
-                Border       = { r = 0   , g = 0   , b = 0   , a = 0.7 , }, 
-                ShieldBar    = { r = 0.13, g = 0.59, b = 1   , a = 0.68, }, 
-                ShieldBorder = { r = 0.13, g = 0.59, b = 1   , a = 0.68, }, 
-                player       = { r = 0.13, g = 0.59, b = 1   , a = 0.68, t = "Individual", }, 
-                target       = { r = 0.13, g = 0.59, b = 1   , a = 0.68, t = "Individual", }, 
-                focus        = { r = 0.13, g = 0.59, b = 1   , a = 0.68, t = "Individual", }, 
-                pet          = { r = 0.13, g = 0.59, b = 1   , a = 0.68, t = "Individual", }, 
-                party        = { r = 0.13, g = 0.59, b = 1   , a = 0.68, t = "Individual", }, 
-                boss         = { r = 0.13, g = 0.59, b = 1   , a = 0.68, t = "Individual", }, 
-                arena        = { r = 0.13, g = 0.59, b = 1   , a = 0.68, t = "Individual", }, 
-            }, 
+                Name         = { r = 0.9 , g = 0.9 , b = 0.9 , },
+                Time         = { r = 0.9 , g = 0.9 , b = 0.9 , },
+                DefaultBar   = { r = 0.13, g = 0.59, b = 1   , a = 0.68, },
+                DefaultBG    = { r = 0.15, g = 0.15, b = 0.15, a = 0.67, },
+                Latency      = { r = 0.11, g = 0.11, b = 0.11, a = 0.74, },
+                Border       = { r = 0   , g = 0   , b = 0   , a = 0.7 , },
+                ShieldBar    = { r = 0.13, g = 0.59, b = 1   , a = 0.68, },
+                ShieldBorder = { r = 0.13, g = 0.59, b = 1   , a = 0.68, },
+                player       = { r = 0.13, g = 0.59, b = 1   , a = 0.68, t = "Individual", },
+                target       = { r = 0.13, g = 0.59, b = 1   , a = 0.68, t = "Individual", },
+                focus        = { r = 0.13, g = 0.59, b = 1   , a = 0.68, t = "Individual", },
+                pet          = { r = 0.13, g = 0.59, b = 1   , a = 0.68, t = "Individual", },
+                party        = { r = 0.13, g = 0.59, b = 1   , a = 0.68, t = "Individual", },
+                boss         = { r = 0.13, g = 0.59, b = 1   , a = 0.68, t = "Individual", },
+                arena        = { r = 0.13, g = 0.59, b = 1   , a = 0.68, t = "Individual", },
+            },
 
             ["**"] = {
                 General = {
@@ -83,7 +83,7 @@ module.defaults = {
                     Thickness = 4,
                     Inset = {    left = 3,    right = 3,    top = 3,    bottom = 3,},
                 },
-    
+
                 Shield = {
                     Enable = true,
                     Text = true,
@@ -152,33 +152,33 @@ module.defaults = {
                 Point = "CENTER",
                 Scale = 1,
                 Colors = {
-                    Border        = {  r = 0   , g = 0   , b = 0   , a = 1           , }, 
-                    Background    = {  r = 0   , g = 0   , b = 0   , a = 1           , }, 
-                    HealthBar     = {  r = 0.25, g = 0.25, b = 0.25, t = "Individual", }, 
-                    PowerBar      = {  r = 0.8 , g = 0.8 , b = 0.8 , t = "Class"     , }, 
-                    NameText      = {  r = 1   , g = 1   , b = 1   , t = "Class"     , }, 
-                    HealthText    = {  r = 1   , g = 1   , b = 1   , t = "Individual", }, 
-                    PowerText     = {  r = 1   , g = 1   , b = 1   , t = "Class"     , }, 
-                    HealthPercent = {  r = 1   , g = 1   , b = 1   , t = "Individual", }, 
-                    PowerPercent  = {  r = 1   , g = 1   , b = 1   , t = "Individual", }, 
-                    HealthMissing = {  r = 1   , g = 1   , b = 1   , t = "Individual", }, 
-                    PowerMissing  = {  r = 1   , g = 1   , b = 1   , t = "Individual", }, 
+                    Border        = {  r = 0   , g = 0   , b = 0   , a = 1           , },
+                    Background    = {  r = 0   , g = 0   , b = 0   , a = 1           , },
+                    HealthBar     = {  r = 0.25, g = 0.25, b = 0.25, t = "Individual", },
+                    PowerBar      = {  r = 0.8 , g = 0.8 , b = 0.8 , t = "Class"     , },
+                    NameText      = {  r = 1   , g = 1   , b = 1   , t = "Class"     , },
+                    HealthText    = {  r = 1   , g = 1   , b = 1   , t = "Individual", },
+                    PowerText     = {  r = 1   , g = 1   , b = 1   , t = "Class"     , },
+                    HealthPercent = {  r = 1   , g = 1   , b = 1   , t = "Individual", },
+                    PowerPercent  = {  r = 1   , g = 1   , b = 1   , t = "Individual", },
+                    HealthMissing = {  r = 1   , g = 1   , b = 1   , t = "Individual", },
+                    PowerMissing  = {  r = 1   , g = 1   , b = 1   , t = "Individual", },
                 },
                 Fonts = {
-                    NameText      = { Name = "Prototype", Size = 18, Flag = "NONE", }, 
-                    HealthText    = { Name = "Prototype", Size = 16, Flag = "NONE", }, 
-                    PowerText     = { Name = "Prototype", Size = 14, Flag = "NONE", }, 
-                    HealthPercent = { Name = "Prototype", Size = 14, Flag = "NONE", }, 
-                    PowerPercent  = { Name = "Prototype", Size = 12, Flag = "NONE", }, 
-                    HealthMissing = { Name = "Prototype", Size = 16, Flag = "NONE", }, 
-                    PowerMissing  = { Name = "Prototype", Size = 14, Flag = "NONE", }, 
-                    CombatText    = { Name = "Prototype", Size = 20, Flag = "NONE", }, 
+                    NameText      = { Name = "Prototype", Size = 18, Flag = "NONE", },
+                    HealthText    = { Name = "Prototype", Size = 16, Flag = "NONE", },
+                    PowerText     = { Name = "Prototype", Size = 14, Flag = "NONE", },
+                    HealthPercent = { Name = "Prototype", Size = 14, Flag = "NONE", },
+                    PowerPercent  = { Name = "Prototype", Size = 12, Flag = "NONE", },
+                    HealthMissing = { Name = "Prototype", Size = 16, Flag = "NONE", },
+                    PowerMissing  = { Name = "Prototype", Size = 14, Flag = "NONE", },
+                    CombatText    = { Name = "Prototype", Size = 20, Flag = "NONE", },
                 },
-                LootmasterIcon = { Enable = false, Size = 15, X = 16 , Y = 0, Point = "TOPLEFT" , }, 
-                LeaderIcon     = { Enable = false, Size = 17, X = 0  , Y = 0, Point = "TOPLEFT" , }, 
-                RoleIcon       = { Enable = false, Size = 22, X = 15 , Y = 0, Point = "TOPRIGHT", }, 
-                RaidIcon       = { Enable = false, Size = 55, X = 0  , Y = 0, Point = "CENTER"  , }, 
-                PvPIcon        = { Enable = false, Size = 35, X = -12, Y = 0, Point = "TOPLEFT" , }, 
+                LootmasterIcon = { Enable = false, Size = 15, X = 16 , Y = 0, Point = "TOPLEFT" , },
+                LeaderIcon     = { Enable = false, Size = 17, X = 0  , Y = 0, Point = "TOPLEFT" , },
+                RoleIcon       = { Enable = false, Size = 22, X = 15 , Y = 0, Point = "TOPRIGHT", },
+                RaidIcon       = { Enable = false, Size = 55, X = 0  , Y = 0, Point = "CENTER"  , },
+                PvPIcon        = { Enable = false, Size = 35, X = -12, Y = 0, Point = "TOPLEFT" , },
                 Backdrop = {
                     Texture = "Solid",
                     EdgeFile = "glow",
@@ -347,9 +347,9 @@ module.defaults = {
                 Y = -200,
                 Point = "CENTER",
                 Colors = {
-                    PvPTimeText   = { r = 1  , g = 0.1, b = 0.1, a = 1     , }, 
-                    AltManaBar    = { r = 0.8, g = 0.8, b = 0.8, t = "Type", }, 
-                    ClassPowerBar = { r = 1  , g = 1  , b = 1  , t = "Type", }, 
+                    PvPTimeText   = { r = 1  , g = 0.1, b = 0.1, a = 1     , },
+                    AltManaBar    = { r = 0.8, g = 0.8, b = 0.8, t = "Type", },
+                    ClassPowerBar = { r = 1  , g = 1  , b = 1  , t = "Type", },
                 },
                 Fonts = {
                     PvPTime =       { Name = "vibroceb",  Size = 12, Flag = "NONE",    },
