@@ -467,25 +467,7 @@ end
 
 function module:OnInitialize()
 	LUI:RegisterModule(module)
-	
 end
-
---[[
-function module:WorldMapSpecialHandling()
-	local tooltip = WorldMapTooltip.BackdropFrame
-	LUI:Print(tooltip:GetName(), tooltip:GetDebugName())
-	tooltip:SetBackdrop({
-		bgFile = Media:Fetch("background", db.Textures.backgroundTex),
-		edgeFile = Media:Fetch("border", db.Textures.borderTex),
-		edgeSize = db.Textures.borderSize, tile = false,
-		insets = {left = 0, right = 0, top = 0, bottom = 0, }
-	})
-	if not module:IsHooked(tooltip, "OnShow") then
-		module:HookScript(tooltip, "OnShow", "OnTooltipShow")
-	end
-	tooltip:SetBackdropColor(module:Color("Background"))
-	tooltip:SetBackdropBorderColor(module:Color("Border"))
-end--]]
 
 function module:OnEnable()
 	db = module:GetDB()

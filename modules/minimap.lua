@@ -6,7 +6,7 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:NewModule("Minimap")
 local L = LUI.L
 local db
@@ -30,7 +30,7 @@ local COORD_FORMAT_LIST = {
 }
 
 -- local variables
-local MINIMAP_SIZE = 140      -- Base size for the minimap, based on default minimap.
+--local MINIMAP_SIZE = 140      -- Base size for the minimap, based on default minimap.
 local minimapShape = "ROUND"  -- Shape of the minimap, used for GetMinimapShape() community api.
 local oldDefault = {}         -- Keep information on default minimap
 
@@ -187,7 +187,8 @@ function module:SetMinimap()
 	minimapZone:SetPoint("TOPLEFT", Minimap, 2, -2)
 	minimapZone:SetPoint("TOPRIGHT",Minimap, -2. -2)
 
-	local minimapZoneText = module:SetFontString(minimapZone, "LUIMinimapZoneText", "Minimap", "Overlay", "CENTER", "MIDDLE")
+	local minimapZoneText = module:SetFontString(minimapZone, "LUIMinimapZoneText", "Minimap",
+	                                                "Overlay", "CENTER", "MIDDLE")
 	minimapZoneText:SetPoint("CENTER", 0, 0)
 	minimapZoneText:SetHeight(db.Fonts.Minimap.Size)
 	minimapZoneText:SetWidth(minimapZone:GetWidth()-6)	--Why 6?
@@ -202,7 +203,8 @@ function module:SetMinimap()
 	minimapCoord:SetSize(40, 20)
 	minimapCoord:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 2, 2)
 
-	local minimapCoordText = module:SetFontString(minimapCoord, "LUIMinimapCoordText", "Minimap", "Overlay", "LEFT", "MIDDLE")
+	local minimapCoordText = module:SetFontString(minimapCoord, "LUIMinimapCoordText", "Minimap",
+	                                                "Overlay", "LEFT", "MIDDLE")
 	minimapCoordText:SetPoint("LEFT", -1, 0)
 	minimapCoordText:SetText("00,00")
 
@@ -388,16 +390,20 @@ function module:LoadOptions()
 	local options = {
 		Header = module:NewHeader(MINIMAP_LABEL, 1),
 		General = module:NewGroup(L["Settings"], 2, nil, nil, {
-			alwaysShowText = module:NewToggle(L["Minimap_AlwaysShowText_Name"], L["Minimap_AlwaysShowText_Desc"], 1, "ToggleMinimapText"),
-			showTextures = module:NewToggle(L["Minimap_ShowTextures_Name"], L["Minimap_ShowTextures_Desc"], 2, "ToggleMinimapTextures"),
-			coordPrecision = module:NewSlider(L["Minimap_CoordPrecision_Name"], L["Minimap_CoordPrecision_Desc"], 4, 0, 2, 1),
+			alwaysShowText = module:NewToggle(L["Minimap_AlwaysShowText_Name"], L["Minimap_AlwaysShowText_Desc"],
+			                                    1, "ToggleMinimapText"),
+			showTextures = module:NewToggle(L["Minimap_ShowTextures_Name"], L["Minimap_ShowTextures_Desc"],
+			                                    2, "ToggleMinimapTextures"),
+			coordPrecision = module:NewSlider(L["Minimap_CoordPrecision_Name"], L["Minimap_CoordPrecision_Desc"],
+			                                    4, 0, 2, 1),
 			LineBreak = module:NewLineBreak(9),
 			Minimap = module:NewColorMenu(L["Minimap_BorderColor_Name"], 10, true, "SetColors"),
 		}),
 		Position = module:NewGroup(L["Position"], 3, nil, nil, {
 			Position = module:NewPosition(L["Position"], 1, true, "SetMinimapSize"),
 			Point = module:NewSelect(L["Anchor"], nil, 2, LUI.Points, nil, "SetMinimapSize"),
-			Scale = module:NewSlider(L["Minimap_Scale_Name"], L["Minimap_Scale_Desc"], 5, 0.5, 2.5, 0.25, true, "SetMinimapSize"),
+			Scale = module:NewSlider(L["Minimap_Scale_Name"], L["Minimap_Scale_Desc"],
+			                            5, 0.5, 2.5, 0.25, true, "SetMinimapSize"),
 		}),
 	}
 	return options

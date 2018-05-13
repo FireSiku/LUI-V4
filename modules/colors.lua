@@ -3,7 +3,7 @@
 -- Also, possibly the CUSTOM_CLASS_COLOR implementation
 
 -- Addon building reference.
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:NewModule("Colors")
 local L = LUI.L
 local db
@@ -43,7 +43,7 @@ module.defaults = {
 			SHAMAN =      { r = 0.04, g = 0.39, b = 0.98, },
 			WARLOCK =     { r = 0.57, g = 0.22, b = 1,    },
 			WARRIOR =     { r = 1,    g = 0.78, b = 0.55, },
-			DEMONHUNTER = { r = 0.65, g = 0.2,  b = 0.8   }, 
+			DEMONHUNTER = { r = 0.65, g = 0.2,  b = 0.8   },
 
 			-- Faction Colors
 			Alliance =  { r = 0, g = 0.6, b = 1,   },
@@ -59,29 +59,29 @@ module.defaults = {
 			Honored =    { r = 0,   g = 0.6, b = 0.1, },
 			Revered =    { r = 0,   g = 0.6, b = 0.1, },
 			Exalted =    { r = 0,   g = 0.6, b = 0.1, },
-			
+
 			-- Resources
-			MANA           = { r = 0.12, g = 0.58, b = 0.89, }, 
-			RAGE           = { r = 0.69, g = 0.31, b = 0.31, }, 
-			FOCUS          = { r = 0.65, g = 0.63, b = 0.35, }, 
-			ENERGY         = { r = 0.95, g = 0.86, b = 0.16, }, 
-			RUNIC_POWER    = { r = 0   , g = 0.82, b = 1   , }, 
-			RUNES          = { r = 0.55, g = 0.57, b = 0.61, }, 
-			FUEL           = { r = 0   , g = 0.55, b = 0.5 , }, 
-			COMBO_POINTS   = { r = 0.95, g = 0.86, b = 0.16, }, 
-			ARCANE_CHARGES = { r = 0.12, g = 0.58, b = 0.89, }, 
-			HOLY_POWER     = { r = 0.9 , g = 0.88, b = 0.06, }, 
-			SOUL_SHARDS    = { r = 0.57, g = 0.22, b = 1   , }, 
-			CHI            = { r = 0   , g = 1   , b = 0.59, }, 
-			STAGGER_LOW    = { r = 052 , g = 1   , b = 0.52, }, 
-			STAGGER_MED    = { r = 1   , g = 0.97, b = 0.72, }, 
-			STAGGER_HIGH   = { r = 1   , g = 0.42, b = 0.42, }, 
-			LUNAR_POWER    = { r = 0.3 , g = 0.52, b = 0.9 , }, 
-			MAELSTROM      = { r = 0.04, g = 0.39, b = 0.98, }, 
-			PAIN           = { r = 1   , g = 0.61, b = 0   , }, 
-			INSANITY       = { r = 0.4 , g = 0   , b = 0.8 , }, 
-			FURY           = { r = 0.79, g = 0.26, b = 0.99, }, 
-			
+			MANA           = { r = 0.12, g = 0.58, b = 0.89, },
+			RAGE           = { r = 0.69, g = 0.31, b = 0.31, },
+			FOCUS          = { r = 0.65, g = 0.63, b = 0.35, },
+			ENERGY         = { r = 0.95, g = 0.86, b = 0.16, },
+			RUNIC_POWER    = { r = 0   , g = 0.82, b = 1   , },
+			RUNES          = { r = 0.55, g = 0.57, b = 0.61, },
+			FUEL           = { r = 0   , g = 0.55, b = 0.5 , },
+			COMBO_POINTS   = { r = 0.95, g = 0.86, b = 0.16, },
+			ARCANE_CHARGES = { r = 0.12, g = 0.58, b = 0.89, },
+			HOLY_POWER     = { r = 0.9 , g = 0.88, b = 0.06, },
+			SOUL_SHARDS    = { r = 0.57, g = 0.22, b = 1   , },
+			CHI            = { r = 0   , g = 1   , b = 0.59, },
+			STAGGER_LOW    = { r = 052 , g = 1   , b = 0.52, },
+			STAGGER_MED    = { r = 1   , g = 0.97, b = 0.72, },
+			STAGGER_HIGH   = { r = 1   , g = 0.42, b = 0.42, },
+			LUNAR_POWER    = { r = 0.3 , g = 0.52, b = 0.9 , },
+			MAELSTROM      = { r = 0.04, g = 0.39, b = 0.98, },
+			PAIN           = { r = 1   , g = 0.61, b = 0   , },
+			INSANITY       = { r = 0.4 , g = 0   , b = 0.8 , },
+			FURY           = { r = 0.79, g = 0.26, b = 0.99, },
+
 			--Gradient
 			Good =   { r = 0,   g = 1,   b = 0,   },
 			Medium = { r = 1,   g = 1,   b = 0,   },
@@ -243,10 +243,10 @@ end
 module.order = 3 -- Makes Colors parts of the "core" options at the top.
 
 function module:RefreshClassColors()
-	--Nothing happens currently, as we don't alter class colors. 
-	
+	--Nothing happens currently, as we don't alter class colors.
+
 	--Callback functions that needs to know
-	for id, func in pairs(colorCallback) do
+	for id_, func in pairs(colorCallback) do
 		func()
 	end
 end
@@ -277,7 +277,8 @@ function module:LoadOptions()
 				SHAMAN = module:NewColor(classL["SHAMAN"], nil, 11, nil, "RefreshClassColors"),
 				WARLOCK = module:NewColor(classL["WARLOCK"], nil, 12, nil, "RefreshClassColors"),
 				WARRIOR = module:NewColor(classL["WARRIOR"], nil, 13, nil, "RefreshClassColors"),
-				--Note: Blizzard seems to be shifting toward using POWER_TYPE_NAME for the strings, but havent converted all of them to it yet.
+				--Note: Blizzard seems to be shifting toward using POWER_TYPE_NAME for the strings,
+				--      but havent converted all of them to it yet.
 				PrimaryHeader = module:NewHeader(L["Color_Primary"], 21),
 				MANA = module:NewColor(POWER_TYPE_MANA, nil, 22),
 				RAGE = module:NewColor(RAGE, nil, 23),

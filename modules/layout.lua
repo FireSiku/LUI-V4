@@ -8,10 +8,10 @@
 
 -- Todo: Redesign this page.
 
-local addonName, LUI = ...
+local _, LUI = ...
 
 local module = LUI:NewModule("Layout") -- Create module
-local db, layoutDB
+local layoutDB
 local L = LUI.L
 
 --local NS = LibStub("LibSerialize")
@@ -40,7 +40,6 @@ function module:OnInitialize()
 end
 
 function module:OnEnable()
-	db = module.db.profile
 	layoutDB = module.db.global.layouts
 end
 
@@ -52,7 +51,7 @@ local layoutText = ""
 local layoutTextNameFormat = L["Layout_TextLength"]
 
 local function deepcopy(orig)
-    local orig_type = type(orig)
+    --local orig_type = type(orig)
     local copy
     if type(orig) == 'table' then
         copy = {}
@@ -135,7 +134,7 @@ function LUI:SaveLayout(layoutName, layoutDesc, layoutAuthor)
 		},
 	}
 
-	
+
 	--Check that the CommonStrings are loaded.
 	if not LUI.CommonStrings then LUI:GenerateCommonStrings() end
 
@@ -151,8 +150,8 @@ function LUI:SaveLayout(layoutName, layoutDesc, layoutAuthor)
 			else
 				layoutTable[name] = deepcopy(module.db.profile)
 			end
-			if (not disableOptimize) then 
-				ModuleColorsToString(layoutTable[name]) 
+			if (not disableOptimize) then
+				ModuleColorsToString(layoutTable[name])
 			end
 		end
 	end
@@ -169,7 +168,7 @@ function LUI:SaveLayout(layoutName, layoutDesc, layoutAuthor)
 	layoutText = one
 end
 
-function LUI:LoadLayout(layoutName)
+function LUI:LoadLayout(layoutName_)
 
 	--ResetProfileHere
 	local one = LibCE:Decode(layoutText)
@@ -196,11 +195,11 @@ function module:LoadOptions()
 	local options = {
 		Header = { name = L["Layout_Name"], type = "header", order = 1, },
 		SaveLayout = module:NewExecute(L["Layout_SaveLayout_Name"], L["Layout_SaveLayout_Desc"], 2,
-					function(info)
+					function(info_)
 						LUI:SaveLayout("Test", "Siku", "Default Layout")
 					end),
 		LoadLayout = module:NewExecute(L["Layout_LoadLayout_Name"], L["Layout_LoadLayout_Desc"], 3,
-					function(info)
+					function(info_)
 						LUI:LoadLayout()
 					end),
 		LayoutString = {

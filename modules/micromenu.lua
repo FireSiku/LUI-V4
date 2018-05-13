@@ -1,18 +1,17 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:NewModule("Micromenu")
 local L = LUI.L
 local db
 
-local unpack = unpack
 local format = format
 
 -- Local variables
 local microStorage = {}
 
--- List of buttons, starting from the right. 
+-- List of buttons, starting from the right.
 local microList = {
 	"Bags",  -- Setting should be first, but textures not ready yet
 	"Settings",
@@ -79,7 +78,7 @@ function module:HookAlertFrame(name, anchor)
 	local alertFrameBg    = _G[name.."MicroButtonAlertBg"]
 	local alertFrameArrow = _G[name.."MicroButtonAlertArrow"]
 	local alertFrameGlow  = _G[name.."MicroButtonAlertGlow"]
-	
+
 	alertFrame:ClearAllPoints()
 	alertFrame:SetPoint("TOP", anchor, "BOTTOM", 0, -12)
 	alertFrameBg:SetGradientAlpha("VERTICAL", r/4, g/4, b/4, 1, 0, 0, 0, 1)
@@ -134,8 +133,9 @@ function module:SetSettings(button)
 			LUI:Open()
 		end
 	end)
-	
-	--TODO: Lets not use hungry OnUpdate handlers for the Clicker's alpha, make a function to easily hook frames OnShow/OnHide
+
+	--TODO: Lets not use hungry OnUpdate handlers for the Clicker's alpha.
+	--      Make a function to easily hook frames OnShow/OnHide
 	--Due to LUI Options having no name, we cant use a simple hook, to remove when we find elegant fix.
 	button.clicker:SetScript("OnUpdate", function(self)
 		if self.Hover then return end
@@ -150,7 +150,7 @@ end
 function module:SetBags(button)
 	button.title = L["Bags_Name"]
 	button.left = L["MicroBags_Any"]
-	button.clicker:SetScript("OnClick", function(self, btn)
+	button.clicker:SetScript("OnClick", function(self, btn_)
 		ToggleAllBags()
 	end)
 	--Adjust for wide clicker
@@ -163,18 +163,18 @@ end
 function module:SetStore(button)
 	button.title = L["MicroStore_Name"]
 	button.left = L["MicroStore_Any"]
-	button.clicker:SetScript("OnClick", function(self, btn)
+	button.clicker:SetScript("OnClick", function(self, btn_)
 		ToggleStoreUI()
 	end)
 end
 
 function module:SetCollections(button)
-	button.title = L["MicroCollect_Name"] 
+	button.title = L["MicroCollect_Name"]
 	button.left = L["MicroCollect_Any"]
-	button.clicker:SetScript("OnClick", function(self, btn)
+	button.clicker:SetScript("OnClick", function(self, btn_)
 		ToggleCollectionsJournal()
 	end)
-	
+
 	module:HookAlertFrame("Collections", button)
 end
 
@@ -196,12 +196,12 @@ function module:SetLFG(button)
 end
 
 function module:SetEJ(button)
-	button.title = L["MicroEJ_Name"] 
+	button.title = L["MicroEJ_Name"]
 	button.left = L["MicroEJ_Any"]
-	button.clicker:SetScript("OnClick", function(self, btn)
+	button.clicker:SetScript("OnClick", function(self, btn_)
 		ToggleEncounterJournal()
 	end)
-	
+
 	module:HookAlertFrame("EJ", button)
 end
 
@@ -210,8 +210,8 @@ function module:SetPVP(button)
 	button.title = L["MicroPVP_Name"]
 	button.left = L["MicroPVP_Any"]
 	button.level = PVP_LEVEL_REQ
-	
-	button.clicker:SetScript("OnClick", function(self, btn)
+
+	button.clicker:SetScript("OnClick", function(self, btn_)
 		TogglePVPUI()
 	end)
 end
@@ -220,7 +220,7 @@ function module:SetGuild(button)
 	button.title = L["MicroGuild_Name"]
 	button.left = L["MicroGuild_Left"]
 	button.right = L["MicroGuild_Right"]
-	
+
 	button.clicker:SetScript("OnClick", function(self, btn)
 		if btn == "RightButton" then
 			ToggleFriendsFrame()
@@ -240,7 +240,7 @@ end
 function module:SetQuests(button)
 	button.title = L["MicroQuest_Name"]
 	button.left = L["MicroQuest_Any"]
-	button.clicker:SetScript("OnClick", function(self, btn)
+	button.clicker:SetScript("OnClick", function(self, btn_)
 		module:TogglePanel(WorldMapFrame)
 	end)
 end
@@ -248,7 +248,7 @@ end
 function module:SetAchievements(button)
 	button.title = L["MicroAch_Name"]
 	button.left = L["MicroAch_Any"]
-	button.clicker:SetScript("OnClick", function(self, btn)
+	button.clicker:SetScript("OnClick", function(self, btn_)
 		ToggleAchievementFrame()
 	end)
 end
@@ -257,18 +257,18 @@ function module:SetTalents(button)
 	button.title = L["MicroTalents_Name"]
 	button.left = L["MicroTalents_Any"]
 	button.level = TALENT_LEVEL_REQ
-	button.clicker:SetScript("OnClick", function(self, btn)
+	button.clicker:SetScript("OnClick", function(self, btn_)
 		TalentFrame_LoadUI()
 		module:TogglePanel(PlayerTalentFrame)
 	end)
-	
+
 	module:HookAlertFrame("Talent", button)
 end
 
 function module:SetSpellbook(button)
 	button.title = L["MicroSpell_Name"]
 	button.left = L["MicroSpell_Any"]
-	button.clicker:SetScript("OnClick", function(self, btn)
+	button.clicker:SetScript("OnClick", function(self, btn_)
 		module:TogglePanel(SpellBookFrame)
 	end)
 end
@@ -276,7 +276,7 @@ end
 function module:SetPlayer(button)
 	button.title = L["MicroPlayer_Name"]
 	button.left = L["MicroPlayer_Any"]
-	button.clicker:SetScript("OnClick", function(self, btn)
+	button.clicker:SetScript("OnClick", function(self, btn_)
 		module:TogglePanel(CharacterFrame)
 	end)
 	--Adjust for wide clicker
@@ -312,7 +312,7 @@ function module:SetMicromenuAnchors()
 			previousAnchor = button
 		end
 	end
-	
+
 	local point = "TOP"..db.Direction
 	module.background:ClearAllPoints()
 	module.background:SetPoint(point, firstAnchor, point)
@@ -320,18 +320,18 @@ function module:SetMicromenuAnchors()
 end
 
 function module:SetMicromenu()
-	local r, g, b, a = module:AlphaColor("Micromenu")
-	
+	local r, g, b, a_ = module:AlphaColor("Micromenu")
+
 	-- Note: V3 micromenu_anchor refers to the arrow that open/close the menu. NOT an actual anchor point.
 	-- micromenu_button seems to points to the background behind the buttons.
-	
+
 	--Reusable backdrop table
 	local clickerBackdrop = {
 		bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
 		edgeFile = nil, tile = false, tileSize = 0, edgeSize = 1,
 		insets = {left = 0, right = 0, top = 0, bottom = 0}
 	}
-	
+
 	--Create reusable functions for OnEnter/OnLeave
 	local function OnEnterFunc(self)
 		self:SetAlpha(1)
@@ -346,13 +346,13 @@ function module:SetMicromenu()
 		end
 		GameTooltip:Show()
 	end
-	
+
 	local function OnLeaveFunc(self)
 		self:SetAlpha(0)
 		self.Hover = nil
 		GameTooltip:Hide()
 	end
-	
+
 	--Create Micromenu background
 	local background = CreateFrame("Frame", "LUIMicromenu_Background", UIParent)
 	background:SetBackdrop({
@@ -365,19 +365,19 @@ function module:SetMicromenu()
 	background:SetBackdropColor(module:AlphaColor((db.ColorMatch) and "Micromenu" or "Background"))
 	background:SetBackdropBorderColor(0, 0, 0, 0)
 	module.background = background
-	
+
 	--Create Micromenu buttons
 	for i = 1, #microList do
 		local name = microList[i]
 		local button = CreateFrame("Frame", "LUIMicromenu_"..name, UIParent)
 		button:SetSize(TEXTURE_SIZE_WIDTH, TEXTURE_SIZE_HEIGHT)
-		
+
 		button.tex = button:CreateTexture(nil, "ARTWORK")
 		button.tex:SetAllPoints()
 		button.tex:SetTexture(format(TEXTURE_PATH_FORMAT,strlower(name)))
 		button.tex:SetTexCoord(LUI:GetCoordAtlas("MicroBtn_Default"))
 		button.tex:SetVertexColor(r, g, b)
-		
+
 		-- Make a button for the clickable area of the texture with black background.
 		button.clicker = CreateFrame("Button", nil, button)
 		button.clicker:SetSize(TEXTURE_CLICK_WIDTH , TEXTURE_CLICK_HEIGHT)
@@ -388,12 +388,12 @@ function module:SetMicromenu()
 		button.clicker:SetAlpha(0)
 		--Push down the clicker frame so it doesn't go above the texture.
 		button.clicker:SetFrameLevel(button:GetFrameLevel()-1)
-		
+
 		-- See if there's a function for per-button instructions.
 		if module["Set"..name] then
 			module["Set"..name](self, button)
 		end
-		
+
 		--Add generic OnEnter/OnLeave using information from the functions.
 		button.clicker:SetScript("OnEnter", OnEnterFunc)
 		button.clicker:SetScript("OnLeave", OnLeaveFunc)
@@ -413,9 +413,9 @@ function module:Refresh()
 	module:SetAlertFrameColors("EJ")
 	module:SetAlertFrameColors("Talent")
 	module:SetAlertFrameColors("Collections")
-	
+
 	module.background :SetBackdropColor(module:AlphaColor((db.ColorMatch) and "Micromenu" or "Background"))
-	local r, g, b, a = module:AlphaColor("Micromenu")
+	local r, g, b, a_ = module:AlphaColor("Micromenu")
 	for i = 1, #microList do
 		local button = microStorage[microList[i]]
 		button.tex:SetVertexColor(r, g, b)
@@ -423,12 +423,12 @@ function module:Refresh()
 end
 
 function module:LoadOptions()
-	local dropDirections = { 
-		LEFT = L["Point_Left"], 
+	local dropDirections = {
+		LEFT = L["Point_Left"],
 		RIGHT = L["Point_Right"],
 	}
 	local colorMatchHide = function() return db.ColorMatch end
-	
+
 	local options = {
 		Header = module:NewHeader(L["Micro_Name"], 1),
 		HideShop = module:NewToggle("Hide Blizzard Store", nil, 2, "SetMicromenuAnchors"),
@@ -436,7 +436,8 @@ function module:LoadOptions()
 		PositionHeader = module:NewHeader(L["Position"], 4),
 		Position = module:NewPosition(L["Micro_Name"], 5, true, "SetMicromenuAnchors"),
 		Point = module:NewSelect(L["Anchor"], nil, 6, LUI.Points, nil, "SetMicromenuAnchors"),
-		Direction = module:NewSelect(L["MicroOptions_Direction_Name"], L["MicroOptions_Direction_Desc"], 7, dropDirections, nil, "SetMicromenuAnchors"),
+		Direction = module:NewSelect(L["MicroOptions_Direction_Name"], L["MicroOptions_Direction_Desc"],
+		                             7, dropDirections, nil, "SetMicromenuAnchors"),
 		ColorHeader = module:NewHeader(L["Colors"], 10),
 		ColorMatch = module:NewToggle(L["MicroOptions_ColorMatch_Name"], L["MicroOptions_ColorMatch_Desc"] , 11, "Refresh"),
 		Micromenu = module:NewColorMenu(L["Micro_Name"], 12, true, "Refresh"),

@@ -5,7 +5,7 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:NewModule("Auras")
 local L = LUI.L
 local db
@@ -173,8 +173,9 @@ function Header:ChildCreated(child)
 	for k, v in pairs(template) do
 		child[k] = v
 	end
-	
-	child.normalTexture:SetDrawLayer("BORDER") -- technically this is the border (the child.border texture is for the colored borders around debuffs and weapon enchants)
+	-- technically this is the border. Probably could change that.
+	-- the child.border texture is for the colored borders around debuffs and weapon enchants
+	child.normalTexture:SetDrawLayer("BORDER")
 	
 	child:SetProperties(true)
 end
@@ -231,7 +232,7 @@ function Aura:GetNextUpdate(seconds)
 end
 
 function Aura:OnUpdate(elapsed)
-	--Make sure it only updates once per 
+	--Make sure it only updates once per
 	if self.nextUpdate then
 		self.remaining = self.remaining - elapsed
 		if self.remaining > self.nextUpdate then return end
@@ -243,7 +244,8 @@ end
 function Aura:Update(...)
 	local name, _, icon, count, dispelType, duration, expires, caster = UnitAura(...)
 	-- Blizzard has a bug with SecureAuraHeaders that causes extra aura buttons to sometimes be shown
-	-- It occurs when the consolidation or tempEnchants are shown, an extra button gets added to the end of the list for each one shown
+	-- It occurs when the consolidation or tempEnchants are shown, an extra button gets added
+	-- to the end of the list for each one shown
 	if not name then
 		return
 	end

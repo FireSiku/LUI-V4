@@ -3,7 +3,7 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:NewModule("Experience Bar")
 local L = LUI.L
 local db
@@ -26,7 +26,7 @@ local UnitXPMax = UnitXPMax
 local UnitXP = UnitXP
 
 --Defaults
-module.defaults = {   
+module.defaults = {
 	profile = {
 		Width = 475,
 		Height = 12,
@@ -48,7 +48,7 @@ module.defaults = {
 			Reputation = { r = 0.2,  g = 0.2,  b = 0.2,  a = 1,   t = "Class", },
 			Artifact =   { r = 0.18, g = 0.18, b = 0.18, a = 0.8, t = "Class", },
 			Honor =      { r = 0.18, g = 0.18, b = 0.18, a = 0.8, t = "Class", },
-			Text =       { r = 1, g = 1, b = 1, }, 
+			Text =       { r = 1, g = 1, b = 1, },
 		},
 		Fonts = {
 			Text = { Name = "Prototype", Size = 13, Flag = "NONE" },
@@ -81,12 +81,11 @@ local MAX_LEVEL = 110
 function module:UpdateBarMode()
 	local level = UnitLevel("player")
 	local mult = db.BGMultiplier
-	local r, g, b = 0, 0, 0
-	
+
 	-- Reset the bars' visibility
 	module.ExpBar:Show()
 	module.ExpBar2:Show()
-	
+
 	-- Bar1
 	-- XP Bar, Rep at level cap if watched, Honor if tracked.
 	if level < MAX_LEVEL and not IsXPUserDisabled() then
@@ -106,10 +105,10 @@ function module:UpdateBarMode()
 		module.ExpBar.mode = "Experience"
 		module.ExpBar:Hide()
 	end
-	r, g, b = module:Color(module.ExpBar.mode)
+	local r, g, b = module:Color(module.ExpBar.mode)
 	module.ExpBar:SetStatusBarColor(r, g, b)
 	module.ExpBar.bg:SetVertexColor(r * mult, g * mult, b * mult)
-	
+
 	-- Bar2
 	-- Artifact Power if an artifact is equipped, Rep if tracked under level cap.
 	if HasArtifactEquipped() then
@@ -127,12 +126,12 @@ function module:UpdateBarMode()
 	r, g, b = module:Color(module.ExpBar2.mode)
 	module.ExpBar2:SetStatusBarColor(r, g, b)
 	module.ExpBar2.bg:SetVertexColor(r * mult, g * mult, b * mult)
-	
+
 	-- Adjust their size/anchor based on visibility.
 	local shown1 = module.ExpBar:IsShown()
 	local shown2 = module.ExpBar2:IsShown()
 	local halfWidth = (db.Width - db.Spacing) * 0.5
-	
+
 	if not shown1 and not shown2 then
 		--Both hidden, do nothing
 		return
@@ -175,19 +174,19 @@ function module:UpdateRepBar(bar)
 	local name, standing, barMin, barMax, barValue, factionID = GetWatchedFactionInfo()
 	local repText = SHORT_REPUTATION_NAMES[standing]
 	local percentBar
-	
+
 	--If name is nil, it shouldn't be in Rep Bar Mode.
 	if not name then
 		module:UpdateBarMode()
 		return
 	end
-	
-	-- Blizzard store reputation in an interesting way. 
+
+	-- Blizzard store reputation in an interesting way.
 	-- barMin represents the minimum bound for the current standing, barMax represents the maximum bound.
 	-- For example, barMin for revered is 21000 (3000+6000+12000 from Neutral to Honored), barMax is 42000.
 	-- To get a 0 / 21000 representation, we have to reduce all three values by barMin.
 	-- Patch 7.2 changed barMin to be equal to barMax at Exalted, so we need to handle that.
-	
+
 	if C_Reputation.IsFactionParagon(factionID) and barMin == barMax then
 		barMin, barValue, barMax, percentBar, repText = module:GetParagonValues(factionID)
 	elseif barMin == barMax then
@@ -214,12 +213,12 @@ end
 function module:GetParagonValues(factionID)
 	-- Blizzard also stores Paragon in an interesting way.
 	-- currentValue is the total amount of paragon a character accrued.
-	-- Need to remove threshold value out of currentValue for every reward already received. 
+	-- Need to remove threshold value out of currentValue for every reward already received.
 	local currentValue, rewardThreshold, _,  rewardPending = C_Reputation.GetFactionParagonInfo(factionID)
-	
+
 	currentValue = (currentValue - rewardThreshold) % rewardThreshold
 	local percentBar = currentValue * 100 / rewardThreshold
-	
+
 	if rewardPending then
 		-- If there's a reward pending, the bar should be full, adjust percent value to be above 100%
 		-- Also lets register for quest turn in to know when the reward isn't pending anymore.
@@ -234,7 +233,7 @@ end
 function module:UpdateAPBar(bar)
 	local _, _, _, _, totalXP, pointsSpent, _, _, _, _, _, _, tier = C_ArtifactUI.GetEquippedArtifactInfo()
     local numPoints, xp, xpNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(pointsSpent, totalXP, tier)
-	
+
 	local percentBar = xp * 100 / xpNextPoint
 	bar:SetMinMaxValues(0, xpNextPoint)
 	bar:SetValue(xp)
@@ -254,7 +253,7 @@ function module:UpdateHonorBar(bar)
 	local honorMax = UnitHonorMax("player")
 	local honorLevel = UnitHonorLevel("player")
 	local honorLevelMax = GetMaxPlayerHonorLevel()
-	
+
 	local percentBar
 	--If honor is level capped, show a full bar.
 	if honorLevel == honorLevelMax then
@@ -283,31 +282,31 @@ function module:CreateBar(name)
 	bg:SetTexture(module:FetchStatusBar("ExpBar"))
 	bg:SetAllPoints(bar)
 	bar.bg = bg
-	
+
 	local text = module:SetFontString(bar, name.."Text", "Text", "OVERLAY", "LEFT")
 	text:SetShadowColor(0,0,0)
 	text:SetShadowOffset(1.25, -1.25)
 	text:SetPoint("RIGHT", bar, "RIGHT", db.TextX, db.TextY)
 	text:SetTextColor(module:Color("Text"))
 	bar.text = text
-	
+
 	bar:Show()
 	return bar
 end
 
 function module:SetBar()
-	
+
 	local anchor = CreateFrame("Frame", "LUI_ExpBarAnchor", UIParent)
 	anchor:SetPoint(db.Point, UIParent, db.RelativePoint, db.X, db.Y)
 	anchor:SetSize(db.Width, db.Height)
 	module.anchor = anchor
-	
+
 	module.ExpBar = module:CreateBar("LUI_ExpBar")
 	module.ExpBar2 = module:CreateBar("LUI_ExpBar2")
-	
+
 	module.ExpBar:SetAllPoints(anchor)
 	--module.ExpBar2:SetPoint("BOTTOM", anchor, "TOP", 0, 2)
-	
+
 	module:UpdateBarMode()
 end
 
@@ -319,13 +318,13 @@ module.enableButton = true
 function module:RefreshColors()
 	local mult = db.BGMultiplier
 	-- Bar 1
-	local r, g, b = module:Color(module.ExpBar.mode)
-	module.ExpBar:SetStatusBarColor(r, g, b)
-	module.ExpBar.bg:SetVertexColor(r * mult, g * mult, b * mult)
+	local r1, g1, b1 = module:Color(module.ExpBar.mode)
+	module.ExpBar:SetStatusBarColor(r1, g1, b1)
+	module.ExpBar.bg:SetVertexColor(r1 * mult, g1 * mult, b1 * mult)
 	-- Bar 2
-	local r, g, b = module:Color(module.ExpBar.mode)
-	module.ExpBar:SetStatusBarColor(r, g, b)
-	module.ExpBar.bg:SetVertexColor(r * mult, g * mult, b * mult)
+	local r2, g2, b2 = module:Color(module.ExpBar.mode)
+	module.ExpBar:SetStatusBarColor(r2, g2, b2)
+	module.ExpBar.bg:SetVertexColor(r2 * mult, g2 * mult, b2 * mult)
 end
 
 function module:Refresh()
@@ -333,16 +332,16 @@ function module:Refresh()
 end
 
 function module:LoadOptions()
-	--local showRestedMeta = {disabledTooltip = "Not Implemented Yet", setfunc = "Refresh"} 
-	local modeList = { 
+	--local showRestedMeta = {disabledTooltip = "Not Implemented Yet", setfunc = "Refresh"}
+	local modeList = {
 		Auto = L["ExpBar_Mode_Auto"],
-		Experience = L["ExpBar_Mode_Experience"], 
-		Reputation = L["ExpBar_Mode_Reputation"], 
-		Artifact = L["ExpBar_Mode_Artifact"], 
-		Honor = L["ExpBar_Mode_Honor"], 
-		None = L["ExpBar_Mode_None"] 
+		Experience = L["ExpBar_Mode_Experience"],
+		Reputation = L["ExpBar_Mode_Reputation"],
+		Artifact = L["ExpBar_Mode_Artifact"],
+		Honor = L["ExpBar_Mode_Honor"],
+		None = L["ExpBar_Mode_None"]
 	}
-	
+
 	local options = {
 		Header = module:NewHeader(L["ExpBar_Name"], 1),
 		Settings = module:NewGroup(L["Settings"], 2, nil, nil, {
@@ -350,8 +349,10 @@ function module:LoadOptions()
 			ShowText = module:NewToggle(L["ExpBar_Options_ShowText"] , nil, 3, "Refresh", "normal"),
 			Precision = module:NewSlider(L["Precision"], nil, 4, 0, 3, 1, false, "Refresh"),
 			Spacing = module:NewSlider(L["Spacing"], L["ExpBar_Options_Spacing_Desc"], 5, 0, 20, 1, false, "Refresh"),
-			Mode1 = module:NewSelect(format(L["ExpBar_Options_BarMode_Format"], 1), L["ExpBar_Options_BarMode_Desc"], 6, modeList, nil, "Refresh"),
-			Mode2 = module:NewSelect(format(L["ExpBar_Options_BarMode_Format"], 2), L["ExpBar_Options_BarMode_Desc"], 6, modeList, nil, "Refresh"),
+			Mode1 = module:NewSelect(format(L["ExpBar_Options_BarMode_Format"], 1), L["ExpBar_Options_BarMode_Desc"],
+			                            6, modeList, nil, "Refresh"),
+			Mode2 = module:NewSelect(format(L["ExpBar_Options_BarMode_Format"], 2), L["ExpBar_Options_BarMode_Desc"],
+			                            6, modeList, nil, "Refresh"),
 			PositionHeader = module:NewHeader(L["Position"], 10),
 			Position = module:NewPosition(L["ExpBar_Name"], 11, true, "Refresh"),
 			Point = module:NewSelect(L["Anchor"], nil, 12, LUI.Points, nil, "Refresh"),
@@ -361,7 +362,8 @@ function module:LoadOptions()
 		}),
 		Textures = module:NewGroup(L["Textures"], 3, nil, nil, {
 			ColorHeader = module:NewHeader(L["Colors"], 20),
-			BGMultiplier = module:NewSlider(L["API_BGMultiplier"], L["API_BGMultiplier_Desc"], 21, 0, 1, 0.05, true, "RefreshColors"),
+			BGMultiplier = module:NewSlider(L["API_BGMultiplier"], L["API_BGMultiplier_Desc"],
+			                                    21, 0, 1, 0.05, true, "RefreshColors"),
 			LineBreak = module:NewLineBreak(21.5),
 			Experience = module:NewColorMenu(L["ExpBar_Mode_Experience"], 22, true, "RefreshColors"),
 			Reputation = module:NewColorMenu(L["ExpBar_Mode_Reputation"], 23, true, "RefreshColors"),
@@ -369,7 +371,7 @@ function module:LoadOptions()
 			Honor = module:NewColorMenu(L["ExpBar_Mode_Honor"], 25, true, "RefreshColors"),
 		}),
 	}
-		
+
 	return options
 end
 
@@ -380,7 +382,7 @@ end
 function module:OnEnable()
 	db = module:GetDB()
 	module:SetBar()
-	--Note: Kinda greedy event listeners. If tracking rep, it would check for rep again when you gain exp. 
+	--Note: Kinda greedy event listeners. If tracking rep, it would check for rep again when you gain exp.
 	module:RegisterEvent("PLAYER_XP_UPDATE", "UpdateBarMode")
 	module:RegisterEvent("ARTIFACT_UPDATE", "UpdateBarMode")
 	module:RegisterEvent("ARTIFACT_XP_UPDATE", "UpdateBarMode")

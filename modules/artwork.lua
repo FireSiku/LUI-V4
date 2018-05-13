@@ -1,13 +1,13 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:NewModule("Panels")
 local L = LUI.L
 local db
 
 --Defaults
-module.defaults = {   
+module.defaults = {
 	profile = {
 		Textures = {
 			ChatBG = {
@@ -101,9 +101,9 @@ module.defaults = {
 
 
 local TEX_MODE_SELECT = {
-	L["Panels_TexMode_LUI"], 
-	L["Panels_TexMode_CustomLUI"], 
-	L["Panels_TexMode_Custom"], 
+	L["Panels_TexMode_LUI"],
+	L["Panels_TexMode_CustomLUI"],
+	L["Panels_TexMode_Custom"],
 }
 
 local PRESET_LUI_TEXTURES = {
@@ -117,7 +117,9 @@ local PRESET_LUI_TEXTURES = {
 	["bar_top.tga"] = L["Panels_Tex_Bar_Top"],
 }
 
--- Table to keep info about preset textures. First four are tex coords (Left, Right, Up, Down), next two are Width/Length of the visible texture.
+-- Table to keep info about preset textures.
+-- First four are tex coords (Left, Right, Up, Down)
+-- next two are Width/Length of the visible texture.
 local LUI_TEXTURES_INFO = {
 	["left_border.tga"] =         {20/1024,  595/1024, 231/512, 492/512, 575, 261},
 	["left_border_back.tga"] =    {20/1024,  595/1024, 231/512, 492/512, 575, 261},
@@ -163,7 +165,7 @@ function PanelMixin:GetTexCoord()
 
 	local hFlip = self.db.HorizontalFlip
 	local vFlip = self.db.VerticalFlip
-	
+
 	if hFlip and vFlip then
 		--Flip Horizontally and Vertically
 		return right, left, down, up
@@ -201,7 +203,7 @@ end
 
 function module:CreateNewPanel(name, db)
 	local panel = CreateFrame("Frame", "LUIPanel_"..name, UIParent)
-	
+
 	local tex = panel:CreateTexture(nil, "BACKGROUND")
 	tex:SetPoint("TOPLEFT", panel, "TOPLEFT")
 	tex:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT")
@@ -209,7 +211,7 @@ function module:CreateNewPanel(name, db)
 	panel.name = name
 	panel.tex = tex
 	panel.db = db
-	
+
 	--Add the mixin
 	for k, v in pairs(PanelMixin) do
 		panel[k] = v
@@ -229,7 +231,7 @@ function module:setPanels()
 	end)
 
 	for name, db in pairs(module:GetDB().Textures) do
-		local frame = module:CreateNewPanel(name, db)
+		local frame_ = module:CreateNewPanel(name, db)
 	end
 end
 
@@ -246,13 +248,13 @@ local function GetOptionTexCoords(info) return setPanels[info[#info-1]]:GetTexCo
 local function GetOptionImageTexture(info) return setPanels[info[#info-1]]:GetTexture() end
 local function RefreshPanel(info) return setPanels[info[#info-1]]:Refresh() end
 
--- LUI preset textures have their tex coords provided. 
+-- LUI preset textures have their tex coords provided.
 local function IsCustomTexCoordsHidden(info)
 	return PRESET_LUI_TEXTURES[setPanels[info[#info-1]].db.Texture]
 end
 
 -- Due to the way the Panel DB is handled, it needs its own get/set
-function module:PanelGetter(info, ...)
+function module:PanelGetter(info)
 	local panel = setPanels[info[#info-1]]
 	local optionName = info[#info]
 	local value = panel.db[optionName]
@@ -261,12 +263,12 @@ function module:PanelGetter(info, ...)
 	return value
 end
 
-function module:PanelSetter(info, value, ...)
+function module:PanelSetter(info, value)
 	-- Make sure not to save a number as a string
 	if tonumber(value) then
 		value = tonumber(value)
 	end
-	
+
 	local panel = setPanels[info[#info-1]]
 	local optionName = info[#info]
 
@@ -289,19 +291,21 @@ function module:NewPanelOptionGroup(name, order)
 	}
 	return module:NewGroup(name, order, nil, nil, "PanelGetter", "PanelSetter", {
 		TexHead = module:NewHeader(L["Texture"], 1),
-		ImageDesc = { 
+		ImageDesc = {
 			type = "description", name = " ", order = 2, image = GetOptionImageTexture,
 			imageWidth = 256, imageHeight = 128, imageCoords = GetOptionTexCoords,
 		},
 		TexMode = module:NewSelect(L["Panels_Options_Category"], nil, 3, TEX_MODE_SELECT),
 		Texture = module:NewInput(L["Texture"], L["Panels_Options_Texture_Desc"], 4, nil, nil, nil, IsTextureInputHidden),
-		TextureSelect = module:NewSelect(L["Panels_Options_TextureSelect"], L["Panels_Options_TextureSelect_Desc"], 4, PRESET_LUI_TEXTURES, nil, texSelectMeta, nil, nil, IsTextureSelectHidden),
+		TextureSelect = module:NewSelect(L["Panels_Options_TextureSelect"], L["Panels_Options_TextureSelect_Desc"],
+		                                4, PRESET_LUI_TEXTURES, nil, texSelectMeta, nil, nil, IsTextureSelectHidden),
 		LineBreak1 = module:NewLineBreak(5),
 		Anchored = module:NewToggle(L["Panels_Options_Anchored"], L["Panels_Options_Anchored_Desc"], 6, nil, "normal"),
 		Parent = module:NewInput(L["Parent"], L["Panels_Options_Parent_Desc"], 7, nil, nil, IsAnchorParentDisabled),
 		HorizontalFlip = module:NewToggle(L["Panels_Options_HorizontalFlip"], L["Panels_Options_HorizontalFlip_Desc"], 8),
 		VerticalFlip = module:NewToggle(L["Panels_Options_VerticalFlip"], L["Panels_Options_VerticalFlip_Desc"], 9),
-		CustomTexCoords = module:NewToggle(L["Panels_Options_CustomTexCoords"], L["Panels_Options_CustomTexCoords_Desc"], 10, nil, nil, nil, IsCustomTexCoordsHidden),
+		CustomTexCoords = module:NewToggle(L["Panels_Options_CustomTexCoords"], L["Panels_Options_CustomTexCoords_Desc"],
+		                                    10, nil, nil, nil, IsCustomTexCoordsHidden),
 		Left = module:NewInput(L["Point_Left"], nil, 11, nil, "half", nil, IsTexCoordsHidden),
 		Right = module:NewInput(L["Point_Right"], nil, 12, nil, "half", nil, IsTexCoordsHidden),
 		Up = module:NewInput(L["Point_Up"], nil, 13, nil, "half", nil, IsTexCoordsHidden),
@@ -327,11 +331,11 @@ module.childGroups = "tree"
 function module:NewPanel(info)
 	--Do not create new panel if the entry is nil or already exists
 	if not nameInput or nameInput:trim() == "" then return end
-	if tContains(module.panelList, nameInput) then 
-		module:ModPrint("A panel by that name already exists") 
-		return 
+	if tContains(module.panelList, nameInput) then
+		module:ModPrint("A panel by that name already exists")
+		return
 	end
-	
+
 	local panelDB =  db.Textures[nameInput]
 	--Set the order so that, in theory, order values do not overlap.
 	panelDB.Order = #module.panelList+1
@@ -339,11 +343,11 @@ function module:NewPanel(info)
 
 	-- Create and show the new panel
 	module:CreateNewPanel(nameInput, panelDB)
-	
+
 	-- Update options
 	info.options.args[info[#info-1]].args[nameInput] = module:NewPanelOptionGroup(nameInput, panelDB.Order)
 	LUI:RefreshOptionsPanel()
-	
+
 	module:ModPrint("Created new panel:", nameInput)
 end
 
@@ -353,21 +357,28 @@ function module:DeletePanel(info)
 	table.remove(module.panelList, panelSelect)
 	_G["LUIPanel_"..panelName]:Hide()
 	db.Textures[panelName] = nil
-	
+
 	info.options.args[info[#info-1]].args[panelName] = nil
 	LUI:RefreshOptionsPanel()
 	module:ModPrint("Deleted panel:", panelName)
 end
 
 function module:LoadOptions()
-	local nameInputMeta = { get = function(info) return nameInput end, set = function(info, value) nameInput = value end}
-	local panelSelectMeta = { get = function(info) return panelSelect end, set = function(info, value) panelSelect = value end}
+	local nameInputMeta = {
+		get = function(info_) return nameInput end,
+		set = function(info_, value) nameInput = value end
+	}
+	local panelSelectMeta = {
+		get = function(info_) return panelSelect end,
+		set = function(info_, value) panelSelect = value end
+	}
 	local options = {
 		Header = module:NewHeader(L["Panels_Name"], 1),
 		nameInput = module:NewInput(L["Panels_Options_InputName"], "", 2, nameInputMeta),
 		NewPanel = module:NewExecute(L["Panels_Options_NewPanel"], nil, 3, "NewPanel"),
 		LineBreak = module:NewLineBreak(4),
-		SelectDelete = module:NewSelect(L["Panels_Options_PanelSelect"], L["Panels_Options_PanelSelect_Desc"], 5, module.panelList, nil, panelSelectMeta),
+		SelectDelete = module:NewSelect(L["Panels_Options_PanelSelect"], L["Panels_Options_PanelSelect_Desc"],
+		                                    5, module.panelList, nil, panelSelectMeta),
 		DeletePanel = module:NewExecute(L["Panels_Options_DeletePanel"], nil, 6, "DeletePanel"),
 	}
 	for i = 1, #module.panelList do
@@ -375,7 +386,7 @@ function module:LoadOptions()
 		local panelDB = db.Textures[panelName]
 		options[panelName] = module:NewPanelOptionGroup(panelName, panelDB.Order)
 	end
-	
+
 	return options
 end
 

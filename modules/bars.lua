@@ -6,11 +6,10 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:NewModule("Bars")
 module.conflicts = "Bartender4"
 local L = LUI.L
-local db
 
 --Defaults
 module.defaults = {
@@ -60,7 +59,7 @@ function module:SetBars()
 		edgeSize = 5,
 	})
 	for i = 1, 12 do
-		button = _G["ActionButton"..i]
+		local button = _G["ActionButton"..i]
 		button:SetParent(ActionBar1)
 		button:ClearAllPoints()
 		if i == 1 then
@@ -108,7 +107,6 @@ function module:OnInitialize()
 end
 
 function module:OnEnable()
-	db = module:GetDB()
 	module:SetBars()
 end
 

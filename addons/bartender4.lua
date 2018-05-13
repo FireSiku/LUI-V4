@@ -1,14 +1,13 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Addons")
 local element = module:NewElement("Bartender4")
 local L = LUI.L
-local db
 
 --Defaults
-element.defaults = {   
+element.defaults = {
 	profile = {
 		Enable = true, -- Placeholder
 	},
@@ -32,6 +31,16 @@ function element:CenterBarTemplate(id, yOffset)
 	configBar[id].position.x = -243
 	configBar[id].position.y = yOffset
 	configBar[id].position.point = "BOTTOM"
+end
+
+function element:SetupNamespace(name, point, x, y, scale, padding, rows)
+	local config = Bartender4.db:GetNamespace(name).profile
+	config.position.point = point
+	config.position.x = x
+	config.position.y = y
+	config.scale = scale
+	config.padding = padding
+	config.rows = rows
 end
 
 function element:Install()
@@ -59,25 +68,9 @@ function element:Install()
 	configBar[10].enabled = false
 	
 	-- Move the Pet bar and Extra Action to the side.
-	local config = Bartender4.db:GetNamespace("PetBar").profile
-	config.position.point = "BOTTOMRIGHT"
-	config.position.x = -195
-	config.position.y = 295
-	config.scale = 1
-	config.padding = 2
-	config.rows = 2
-	
-	local config = Bartender4.db:GetNamespace("ExtraActionBar").profile
-	config.position.point = "BOTTOMRIGHT"
-	config.position.x = -285
-	config.position.y = 295
-	config.scale = 1
-	
-	local config = Bartender4.db:GetNamespace("Vehicle").profile
-	config.position.point = "BOTTOMRIGHT"
-	config.position.x = -355
-	config.position.y = 295
-	config.scale = 1
+	element:SetupNamespace("PetBar", "BOTTOMRIGHT", -195, 295, 1, 2, 2)
+	element:SetupNamespace("ExtraActionBar", "BOTTOMRIGHT", -285, 295, 1)
+	element:SetupNamespace("Vehicle", "BOTTOMRIGHT", -355, 295, 1)
 	
 	-- Disable some modules
 	element:DisableMod("BagBar")
@@ -87,7 +80,7 @@ function element:Install()
 	element:DisableMod("RepBar")
 	element:DisableMod("XPBar")
 	
-	--[[ Preset Example from Bartender4 
+	--[[ Preset Example from Bartender4
 	config = Bartender4.db:GetNamespace("ActionBars").profile
 	config.actionbars[1].padding = 6
 	SetBarLocation( config.actionbars[1], "BOTTOM", -256, 41.75 )

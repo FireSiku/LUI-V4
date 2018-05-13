@@ -9,6 +9,7 @@ exclude_files = {
 ignore = {
 	"113", -- Accessing global variable. Placeholder while I fill the custom globals.
 	"12.", -- ignore "Setting a read-only global variable/Setting a read-only field of a global variable."
+	"43.", -- Shadowed upvalues happens often when writing scripts or trying to work with another module.
 	"542", -- disable warnings for empty if branches. These are useful sometime and easy to notice otherwise.
 	"611", -- disable "line contains only whitespace"
 	"21./.*_", -- disable unused warnings for variables ending with _
@@ -21,10 +22,11 @@ std = "+LUI+Ace+WoW"
 
 --PrintTooltips
 
--- Globals set or defined by LUI.
+-- Globals set or defined by LUI. Most of these are for debug purposes and should be
+-- either refactored or removed before the big release.
 stds["LUI"] = {
 	globals = {
-		"LUI", "PrintTooltips",
+		"LUI", "PrintTooltips", "GFind", "GFindValue", "GFindCTables", "GetMinimapShape",
     }
 }
 
@@ -38,6 +40,6 @@ stds["Ace"] = {
 -- Most of the FrameXML related globals
 stds["WoW"] = {
 	globals = {
-		"StaticPopupDialogs",
+		"StaticPopupDialogs", "MainMenuBarArtFrame", "MainMenuBar",
     }
 }
