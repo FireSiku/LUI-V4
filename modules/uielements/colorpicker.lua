@@ -1,8 +1,7 @@
 -- Color Picker UI Element. Adds a few feature to the color picker to make it more accurate.
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("UI Elements")
 local element = module:NewModule("ColorPicker", "AceHook-3.0")
-local db
 
 --Element Variables
 local ColorTextBoxes = { "R", "G", "B", "A"}
@@ -14,7 +13,7 @@ local editingText
 
 
 function element:OnEnable()
-	db = module.db.profile.ColorPicker
+	--local db = module.db.profile.ColorPicker
 	
 	element:HookScript(ColorPickerFrame, "OnShow", "ColorPickerFrameShow")
 	element:HookScript(ColorPickerFrame, "OnColorSelect", "ColorPickerFrameColorSelect")
@@ -60,7 +59,7 @@ function element:OnEnable()
 	CopyColorSwatch:SetPoint("LEFT", ColorSwatch, "LEFT")
 	CopyColorSwatch:SetPoint("TOP", ColorPickerPaste, "BOTTOM", 0, -5)
 	
-	--Opacity Slider is hooked to the ColorSwatch, so we have to readjust it. 
+	--Opacity Slider is hooked to the ColorSwatch, so we have to readjust it.
 	--DEV: Removed CopyColor anchor as it felt undeeded, adjusted other point for same result.
 	OpacitySliderFrame:ClearAllPoints();
 	OpacitySliderFrame:SetPoint("RIGHT", ColorPickerFrame, "RIGHT", -35, 26);
@@ -107,7 +106,8 @@ function element:OnEnable()
 	ColorPickerFrame:EnableKeyboard(false)
 end
 
-function element:ColorPickerFrameShow(self) -- self: ColorPickerFrame
+ -- self: ColorPickerFrame
+function element.ColorPickerFrameShow(self)
 	OldColorSwatch:SetColorTexture(self:GetColorRGB())
 	element:UpdateColorTexts()
 	
@@ -120,7 +120,7 @@ function element:ColorPickerFrameShow(self) -- self: ColorPickerFrame
 	end
 end
 
---See if those are truly needed) 
+--See if those are truly needed)
 function element:ColorPickerFrameColorSelect()
 	if not editingText then element:UpdateColorTexts() end
 end
@@ -128,7 +128,7 @@ function element:OpacitySliderFrameValueChanged()
 	if not editingText then element:UpdateColorTexts() end
 end
 
-function element:ColorPickerCopyClick(btn)
+function element:ColorPickerCopyClick(btn_)
 	colorBuffer.r,  colorBuffer.g, colorBuffer.b = ColorPickerFrame:GetColorRGB()
 	
 	ColorPickerPaste:Enable()
@@ -139,7 +139,7 @@ function element:ColorPickerCopyClick(btn)
 	colorBuffer.a = ColorPickerFrame.hasOpacity and OpacitySliderFrame:GetValue() or nil
 end
 
-function element:ColorPickerPasteClick(btn)
+function element:ColorPickerPasteClick(btn_)
 	ColorPickerFrame:SetColorRGB(colorBuffer.r, colorBuffer.g, colorBuffer.b)
 	ColorSwatch:SetColorTexture(colorBuffer.r, colorBuffer.g, colorBuffer.b)
 	

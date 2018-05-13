@@ -1,20 +1,20 @@
 -- This module handle various UI Elements by LUI or Blizzard.
 -- It's an umbrella module to consolidate the many, many little UI changes that LUI does
---	that do not need a full module for themselves. 
+--	that do not need a full module for themselves.
 
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:NewModule("UI Elements", "AceHook-3.0")
 local db
 
-local NUM_OBJECTIVE_HEADERS = 3
+--local NUM_OBJECTIVE_HEADERS = 3
 
-local origInfo = {}
+--local origInfo = {}
 
 --Defaults
-module.defaults = {   
+module.defaults = {
 	profile = {
 		ObjectiveTracker = {
 			OffsetX = -90,
@@ -91,7 +91,8 @@ function module:SetObjectiveFrame()
 	end
 	if db.ObjectiveTracker.ManagePosition then
 		module:SecureHook("ObjectiveTracker_Update", function()
-			ObjectiveTrackerFrame:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", db.ObjectiveTracker.OffsetX, db.ObjectiveTracker.OffsetY)
+			ObjectiveTrackerFrame:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT",
+			                                db.ObjectiveTracker.OffsetX, db.ObjectiveTracker.OffsetY)
 		end)
 	end
 end
@@ -99,22 +100,6 @@ end
 ------------------------------------------------------
 -- / FRAMEWORK FUNCTIONS / --
 ------------------------------------------------------
-
---[[Taken from Minimap
-function module:LoadOptions()
-	local options = {
-		Header = module:NewHeader(MINIMAP_LABEL, 1),
-		General = module:NewGroup(L["Settings"], 2, nil, nil, {
-			alwaysShowText = module:NewToggle(L["Minimap_AlwaysShowText_Name"], L["Minimap_AlwaysShowText_Desc"], 1, "ToggleMinimapText"),
-			showTextures = module:NewToggle(L["Minimap_ShowTextures_Name"], L["Minimap_ShowTextures_Desc"], 2, "ToggleMinimapTextures"),
-			coordPrecision = module:NewSlider(L["Minimap_CoordPrecision_Name"], L["Minimap_CoordPrecision_Desc"], 4, 0, 2, 1),
-			Scale = module:NewSlider(L["Minimap_Scale_Name"], L["Minimap_Scale_Desc"], 5, 0.5, 2.5, 0.25, true, "SetMinimapSize"),
-			Minimap = module:NewColorMenu(L["Minimap_BorderColor_Name"], 10, true, "SetColors"),
-		}),
-	}
-	return options
-end
---]]
 
 function module:Refresh()
 	module:SetHiddenFrames()
@@ -128,7 +113,8 @@ function module:LoadOptions()
 	end
 	local options = {
 		Header = module:NewHeader("UI Elements", 1),
-		--Note: Displaying a tree group inside of a tree group just results in collapsable entries instead of displaying two tree lists.
+		--Note: Displaying a tree group inside of a tree group just results in collapsable entries
+		--      instead of displaying two tree lists.
 		--The only way around that is to make a tab group and then have its childs be a tree list.
 		Elements = module:NewGroup("UI Elements", 2, "tree", nil, {
 			ObjectiveTracker = module:NewGroup("ObjectiveTracker", 1, nil, nil, {

@@ -1,10 +1,9 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Bags")
 local element = module:NewElement("Reagent", "AceHook-3.0", "AceEvent-3.0")
-local db
 
 local format = format
 
@@ -68,16 +67,16 @@ function Reagent:CreateUtilBar()
 	local utilBar = self.utilBar
 	
 	-- CleanUp
-	local button = module:CreateCleanUpButton("LUIReagent_CleanUp", utilBar, SortReagentBankBags)
-	utilBar:AddNewButton(button)
+	local cleanUpButton = module:CreateCleanUpButton("LUIReagent_CleanUp", utilBar, SortReagentBankBags)
+	utilBar:AddNewButton(cleanUpButton)
 
 	-- Deposit
-	local button = module:CreateSlot("LUIReagent_Deposit", utilBar)
-	button:SetScript("OnClick", function()
+	local depositButton = module:CreateSlot("LUIReagent_Deposit", utilBar)
+	depositButton:SetScript("OnClick", function()
 			PlaySound(REAGENTS_DEPOSIT_SOUND)
             DepositReagentBank()
 		end)
-	button.icon:SetTexture(REAGENTS_DEPOSIT_ICON)
+	depositButton.icon:SetTexture(REAGENTS_DEPOSIT_ICON)
 	utilBar:SetButtonTooltip(button, REAGENTBANK_DEPOSIT)
 	utilBar:AddNewButton(button)
 end
@@ -137,7 +136,7 @@ end
 local hasBankOpenBags = false
 
 local function OpenBank()
-	--TODO: Only create bank when needed. Currently doesnt work. 
+	--TODO: Only create bank when needed. Currently doesnt work.
 	--if not LUIBank then
 	--	module:CreateNewContainer("Bank", Bank)
 	--end
@@ -158,10 +157,7 @@ local function CloseBank()
 end
 
 function element:OnEnable()
-	-- We don't want the element-specific db information.
-	db = module:GetDB()
-
-	-- Create container 
+	-- Create container
 	module:CreateNewContainer("Reagent", Reagent)
 	tinsert(UISpecialFrames, "LUIReagent")
 	element:RegisterEvent("BANKFRAME_OPENED", OpenBank)

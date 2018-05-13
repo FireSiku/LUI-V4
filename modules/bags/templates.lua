@@ -1,7 +1,7 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Bags")
 
 local CLEANUP_TEXTURE_ATLAS = "bags-button-autosort-up"
@@ -16,46 +16,46 @@ local CLEANUP_SOUND = SOUNDKIT.UI_BAG_SORTING_01
 -- Note: Probably good idea to replace button with bagsSlot
 -- TODO: Clean up and make more uniform, stop relying on Blizzard API.
 function module:BagBarSlotButtonTemplate(index, id, name, parent)
-	
+
 	local button = module:CreateSlot(name, parent)
 	button.isBag = 1 -- Blizzard API support
 	button.id = id
 	button.index = index
 	button.container = parent:GetParent().name
-	
+
 	button:RegisterForDrag("LeftButton")
 	button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-	
+
 	button:SetScript("OnClick", function(self) PutItemInBag(self.inventoryID) end)
 	button:SetScript("OnLeave", function()
 		GameTooltip:Hide()
 		ResetCursor()
 	end)
-	
+
 	--Try to have as few type-specific settings as possible
 	if button.container == "Bags" then
-	
+
 		--PaperDollItemSlotButton OnLoad
 		--slotName uses id - 1 due to Bag1-4 are refered as Bag0-Bag3
 		local slotName = format("Bag%dSlot", index)
 		local inventoryID, textureName = GetInventorySlotInfo(slotName)
 		button.inventoryID = inventoryID
 		button:SetID(inventoryID)
-		
+
 		local texture = _G[name.."IconTexture"]
 		texture:SetTexture(textureName)
 		button.backgroundTextureName = textureName
-		
+
 		--Rest of BagSlotTemplate OnLoad
 		button:RegisterEvent("BAG_UPDATE_DELAYED")
 		--button:RegisterEvent("INVENTORY_SEARCH_UPDATE")
-		
+
 		button.UpdateTooltip = BagSlotButton_OnEnter
 		button.IconBorder:SetTexture("")
 		button.IconBorder:SetSize(1,1)
-		
+
 		--TODO: Remove PaperDoll calls
-		--BagSlotTemplate other events, unchecked. 
+		--BagSlotTemplate other events, unchecked.
 		button:SetScript("OnEvent", function(self, event, ...)
 			if event == "BAG_UPDATE_DELAYED" then
 				PaperDollItemSlotButton_Update(self)
@@ -64,20 +64,20 @@ function module:BagBarSlotButtonTemplate(index, id, name, parent)
 				PaperDollItemSlotButton_OnEvent(self, event, ...)
 			end
 		end)
-		-- OnShow/OnHide are just a bunch of update 
+		-- OnShow/OnHide are just a bunch of update
 		button:SetScript("OnShow", PaperDollItemSlotButton_OnShow)
 		button:SetScript("OnHide", PaperDollItemSlotButton_OnHide)
 		button:SetScript("OnDragStart", function(self) PickupBagFromSlot(self.inventoryID) end)
 		button:SetScript("OnReceiveDrag", function(self) PutItemInBag(self.inventoryID) end)
 		button:SetScript("OnEnter", BagSlotButton_OnEnter)
-	elseif button.container == "Bank" then	
+	elseif button.container == "Bank" then
 		button:SetID(id-4)
 
 		button.GetInventorySlot = ButtonInventorySlot;
 		button.UpdateTooltip = BankFrameItemButton_OnEnter
 		button.inventoryID = button:GetInventorySlot()
-		
-		button:SetScript("OnEvent", function(self, event, ...)
+
+		button:SetScript("OnEvent", function(self, event)
 			if event == "BAG_UPDATE_DELAYED" then
 				module:BankBagButtonUpdate(self)
 			end
@@ -89,34 +89,34 @@ function module:BagBarSlotButtonTemplate(index, id, name, parent)
 		button:SetScript("OnDragStart", BankFrameItemButtonBag_Pickup)
 		button:SetScript("OnReceiveDrag", BankFrameItemButtonBag_OnClick)
 		button:SetScript("OnEnter", BankFrameItemButton_OnEnter)
-		
+
 		button:SetScript("OnShow", function(self)
 			module:BankBagButtonUpdate(self)
 		end)
-		
+
 		--BankFrameItemButton_Update(button)
 		module:BankBagButtonUpdate(button)
 		BankFrameItemButton_UpdateLocked(button)
 		button.tooltipText = button.tooltipText or ""
 	end
-	
+
 	return button
 end
 
 function module:BankBagButtonUpdate(button)
 	local texture = button.icon
 	local textureName = GetInventoryItemTexture("player", button.inventoryID)
-	local id, slotTextureName = GetInventorySlotInfo("Bag"..button.id)
-	
+	local _, slotTextureName = GetInventorySlotInfo("Bag"..button.id)
+
 	if textureName then
 		texture:SetTexture(textureName)
 	elseif slotTextureName then
-		--If no bag texture is found, show empty slot. 
+		--If no bag texture is found, show empty slot.
 		texture:SetTexture(slotTextureName)
 	end
-	
+
 	button:SetBackdropBorderColor(module:AlphaColor("Border"))
-	
+
 	texture:Show()
 end
 
@@ -143,12 +143,12 @@ function module:CreateCleanUpButton(name, parent, sortFunc)
 			GameTooltip:Show()
 		end)
 	button:SetScript("OnLeave", GameTooltip_Hide)
-	
+
 	--Adjust the icon to fit CleanUp.
 	button.icon:SetTexCoord(LUI:GetCoordAtlas("CleanUp"))
 	button.icon:SetTexture(CLEANUP_TEXTURE)
 	button.icon:SetAtlas(CLEANUP_TEXTURE_ATLAS)
-	
+
 	return button
 end
 
@@ -157,7 +157,7 @@ end
 ------------------------------------------------------
 function module:CreateSearchBar(container)
 	local db = module:GetDB()
-	
+
 	-- Search Text
 	local search = container:CreateFontString(nil, "OVERLAY", "GameFonthighlightLarge")
 	search:SetPoint("TOPLEFT", container, db.Padding, -10)
@@ -165,7 +165,7 @@ function module:CreateSearchBar(container)
 	search:SetJustifyH("LEFT")
 	search:SetText(LUI:ColorToString(SEARCH, module:Color("Search")))
 	container.searchText = search
-	
+
 	-- Search Editbox
 	local editbox = CreateFrame("EditBox", nil, container)
 	module:RefreshFontString(editbox, "Bags")
@@ -174,22 +174,22 @@ function module:CreateSearchBar(container)
 	editbox:SetHeight(32)
 	editbox:SetMaxLetters(db.RowSize * 5)
 	editbox:SetTextInsets(24, 0, 0, 0)
-	
+
 	local function UpdateSearch(self, text)
 		if text then
 			container:SearchUpdate(self:GetText())
 		end
 	end
-	
+
 	editbox:SetScript("OnEscapePressed", editbox.ClearFocus)
 	editbox:SetScript("OnEnterPressed", editbox.ClearFocus)
 	--editbox:SetScript("OnEditFocusLost", editbox.Hide)
 	--editbox:SetScript("OnEditFocusGained", editbox.HighlightText)
 	editbox:SetScript("OnTextChanged", UpdateSearch)
-	
+
 	editbox:SetAllPoints(search)
 	container.editbox = editbox
-	
+
 	-- Editbox ClearButton
 	local clear = CreateFrame("Button", nil, editbox)
 	clear:SetPoint("LEFT", search, "LEFT", 0, 0)
@@ -199,13 +199,13 @@ function module:CreateSearchBar(container)
 	texture:SetAllPoints(clear)
 	container.clear = clear
 	clear:Hide()
-	
+
 	-- Search Button, not visible but to show the editbox
 	local button = CreateFrame("Button", nil, container)
 	button:EnableMouse(1)
 	button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 	button:SetAllPoints(search)
-	
+
 	button:SetScript("OnClick", function(self, btn)
 		if btn == "RightButton" or container.editbox:IsShown() then
 			container:HideTitleBar()
@@ -216,7 +216,7 @@ function module:CreateSearchBar(container)
 	end)
 	button:SetScript("OnMouseDown", function() container:StartMovingFrame() end)
 	button:SetScript("OnMouseUp", function() container:StopMovingFrame() end)
-	
+
 	clear:SetScript("OnClick", function(self)
 		container.editbox:Hide()
 		container.clear:Hide()

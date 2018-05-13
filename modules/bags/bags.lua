@@ -1,7 +1,7 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Bags")
 local element = module:NewElement("Bags")
 local Media = LibStub("LibSharedMedia-3.0")
@@ -110,7 +110,7 @@ function Bags:CreateBagBar()
 	for i = 2, self.NUM_BAG_IDS do
 		local id = self.BAG_ID_LIST[i]
 		local name = format(BAG_BAGBAR_NAME_FORMAT, id)
-		-- index must starts at 0, but we start the loop at 2. 
+		-- index must starts at 0, but we start the loop at 2.
 		local bagsSlot = module:BagBarSlotButtonTemplate(i - 2, id, name, self.bagsBar)
 		self.bagsBar.slotList[i-1] = bagsSlot
 		
@@ -168,7 +168,7 @@ function element:OnEnable()
 	-- We don't want the element-specific db information.
 	db = module:GetDB()
 	
-	-- Create container 
+	-- Create container
 	module:CreateNewContainer("Bags", Bags)
 	LUIBags:CreateTitleBar()
 	tinsert(UISpecialFrames, "LUIBags")

@@ -1,10 +1,9 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Bags")
 local element = module:NewElement("Bank", "AceHook-3.0")
-local db
 
 local format = format
 
@@ -38,7 +37,7 @@ local Bank = {
 	--Constants
 	NUM_BAG_IDS = 8,
 	BAG_ID_LIST = { -1, 5, 6, 7, 8, 9, 10, 11, },
-	
+
 	-- vars
 	name = "Bank",
 }
@@ -53,29 +52,29 @@ end
 function Bank:Layout()
 	self.bagsBar:SetAnchors()
 	self.utilBar:SetAnchors()
-	
+
 	for i = 2, self.NUM_BAG_IDS do
 		local id = self.BAG_ID_LIST[i]
 		local bagSlot = _G[format(BANK_BAGBAR_NAME_FORMAT, id)]
 		module:BankBagButtonUpdate(bagSlot)
-		
+
 		local bankSlots, fullBank = GetNumBankSlots()
 		if not fullBank then
 			local cost = GetBankSlotCost()
-			
+
 			--Most recently bought bag
 			if i == bankSlots + 1 then
 				-- Set things back up to normal after a purchase
 				bagSlot:SetAlpha(1)
 				bagSlot:SetScript("OnClick", function(self) PutItemInBag(self.inventoryID) end)
 				bagSlot:UnregisterEvent("PLAYERBANKBAGSLOTS_CHANGED")
-				
+
 			-- Bag about to be purchased
 			elseif i == bankSlots + 2 then
 				bagSlot:SetAlpha(1)
 				bagSlot.icon:SetTexture(GetCoinIcon(cost))
 				bagSlot:RegisterEvent("PLAYERBANKBAGSLOTS_CHANGED")
-				
+
 				-- Add the Click-To-Purchase option.
 				bagSlot:SetScript("OnClick", function(self)
 					LUIBank.bankCost = cost
@@ -89,10 +88,10 @@ function Bank:Layout()
 					GameTooltip:AddLine(COSTS_LABEL.." "..GetMoneyString(cost))
 					GameTooltip:Show()
 				end)
-				bagSlot:SetScript("OnLeave", function() 
+				bagSlot:SetScript("OnLeave", function()
 					GameTooltip_Hide()
 				end)
-			
+
 			-- Unpurchased bags
 			elseif i > bankSlots + 2 then
 				bagSlot:SetAlpha(.2)
@@ -105,22 +104,22 @@ function Bank:Layout()
 end
 
 function Bank:NewItemSlot(id, slot)
-	
+
 	if self.itemList[id] and self.itemList[id][slot] then
 		return self.itemList[id][slot]
 	end
-	
+
 	local name = format(BANK_SLOT_NAME_FORMAT, id, slot)
 	local template = (id == -1) and BANK_SLOT_MAIN_TEMPLATE or BANK_SLOT_TEMPLATE
 	local itemSlot = module:CreateSlot(name, self.bagList[id], template)
-	
+
 	-- id/slot info is a pain to get through template's means, make it easier
 	itemSlot.id = id
 	itemSlot.slot = slot
 	-- SetID refers to the slot number within the bag, used by template's functions.
 	itemSlot:SetID(slot)
 	itemSlot:Show()
-	
+
 	--Set properties
 	self:SetItemSlotProperties(itemSlot)
 	return itemSlot
@@ -131,17 +130,17 @@ function Bank:CreateBagBar()
 	for i = 2, self.NUM_BAG_IDS do
 		local id = self.BAG_ID_LIST[i]
 		local name = format(BANK_BAGBAR_NAME_FORMAT, id)
-		-- index must starts at 0, but we start the loop at 2. 
+		-- index must starts at 0, but we start the loop at 2.
 		local bagsSlot = module:BagBarSlotButtonTemplate(i - 2, id, name, self.bagsBar)
 		self.bagsBar.slotList[i-1] = bagsSlot
-		
+
 		bagsSlot:Show()
-	end	
+	end
 end
 
 function Bank:CreateUtilBar()
 	local utilBar = self.utilBar
-	
+
 	--CleanUp
 	local button = module:CreateCleanUpButton("LUIBank_CleanUp", utilBar, SortBankBags)
 	utilBar:AddNewButton(button)
@@ -164,11 +163,11 @@ end
 local hasBankOpenBags = false
 
 local function OpenBank()
-	--TODO: Only create bank when needed. Currently doesnt work. 
+	--TODO: Only create bank when needed. Currently doesnt work.
 	--if not LUIBank then
 	--	module:CreateNewContainer("Bank", Bank)
 	--end
-	
+
 	if not LUIBags:IsShown() then
 		hasBankOpenBags = true
 		LUIBags:Open()
@@ -185,10 +184,7 @@ local function CloseBank()
 end
 
 function element:OnEnable()
-	-- We don't want the element-specific db information.
-	db = module:GetDB()
-
-	-- Create container 
+	-- Create container
 	module:CreateNewContainer("Bank", Bank)
 	tinsert(UISpecialFrames, "LUIBank")
 	module:RegisterEvent("BANKFRAME_OPENED", OpenBank)

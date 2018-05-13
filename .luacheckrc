@@ -26,7 +26,8 @@ std = "+LUI+Ace+WoW"
 -- either refactored or removed before the big release.
 stds["LUI"] = {
 	globals = {
-		"LUI", "PrintTooltips", "GFind", "GFindValue", "GFindCTables", "GetMinimapShape", "oUF_LUI"
+		"LUI", "PrintTooltips", "GFind", "GFindValue", "GFindCTables", "GetMinimapShape", "oUF_LUI",
+		"LUIBank", "LUIReagents", "LUIBags",
     }
 }
 

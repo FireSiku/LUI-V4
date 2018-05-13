@@ -1,9 +1,9 @@
---[[ File: Bags\Container.lua, contains core of bags module. 
+--[[ File: Bags\Container.lua, contains core of bags module.
 
-This file contains the basic of the Bags module, and the Container prototype, that will be used to make bag frames. 
+This file contains the basic of the Bags module, and the Container prototype, that will be used to make bag frames.
 Keep as geneneric as possible to allow possible expansions. (Guild Bank, Void Storage)
 
-Container Members: 
+Container Members:
 - type - Type of container, ie: Bags, Bank
 - name - Frame name for the container
 - idList - Table containing a list of Bag ID for the container
@@ -15,7 +15,7 @@ Container Members:
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:NewModule("Bags", "AceHook-3.0")
 local Media = LibStub("LibSharedMedia-3.0")
 local L = LUI.L
@@ -26,7 +26,7 @@ local GetContainerNumFreeSlots = GetContainerNumFreeSlots
 local CreateFrame = CreateFrame
 
 -- Constants
-local BACKPACK_TOOLTIP = BACKPACK_TOOLTIP
+--local BACKPACK_TOOLTIP = BACKPACK_TOOLTIP
 
 local BUTTON_SLOT_TEMPLATE = "ItemButtonTemplate"
 local BAG_UPDATE_TIME = 0.05
@@ -164,25 +164,25 @@ function ContainerMixin:Layout()
 		local bagCount = GetContainerNumSlots(id)
 		if bagCount > 0 then
 			self.bagList[id]:Show()
-			for i = 1, bagCount do
+			for j = 1, bagCount do
 				-- The item slots will be anchored later on.
-				itemList[i] = self:NewItemSlot(id, i)
-				self:SlotUpdate(itemList[i])
-				itemList[i]:Show()
+				itemList[j] = self:NewItemSlot(id, j)
+				self:SlotUpdate(itemList[j])
+				itemList[j]:Show()
 			end
 		end
-		
+
 		--If there are more itemSlots than bagCount, hide them.
 		--This way, we can reuse frames, instead of creating new ones
-		for i = bagCount + 1, #itemList do
-			if itemList[i] then
-				itemList[i]:Hide()
+		for j = bagCount + 1, #itemList do
+			if itemList[j] then
+				itemList[j]:Hide()
 			end
 		end
 	end
-	
+
 	self:SetAnchors()
-	
+
 	-- Update Search Results if searching
 	if self.editbox:IsShown() then
 		self:SearchUpdate()
@@ -191,25 +191,25 @@ end
 
 function ContainerMixin:SetBagsProperties()
 	--local bagsBar = self.BagsBar
-	
+
 	-- Set Position
 	local position = db.Position[self.name] or {}
 	self:SetPoint("CENTER", UIParent, "BOTTOMLEFT", position.X or 0, position.Y or 0)
-	
+
 	self.forceRefresh = true
 	module:Refresh()
-	
+
 	-- TODO: Integrate SetBagFonts into this
 end
 
 function ContainerMixin:NewBagInfo(id)
 	-- If the ID has already been created, return it
 	if self.bagList[id] then return self.bagList[id] end
-	
+
 	--Create the frame
 	local bagFrame = CreateFrame("Frame", self:GetName()..id, self)
 	bagFrame:SetID(id)
-	
+
 	return bagFrame
 end
 
@@ -220,7 +220,7 @@ function ContainerMixin:SetItemSlotProperties(itemSlot)
 	--Make it easy to fetch Cooldown information
 	itemSlot.cooldown = _G[itemSlot:GetName() .. "Cooldown"]
 	itemSlot.cooldown:Show()
-	
+
 	--Update backdrop
 	itemSlot:SetBackdrop(module.itemBackdrop)
 	itemSlot:SetBackdropColor(module:AlphaColor("ItemBackground"))
@@ -229,7 +229,7 @@ end
 function ContainerMixin:SlotUpdate(itemSlot)
 	local id, slot = itemSlot.id, itemSlot.slot
 	local texture, count, locked, quality = GetContainerItemInfo(id, slot)
-	
+
 	-- Default Border when items are locked.
 	if not itemSlot.lock then
 		itemSlot:SetBackdropBorderColor(module:AlphaColor("Border"))
@@ -238,13 +238,13 @@ function ContainerMixin:SlotUpdate(itemSlot)
 			itemSlot:SetBackdropBorderColor(module:AlphaColor("Professions"))
 		end
 	end
-	
+
 	-- Add the cooldown to our item slots.
 	if itemSlot.cooldown then
 		local start, duration, enable = GetContainerItemCooldown(id, slot)
 		CooldownFrame_Set(itemSlot.cooldown, start, duration, enable)
 	end
-	
+
 	-- New item code from Blizzard's ContainerFrame.lua
 	local newItemTexture = itemSlot.NewItemTexture
 	local battlePayTexture = itemSlot.BattlepayItemTexture
@@ -282,7 +282,7 @@ function ContainerMixin:SlotUpdate(itemSlot)
 		battlePayTexture:SetSize(itemSlot:GetSize())
 		newItemTexture:SetSize(itemSlot:GetSize())
 	end
-	
+
 	-- Quest Item code from Blizzard's ContainerFrame.lua
 	local questTexture = _G[itemSlot:GetName().."IconQuestTexture"]
 	if questTexture then
@@ -298,15 +298,15 @@ function ContainerMixin:SlotUpdate(itemSlot)
 			questTexture:Hide()
 		end
 	end
-	
+
 	-- Color Border according to quality
 	local itemLink = GetContainerItemLink(id, slot)
 	if itemLink then
 		-- Do not use earlier quality var, GetContainerInfo returns inacurate information for unusable items.
 		-- Store the name and quality for easy searching and border coloring.
-		local name, _, quality = GetItemInfo(itemLink)
+		local name, _, itemQuality = GetItemInfo(itemLink)
 		itemSlot.name = name
-		itemSlot.quality = quality
+		itemSlot.quality = itemQuality
 
 		self:SetItemSlotBorderColor(itemSlot)
 	else
@@ -314,11 +314,11 @@ function ContainerMixin:SlotUpdate(itemSlot)
 		itemSlot.name = nil
 		itemSlot.quality = nil
 	end
-	
+
 	SetItemButtonTexture(itemSlot, texture)
 	SetItemButtonCount(itemSlot, count)
 	SetItemButtonDesaturated(itemSlot, locked, 0.5, 0.5, 0.5)
-	
+
 	itemSlot:Show()
 end
 
@@ -330,8 +330,8 @@ function ContainerMixin:SetItemSlotBorderColor(itemSlot)
 	end
 end
 
-function ContainerMixin:ItemLockUpdate(event, id, slot)
-	if not slot or not self:IsValidID(id) or not self.itemList[id][slot] then 
+function ContainerMixin:ItemLockUpdate(event_, id, slot)
+	if not slot or not self:IsValidID(id) or not self.itemList[id][slot] then
 		return
 	end
 	self:SlotUpdate(self.itemList[id][slot])
@@ -339,14 +339,14 @@ end
 
 function ContainerMixin:BagUpdateEvent(idList)
 	if not self.itemList then return end
-	
+
 	-- HACK: Whenever a bag is changed, BAG_UPDATE 0 triggers, instead of the missing bag ID.
 	-- We need to reload the frame if a 0 happens, check it individually to skip the loop.
 	if idList[0] then
 		self:Layout()
 		return
 	end
-	
+
 	for id in pairs(idList) do
 		if self:IsValidID(id) then
 			--???: This conditional never triggers, as it should, why keep it?
@@ -360,7 +360,7 @@ function ContainerMixin:BagUpdateEvent(idList)
 			end
 		end
 	end
-	
+
 	-- Update Search Results if searching
 	if self.editbox:IsShown() then
 		self:SearchUpdate()
@@ -380,16 +380,16 @@ function ContainerMixin:SetAnchors()
 	local padding = self:GetOption("Padding")
 	local spacing = self:GetOption("Spacing")
 	local rowSize = self:GetOption("RowSize")
-	
+
 	for i = 1, self.NUM_BAG_IDS do
 		local id = self.BAG_ID_LIST[i]
 		--TODO: Add Option to newline on new bag
 		-- if NewLineOnNewBag then index = 0 end
-		if self:GetOption("BagNewline") then 
+		if self:GetOption("BagNewline") then
 			index = 0
 		end
-		for i = 1, #self.itemList[id] do
-			local itemSlot = self.itemList[id][i]
+		for j = 1, #self.itemList[id] do
+			local itemSlot = self.itemList[id][j]
 			-- Make sure to clear points to prevent errors.
 			itemSlot:ClearAllPoints()
 			-- ItemSlots beyond bagCount are hidden, so we don't count them
@@ -431,13 +431,13 @@ function ContainerMixin:SetAnchors()
 			end
 		end  -- end of itemList loop for current ID
 	end -- end of itemList for the last ID
-	
-	-- Set anchors of the background frame to cover all the items. 
+
+	-- Set anchors of the background frame to cover all the items.
 	self.background:SetPoint("LEFT", lineAnchor, "LEFT", -padding, 0)
 	self.background:SetPoint("RIGHT", rightAnchor, "RIGHT", padding, 0)
 	self.background:SetPoint("BOTTOM", lineAnchor, "BOTTOM", 0, -padding)
 	self.background:SetPoint("TOP", rightAnchor, "TOP", 0, LAYOUT_OFFSET + padding)
-	-- Then set the size of the container frame to be equal to the background. 
+	-- Then set the size of the container frame to be equal to the background.
 	self:SetSize(self.background:GetWidth(), self.background:GetHeight())
 end
 
@@ -446,11 +446,11 @@ end
 ------------------------------------------------------
 function ContainerMixin:SearchUpdate(text)
 	text = strlower(text or self.editbox:GetText())
-	
+
 	for i = 1, self.NUM_BAG_IDS do
 		local id = self.BAG_ID_LIST[i]
-		for i = 1, #self.itemList[id] do
-			local itemSlot = self.itemList[id][i]
+		for j = 1, #self.itemList[id] do
+			local itemSlot = self.itemList[id][j]
 			if itemSlot and not itemSlot.name then
 				itemSlot:SetAlpha(ITEMSLOT_FILTER_ALPHA)
 			end
@@ -470,8 +470,8 @@ end
 function ContainerMixin:SearchReset()
 	for i = 1, self.NUM_BAG_IDS do
 		local id = self.BAG_ID_LIST[i]
-		for i = 1, #self.itemList[id] do
-			local itemSlot = self.itemList[id][i]
+		for j = 1, #self.itemList[id] do
+			local itemSlot = self.itemList[id][j]
 			itemSlot:SetAlpha(ITEMSLOT_NORMAL_ALPHA)
 			SetItemButtonDesaturated(itemSlot, false)
 		end
@@ -480,8 +480,8 @@ end
 ------------------------------------------------------
 -- / CONTAINER: TOOLBARS FUNCTIONS / --
 ------------------------------------------------------
--- Toolbars is the generic names for any bar that will be around the main container frame. 
--- By default, this should be the Bags Bar and the utility bar. 
+-- Toolbars is the generic names for any bar that will be around the main container frame.
+-- By default, this should be the Bags Bar and the utility bar.
 
 local ToolbarMixin = {}
 
@@ -492,7 +492,7 @@ function ToolbarMixin:SetAnchors()
 	for i = 1, #self.slotList do
 		local slot = self.slotList[i]
 		slot:ClearAllPoints()
-		
+
 		if not slot.hidden then
 			slot:Show()
 			if not previousAnchor then -- first slot
@@ -507,12 +507,12 @@ function ToolbarMixin:SetAnchors()
 			slot:Hide()
 		end
 	end
-	
+
 	self.background:SetPoint("LEFT", firstAnchor, "LEFT", -padding, 0)
 	self.background:SetPoint("TOP", firstAnchor, "TOP", 0, padding)
 	self.background:SetPoint("BOTTOM", firstAnchor, "BOTTOM", 0, -padding)
 	self.background:SetPoint("RIGHT", previousAnchor, "RIGHT", padding, 0)
-	
+
 	self:SetSize(self.background:GetWidth(), self.background:GetHeight())
 	self:Show()
 end
@@ -546,26 +546,26 @@ function ContainerMixin:CreateToolBar(name)
 	local toolBar = CreateFrame("Frame", nil, self)
 	toolBar:SetClampedToScreen(true)
 	toolBar:SetSize(1,1)
-	
+
 	local bgFrame = CreateFrame("Frame", nil, toolBar)
 	--Force it to the lowest frame level to prevent layering issues
 	bgFrame:SetFrameLevel(toolBar:GetParent():GetFrameLevel())
 	bgFrame:SetClampedToScreen(true)
-	
+
 	bgFrame:SetBackdrop(module.bagBackdrop)
 	bgFrame:SetBackdropColor(module:AlphaColor("Background"))
 	bgFrame:SetBackdropBorderColor(module:AlphaColor("Border"))
-	
+
 	toolBar.slotList = {}
 	toolBar.nextIndex = 1
 	toolBar.container = self
 	toolBar.background = bgFrame
 	self.toolbars[name] = toolBar
 	if not self[name] then self[name] = toolBar end
-	
+
 	for k, v in pairs(ToolbarMixin) do
 		toolBar[k] = v
-	end 
+	end
 end
 
 ------------------------------------------------------
@@ -579,12 +579,12 @@ function module:CreateSlot(name, parent, template)
 	button:SetSize(BAG_TEXTURE_SIZE, BAG_TEXTURE_SIZE)
 	button:SetPushedTexture("")
 	button:SetNormalTexture("")
-	
+
 	local normalTex = _G[name.."NormalTexture"]
 	if normalTex then
 		normalTex:SetSize(1,1)
 	end
-	
+
 	--Make IconTexture not clash with our backdrop
 	local iconTex = _G[name.."IconTexture"]
 	SetItemButtonTexture(button)
@@ -593,17 +593,17 @@ function module:CreateSlot(name, parent, template)
 		iconTex:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 		iconTex:SetPoint("TOPLEFT", button, 3, -3)
 		iconTex:SetPoint("BOTTOMRIGHT", button, -3, 3)
-		-- This prevent the IconTextures from appearing (partially) above our itemSlot backdrop 
+		-- This prevent the IconTextures from appearing (partially) above our itemSlot backdrop
 		iconTex:SetDrawLayer("BORDER", -1)
 		iconTex:Show()
 	end
-	
+
 	return button
 end
 
 function module:CreateNewContainer(name, obj)
 	if containerStorage[name] then return end
-	
+
 	-- Create the frame and set properties
 	local frame = CreateFrame("Frame", "LUI"..name, UIParent)
 	frame:SetFrameStrata("HIGH")
@@ -612,14 +612,14 @@ function module:CreateNewContainer(name, obj)
 	frame:SetToplevel(true)
 	frame:SetClampedToScreen(true)
 	frame:SetSize(1,1)
-	
+
 	-- Create Background frame
 	local bgFrame = CreateFrame("Frame", nil, frame)
-	--When Bags and Bank are opened at the same time, there is overlap happening. FIgure a better way to fix it. 
+	--When Bags and Bank are opened at the same time, there is overlap happening. FIgure a better way to fix it.
 	bgFrame:SetFrameLevel(frame:GetParent():GetFrameLevel()+1)
 	bgFrame:SetClampedToScreen(true)
 	frame.background = bgFrame
-	
+
 	-- Add Close Button
 	local closeBtn = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
 	closeBtn:SetSize(32,32)
@@ -627,12 +627,12 @@ function module:CreateNewContainer(name, obj)
 	closeBtn:RegisterForClicks("AnyUp")
 	closeBtn:SetScript("OnClick", function() frame:Close() end)
 	frame.closeButton = closeBtn
-	
+
 	-- Add reference tables
 	frame.toolbars = {} -- Used to store BagBar and such
-	
+
 	-- More Robust Embedding system. It will embed things from the given object.
-	-- Then Container contains the shared code, hook it to existing functions or embed it. 
+	-- Then Container contains the shared code, hook it to existing functions or embed it.
 	for k, v in pairs(obj) do
 		frame[k] = v
 	end
@@ -642,26 +642,26 @@ function module:CreateNewContainer(name, obj)
 		else
 			frame[k] = v
 		end
-	end 
+	end
 	--Add AceBucket to the Container to process bag updates.
 	LibStub("AceBucket-3.0"):Embed(frame)
-	
+
 	--Set up scripts
 	frame:SetScript("OnShow", frame.OnShow)
 	frame:SetScript("OnHide", frame.OnHide)
 	frame:SetScript("OnMouseDown", frame.StartMovingFrame)
 	frame:SetScript("OnMouseUp", frame.StopMovingFrame)
-	
+
 	-- Craete Search Box
 	module:CreateSearchBar(frame)  -- Placeholder
-	
+
 	-- Create the Bag Bar
 	if frame.CreateBagBar then
 		frame:CreateToolBar("bagsBar")
 		frame.bagsBar:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 0, 2)
 		frame:CreateBagBar()
 	end
-	
+
 	-- Create the Utility Bar
 	if frame.CreateUtilBar then
 		frame:CreateToolBar("utilBar")
@@ -672,7 +672,7 @@ function module:CreateNewContainer(name, obj)
 		end
 		frame:CreateUtilBar()
 	end
-	
+
 	--Preliminary table creation.
 	frame.bagList = {}
 	frame.itemList = {}
@@ -681,13 +681,13 @@ function module:CreateNewContainer(name, obj)
 		frame.bagList[id] = frame:NewBagInfo(id)
 		frame.itemList[id] = {}
 	end
-	
+
 	--Do those needs to be here?
-	--SetBagFonts -- Nope, this one seems very specific to some frames, could probably set 
+	--SetBagFonts -- Nope, this one seems very specific to some frames, could probably set
 	containerStorage[name] = frame
 	frame:SetBagsProperties()
 	--SetBagsDimensions
-	
+
 	frame:Hide()
 end
 
@@ -716,7 +716,7 @@ end
 --TODO: Lots of options uses a loop over containers and/or items. We could combine most of them and deduplicate code.
 
 function module:Refresh()
-	for name, container in pairs(containerStorage) do
+	for _, container in pairs(containerStorage) do
 		if container.forceRefresh or container:IsShown() then
 			-- Refresh Settings
 			container:SetScale(container:GetOption("Scale"))
@@ -725,21 +725,21 @@ function module:Refresh()
 
 			-- Re-adjust containers' editbox character limit.
 			container.editbox:SetMaxLetters(container:GetOption("RowSize") * 5)
-			
+
 			-- Refresh Backdrops
 			module:RefreshBackdrops()
 			container.background:SetBackdrop(module.bagBackdrop)
 			-- Refresh item slots
 			for i = 1, container.NUM_BAG_IDS do
 				local id = container.BAG_ID_LIST[i]
-				for i = 1, #container.itemList[id] do
-					container:SlotUpdate(container.itemList[id][i])
-					container.itemList[id][i]:SetBackdrop(module.itemBackdrop)
+				for j = 1, #container.itemList[id] do
+					container:SlotUpdate(container.itemList[id][j])
+					container.itemList[id][j]:SetBackdrop(module.itemBackdrop)
 				end
 			end
-			
+
 			-- Refresh Toolbars
-			for name, toolbar in pairs(container.toolbars) do
+			for _, toolbar in pairs(container.toolbars) do
 				toolbar:SetScale(container:GetOption("Scale"))
 				toolbar.background:SetBackdrop(module.bagBackdrop)
 				toolbar:SetAnchors()
@@ -761,7 +761,7 @@ function module:RefreshBackdrops()
 	-- Bag Backdrop
 	module.bagBackdrop = {
 		bgFile = Media:Fetch("background", db.Textures.BackgroundTex),
-		edgeFile = Media:Fetch("border", db.Textures.BorderTex), 
+		edgeFile = Media:Fetch("border", db.Textures.BorderTex),
 		edgeSize = 15, insets = { left = 3, right = 3, top = 3, bottom = 3 }
 	}
 	-- Item Backdrop
@@ -773,23 +773,23 @@ function module:RefreshBackdrops()
 end
 
 function module:RefreshColors()
-	for name, container in pairs(containerStorage) do
+	for _, container in pairs(containerStorage) do
 		local r, g, b, a = module:AlphaColor("Background")
 		local mult = BACKGROUND_MULTIPLIER
 		container.background:SetBackdropColor(r * mult, g * mult, b * mult, a)
 		container.background:SetBackdropBorderColor(module:AlphaColor("Border"))
-	
+
 		for i = 1, container.NUM_BAG_IDS do
 			local id = container.BAG_ID_LIST[i]
-			for i = 1, #container.itemList[id] do
-				local itemSlot = container.itemList[id][i]
+			for j = 1, #container.itemList[id] do
+				local itemSlot = container.itemList[id][j]
 				itemSlot:SetBackdropColor(module:AlphaColor("ItemBackground"))
 				container:SetItemSlotBorderColor(itemSlot)
 			end
 		end
 
 		-- Refresh Toolbars
-		for name, toolbar in pairs(container.toolbars) do
+		for _, toolbar in pairs(container.toolbars) do
 			toolbar.background:SetBackdropColor(r * mult, g * mult, b * mult, a)
 			toolbar.background:SetBackdropBorderColor(module:AlphaColor("Border"))
 			for i = 1, #toolbar.slotList do
@@ -816,7 +816,7 @@ function module:LoadOptions()
 			Scale = module:NewSlider(L["Scale"], L["Bags_Scale_Desc"], 7, 0.5, 2, 0.05, true, "Refresh"),
 			Padding = module:NewSlider(L["Padding"], L["Bags_Padding_Desc"], 8, 4, 24, 1, nil, "Refresh"),
 			Spacing = module:NewSlider(L["Spacing"], L["Bags_Spacing_Desc"], 9, 1, 15, 1, nil, "Refresh"),
-			
+
 		}),
 		Textures = module:NewGroup(L["Textures"], 3, nil, nil, {
 			BackgroundHeader = module:NewHeader(L["Background"], 1),
@@ -826,7 +826,8 @@ function module:LoadOptions()
 			ItemBackground = module:NewColorMenu(L["Bags_ItemBackground_Name"], 5, nil, "RefreshColors"),
 			Border = module:NewHeader(L["Border"], 6),
 			BorderTex = module:NewTexBorder(L["Bags_BorderTex_Name"], L["BorderDesc"], 7, "Refresh", "double"),
-			--aBorderSize = module:NewSlider(L["Tooltip_BorderSize_Name"], L["Tooltip_BorderSize_Desc"], 7, 1, 30, 1, nil, "Refresh", "double"),
+			--aBorderSize = module:NewSlider(L["Tooltip_BorderSize_Name"], L["Tooltip_BorderSize_Desc"],
+			--                                   7, 1, 30, 1, nil, "Refresh", "double"),
 		}),
 	}
 	return options
@@ -841,19 +842,19 @@ function module:OnInitialize()
 	LUI:RegisterModule(module)
 	--Make elements share EnabledState with their modules.
 	--TODO: Support for different enable states when we have GBank/Void support.
-	for name, element in module:IterateModules() do
+	for name_, element in module:IterateModules() do
 		element:SetEnabledState(module:IsEnabled())
 	end
 end
 
 function module:OnEnable()
 	db = module:GetDB()
-	
+
 	module:RefreshBackdrops()
-	for name, element in module:IterateModules() do
+	for name, element_ in module:IterateModules() do
 		module:EnableModule(name)
 	end
-	
+
 	-- close bags before Enabling/Disabling the module
 	CloseAllBags()
 end
