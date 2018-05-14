@@ -176,10 +176,10 @@ function module:SetMinimap()
 			end
 		end
 	end)
-	
+
 	module:SetMinimapSize()
 	module:SetMinimapPosition()
-	
+
 	--Make sure not to create the frames more than once.
 	-- Set Zone Text
 	local minimapZone = CreateFrame("Frame", "LUIMinimapZone", Minimap)
@@ -246,7 +246,7 @@ function module:SetMinimap()
 
 	--Create other frames around the minimap
 	module:SetMinimapFrames()
-	
+
 
 	--Prevent these initialization functions from running again.
 	function module:SetMinimap()
@@ -326,12 +326,12 @@ function module:SetMinimapFrames()
 		minimapTex:SetBackdropColor(0,0,0,0)
 		minimapTex:SetBackdropBorderColor(0,0,0,1)
 	end
-	
+
 	-- Move Garrison icon
 	GarrisonLandingPageMinimapButton:ClearAllPoints();
 	GarrisonLandingPageMinimapButton:SetSize(32,32);
 	GarrisonLandingPageMinimapButton:SetPoint(ICON_LOCATION.Mail, Minimap, 3, 12)
-	
+
 	MiniMapMailFrame:HookScript("OnShow", function(self)
 		GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", MiniMapMailFrame, "TOPLEFT", 0, -4)
 	end)

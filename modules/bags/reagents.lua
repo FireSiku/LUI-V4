@@ -18,7 +18,7 @@ local Reagent = {
 	--Constants
 	NUM_BAG_IDS = 1,
 	BAG_ID_LIST = { -3, },
-	
+
 	-- vars
 	name = "Reagent",
 }
@@ -42,22 +42,22 @@ function Reagent:Layout()
 end
 
 function Reagent:NewItemSlot(id, slot)
-	
+
 	if self.itemList[id] and self.itemList[id][slot] then
 		return self.itemList[id][slot]
 	end
-	
+
 	local name = format(REAGENTS_SLOT_NAME_FORMAT, id, slot)
 	local template = REAGENTS_SLOT_TEMPLATE
 	local itemSlot = module:CreateSlot(name, self.bagList[id], template)
-	
+
 	-- id/slot info is a pain to get through template's means, make it easier
 	itemSlot.id = id
 	itemSlot.slot = slot
 	-- SetID refers to the slot number within the bag, used by template's functions.
 	itemSlot:SetID(slot)
 	itemSlot:Show()
-	
+
 	--Set properties
 	self:SetItemSlotProperties(itemSlot)
 	return itemSlot
@@ -65,7 +65,7 @@ end
 
 function Reagent:CreateUtilBar()
 	local utilBar = self.utilBar
-	
+
 	-- CleanUp
 	local cleanUpButton = module:CreateCleanUpButton("LUIReagent_CleanUp", utilBar, SortReagentBankBags)
 	utilBar:AddNewButton(cleanUpButton)
@@ -140,7 +140,7 @@ local function OpenBank()
 	--if not LUIBank then
 	--	module:CreateNewContainer("Bank", Bank)
 	--end
-	
+
 	if not LUIBags:IsShown() then
 		hasBankOpenBags = true
 		LUIBags:Open()

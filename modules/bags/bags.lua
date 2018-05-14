@@ -26,7 +26,7 @@ local Bags = {
 	--Constants
 	NUM_BAG_IDS = 5,
 	BAG_ID_LIST = { 0, 1, 2, 3, 4 },
-	
+
 	-- vars
 	name = "Bags",
 }
@@ -44,22 +44,22 @@ function Bags:Layout()
 end
 
 function Bags:NewItemSlot(id, slot)
-	
+
 	if self.itemList[id] and self.itemList[id][slot] then
 		return self.itemList[id][slot]
 	end
-	
+
 	local name = format(BAG_SLOT_NAME_FORMAT, id, slot)
 	local itemSlot = module:CreateSlot(name, self.bagList[id], BAG_SLOT_TEMPLATE)
 	--local itemSlot = CreateFrame("Button", name, self.bagList[id], BAG_SLOT_TEMPLATE)
-	
+
 	-- id/slot info is a pain to get through template's means, make it easier
 	itemSlot.id = id
 	itemSlot.slot = slot
 	-- SetID refers to the slot number within the bag, used by template's functions.
 	itemSlot:SetID(slot)
 	itemSlot:Show()
-	
+
 	--Set properties
 	self:SetItemSlotProperties(itemSlot)
 	return itemSlot
@@ -81,14 +81,14 @@ function Bags:CreateTitleBar()
 	gold:SetJustifyH("RIGHT")
 	gold:SetPoint("RIGHT", self.closeButton, "LEFT", -3, 0)
 	gold:SetFont(Media:Fetch("font", db.Fonts.Bags.Name), db.Fonts.Bags.Size, db.Fonts.Bags.Flag)
-	
+
 	-- Watched Currency Display, next to gold
 	local currency = self:CreateFontString(nil, "ARTWORK", "GameFontHighlightLarge")
 	currency:SetJustifyH("RIGHT")
 	currency:SetPoint("RIGHT", gold, "LEFT", -10, 0)
 	currency:SetText(self:GetCurrencyString())
 	currency:SetFont(Media:Fetch("font", db.Fonts.Bags.Name), db.Fonts.Bags.Size, db.Fonts.Bags.Flag)
-	
+
 	--Hooking this function allows to update watched currencies without a ReloadUI
 	local updateFunc = function() self:UpdateCurrencies() end
 	module:SecureHook(BACKPACK_TOKEN_UPDATE_FUNC, updateFunc)
@@ -100,7 +100,7 @@ function Bags:CreateTitleBar()
 	self:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
 	self:RegisterEvent("PLAYER_TRADE_CURRENCY")
 	self:RegisterEvent("TRADE_CURRENCY_CHANGED")
-	
+
 	self.gold = gold
 	self.currency = currency
 end
@@ -113,14 +113,14 @@ function Bags:CreateBagBar()
 		-- index must starts at 0, but we start the loop at 2.
 		local bagsSlot = module:BagBarSlotButtonTemplate(i - 2, id, name, self.bagsBar)
 		self.bagsBar.slotList[i-1] = bagsSlot
-		
+
 		bagsSlot:Show()
 	end
 end
 
 function Bags:CreateUtilBar()
 	local utilBar = self.utilBar
-	
+
 	--CleanUp
 	local button = module:CreateCleanUpButton("LUIBags_CleanUp", utilBar, SortBags)
 	utilBar:AddNewButton(button)
@@ -167,7 +167,7 @@ end
 function element:OnEnable()
 	-- We don't want the element-specific db information.
 	db = module:GetDB()
-	
+
 	-- Create container
 	module:CreateNewContainer("Bags", Bags)
 	LUIBags:CreateTitleBar()

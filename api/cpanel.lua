@@ -72,7 +72,7 @@ module.order = 5
 
 function module:OnInitialize()
 	LUI:RegisterModule(module)
-	
+
 end
 
 function module:OnEnable()

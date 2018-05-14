@@ -208,7 +208,7 @@ end
 function module:DataObjectCreated(name, element)
 	--LUI:Print("Object Created:", name, "("..element.type..")",not supportedTypes[element.type] and "(unsupported)" or "")
 	if not supportedTypes[element.type] then return end
-	
+
 	local topAnchor = module:GetAnchor("top")
 	local frame = CreateFrame("Button", "LUIInfo_"..name, topAnchor)
 	elementFrames[name] = frame
@@ -228,7 +228,7 @@ function module:DataObjectCreated(name, element)
 	--Do some element based stuff here
 	if elementStorage[name] then LUI:EmbedModule(element) end
 	if element.OnCreate then element:OnCreate(frame) end
-	
+
 	if module:IsPositionSet(name) then
 		local anchor = module:GetAnchor("top")
 		frame:SetParent(anchor)
@@ -391,7 +391,7 @@ function module:LoadOptions()
 			},
 		},
 	}
-	
+
 	local orderCount = 10
 	for name, element_ in pairs(elementFrames) do
 		options[name] = module:NewInfotextOptionGroup(name, orderCount)

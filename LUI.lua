@@ -309,14 +309,14 @@ end
 function LUI:RegisterModule(module)
 
 	local mName = module:GetName()
-	
+
 	--If a module hasn't been installed yet and should be disabled by default, disable it.
 	--Otherwise, modules are enabled by default, and db.modules[name] should be true.
 	if module.defaultDisabled and not db.installed[mName] then
 		db.modules[mName] = false
 	end
 	module:SetEnabledState(db.modules[mName])
-	
+
 	LUI:EmbedModule(module)
 	--Register DB Namespace
 	--TODO: Allow for DB-less modules.
@@ -357,11 +357,11 @@ function LUI:OnInitialize()
 	self.db.RegisterCallback(self, "OnProfileCopied", "Refresh")
 	self.db.RegisterCallback(self, "OnProfileReset", "Refresh")
 	db = self.db.profile
-	
+
 	for k, v in pairs(db.modules) do
 		LUI:Print("Init", k, v)
 	end
-	
+
 	--Setup Options:
 	LUI:EmbedModule(LUI)
 	LUI:EmbedOptions(LUI)

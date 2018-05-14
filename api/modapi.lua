@@ -61,7 +61,7 @@ end
 -- altAlpha: If the color.a is not found, altAlpha will be used.
 function ModuleMixin:AlphaColor(colorName, altAlpha)
 	if not altAlpha then altAlpha = 1 end
-	
+
 	local color
 	local db = self:GetDB("profile", "Colors")
 	if db and db[colorName] then
@@ -127,7 +127,7 @@ function ModuleMixin:FetchBackdrop(name, tile, tileSize, l, r, t, b)
 			backdrop.insets.top = db[name].Top or t
 			backdrop.insets.bottom = db[name].Bottom or b
 		end
-		
+
 		return backdrop
 	end
 end
@@ -135,7 +135,7 @@ end
 -- Function that fetch and set Backdrop, along with setting color and border color.
 function ModuleMixin:UpdateFrameBackdrop(name, frame, ...)
 	local backdrop = self:FetchBackdrop(name, ...)
-	
+
 	frame:SetBackdrop(backdrop)
 	frame:SetBackdropColor(self:Color(name.."BG"))
 	frame:SetBackDropBorderColor(self:Color(name.."Border"))
@@ -228,7 +228,7 @@ function LUI:OnModuleCreated(new_module)
 	new_module.GetParent = function()
 		return self:GetName(), self
 	end
-	
+
 	--Only modules with an enableButton should be toggle-able.
 	new_module.Toggle = function()
 		local name = new_module:GetName()
@@ -241,7 +241,7 @@ function LUI:OnModuleCreated(new_module)
 		local db = LUI:GetDB()
 		db.modules[name] = state
 	end
-	
+
 	for k, v in pairs(ModuleCreationMixin) do
 		new_module[k] = v
 	end

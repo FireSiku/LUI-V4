@@ -105,32 +105,32 @@ function module:NewAuraHeader(auraType, helpful)
 		headerStorage[auraType]:Show()
 		return
 	end
-	
+
 	local header = CreateFrame("Frame", format("LUIAura_%s", auraType), UIParent, "SecureAuraHeaderTemplate")
 	header.auraType = auraType
 	header.helpful = helpful
 	header.auraList = {}
-	
+
 	--Embed prototype
 	for k, v in pairs(Header) do
 		header[k] = v
 	end
-	
+
 	header:SetClampedToScreen(true)
 	header:SetSize(1,1) -- Anchoring can bug out if no size are set
 	header:SetAttribute('filter', (helpful) and "HELPFUL" or "HARMFUL")
-	
+
 	if helpful then
 		header:SetAttribute("template", "LUIAura_BuffTemplate")
 	else
 		header:SetAttribute("template", "LUIAura_DebuffTemplate")
 	end
-	
+
 	header:RegisterEvent('PLAYER_ENTERING_WORLD')
 	header:HookScript('OnEvent', header.Update)
 
 	RegisterAttributeDriver(header, 'unit', "[vehicleui] vehicle; player")
-	
+
 	header:Configure()
 	header:Show()
 end
@@ -146,9 +146,9 @@ end
 function Header:Update(event, ...)
 	local unit = self:GetAttribute("unit")
 	if (unit ~= ... and event ~= "PLAYER_ENTERING_WORLD") or not self:IsShown() then return end
-	
+
 	local filter = self:GetAttribute("filter")
-	
+
 	for i=1, #self.auraList do
 		self.auraList[i]:Update(unit, self.auraList[i]:GetID(), filter)
 	end
@@ -157,7 +157,7 @@ end
 function Header:ChildCreated(child)
 	child.header = self
 	child.helpful = self.helpful
-	
+
 	local template
 	if child:GetAttribute("proxy") then
 		LUI:Print("Proxy Child")
@@ -168,7 +168,7 @@ function Header:ChildCreated(child)
 		self.auraList[#self.auraList + 1] = child
 		template = Aura
 	end
-	
+
 	--Mixin the prototype
 	for k, v in pairs(template) do
 		child[k] = v
@@ -176,13 +176,13 @@ function Header:ChildCreated(child)
 	-- technically this is the border. Probably could change that.
 	-- the child.border texture is for the colored borders around debuffs and weapon enchants
 	child.normalTexture:SetDrawLayer("BORDER")
-	
+
 	child:SetProperties(true)
 end
 
 function Header:Configure()
 	self:SetAttribute("_ignore", true)
-	
+
 	local anchor = self:GetOption("Anchor")
 	local auraSize = self:GetOption("Size")
 	local spacing = self:GetOption("HorizontalSpacing") + auraSize
@@ -193,7 +193,7 @@ function Header:Configure()
 	if strfind(anchor, "TOP") then
 		rowSpacing = -rowSpacing
 	end
-	
+
 	self:ClearAllPoints()
 	self:SetPoint(anchor, self:GetOption("X"), self:GetOption("Y"))
 	self:SetAttribute("minWidth", auraSize)
@@ -205,14 +205,14 @@ function Header:Configure()
 	self:SetAttribute("wrapYOffset", rowSpacing)
 	self:SetAttribute("sortMethod", self:GetOption("SortMethod"))
 	--self:SetAttribute("sortDirection")  -- Will uncomment when sort out trickery
-	
-	
+
+
 	for i = 1, #self.auraList do
 		self.auraList[i]:SetProperties()
 	end
-	
+
 	self:SetAttribute("_ignore", nil)
-	
+
 	--This looks sketchy, try to make it look better.
 	local initConfig = [=[
 		local size = %d
@@ -249,7 +249,7 @@ function Aura:Update(...)
 	if not name then
 		return
 	end
-	
+
 	--skipped duration block, not sure what it does.
 	if duration and duration > 0 then
 		self.remaining = expires - GetTime()
@@ -259,24 +259,24 @@ function Aura:Update(...)
 		self:SetScript("OnUpdate", nil)
 		self.duration:SetText()
 	end
-	
+
 	self.icon:SetTexture(icon)
 	if not self.helpful then
 		self.border:SetVertexColor(module:Color(dispelType))
 	end
-	
+
 	if count and count > 1 then
 		self.count:SetText(count)
 	else
 		self.count:SetText()
 	end
-	
+
 	self.caster = caster
 end
 
 function Aura:UpdateTooltip()
 	GameTooltip:SetUnitAura(self.header:GetAttribute("unit"), self:GetID(), self.header:GetAttribute("filter"))
-	
+
 	if self.caster then
 		GameTooltip:AddLine(self.caster)
 		--force the tooltip to update
@@ -286,19 +286,19 @@ end
 
 function Aura:SetProperties(init)
 	local auraSize = self.header:GetOption("Size")
-	
+
 	-- Size is handled by the initConfig func if we're initializing. (We could be in CombatLockdown)
 	if not init then
 		self:SetSize(auraSize, auraSize)
 	end
-	
+
 	--Maybe not use magic numbers for thoes?
 	self.gloss:SetSize(auraSize * 1.12, auraSize * 1.12)
 	self.normalTexture:SetSize(auraSize * 1.2, auraSize * 1.2)
 	if self.border then
 		self.border:SetSize(auraSize * 1.2, auraSize * 1.2)
 	end
-	
+
 	module:RefreshFontString(self.count, format("%sCount", self.header.auraType))
 	module:RefreshFontString(self.duration, format("%sDur", self.header.auraType))
 	self.TooltipAnchor = format("Anchor_%s",LUI.Opposites[self.header:GetOption("Anchor")])
@@ -322,7 +322,7 @@ end
 
 function module:OnEnable()
 	db = module:GetDB()
-	
+
 	BuffFrame:Hide()
 	module:NewAuraHeader("Buffs", true)
 	module:NewAuraHeader("Debuffs")

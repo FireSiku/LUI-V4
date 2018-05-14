@@ -31,7 +31,7 @@ function module:SetOUFColors()
 		colors.power[powerType] = {module:Color(powerType)}
 	end
 	colors.health = {module:Color("HealthBar")}
-	
+
 	colors.runes = {
 		{module:Color("BLOOD_RUNES")},
 		{module:Color("UNHOLY_RUNES")},
@@ -72,7 +72,7 @@ oUF_LUI.Tags.Methods['ClassColor'] = function(unit)
 	local _, class = UnitClass(unit)
 	local r, g, b = module:Color(class)
 	if not r then r, g, b = LUI:GetReactionColor(unit) end
-	
+
 	return format("|cff%02x%02x%02x", r * 255, g * 255, b * 255)
 end
 
@@ -102,17 +102,17 @@ end
 
 function SpawnMixin:FormatName()
 	if not self or not self.Name then return end
-	
+
 	local name = (self.Name.ColorNameByClass) and "[ClassColor][name]|r" or "[name]"
 	--TODO/HACK: Disabled the level conditional because I havent added DiffColor tag.
 	local level = (self.Name.ColorLevelByDifficulty and false) and "[DiffColor][level]|r" or "[level]"
 	local class = (self.Name.ColorClassByClass) and "[ClassColor][smartclass]|r" or "[smartclass]"
 	local race = "[race]"
-	
+
 	if self.Name.ShowClassification then
 		level = (self.Name.ShortClassification) and level.."[shortclassification]" or level.."[classification]"
 	end
-	
+
 	local tagStr = gsub(self.Name.Format, ' %+ ', ' ')
 	tagStr = gsub(tagStr, "Level", level)
 	tagStr = gsub(tagStr, "Class", class)
@@ -138,7 +138,7 @@ function module:NewUnitOptionGroup(unit, order)
 		return (extra and db.Units[unit][extra]) or db.Units[unit]
 	end
 	LUI:EmbedOptions(opt)
-	
+
 	-- Boolean shortcut, since many options are player-specific.
 	local isPlayer = (unit == "player")
 
@@ -188,7 +188,7 @@ function module:NewUnitOptionGroup(unit, order)
 				sillyDesc = opt:NewDesc("Combat Settings will go here", 1),
 			}),
 		}),
-		
+
 		Portrait = opt:NewGroup("Portrait", 4, "tab", nil, {
 			sillyDesc = opt:NewDesc("Portrait Settings will go here", 1),
 		}),
@@ -249,7 +249,7 @@ local function SpawnUnit(self, unit, ...)
     spawn:SetAttribute("*type2", "menu")
     spawn:SetScript("OnEnter", UnitFrame_OnEnter)
     spawn:SetScript("OnLeave", UnitFrame_OnLeave)
-	
+
 	return spawn
 end
 

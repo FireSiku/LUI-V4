@@ -37,7 +37,7 @@ local CLASS_EVENTS = {
 -- This is the function that determines ClassPower visibility
 local function IsPowerActive(classPower)
 	local spec = GetSpecialization()
-	
+
 	if class == "ROGUE" then return true
 	elseif class == "WARLOCK" then return true
 	elseif class == "MAGE" and spec == SPEC_MAGE_ARCANE then return true
@@ -106,7 +106,7 @@ function module.SetClassIcon(self)
 	classPower:SetSize(db.Width, db.Height)
 	classPower:SetPoint("BOTTOMLEFT", self.Health, "TOPLEFT", db.X, db.Y)
 	self.ClassIcons = classPower
-	
+
 	for i = 1, MAX_COUNT[class] do
 		local bar = classPower:CreateTexture(classPower:GetDebugName()..i, "ARTWORK")
 		bar:SetTexture(self.element:FetchStatusBar("ClassPower"))
@@ -124,7 +124,7 @@ function module.SetClassIcon(self)
 	local function PowerCount(classPower, event, ...)
 		if not IsPowerActive(classPower) then return end
 		local count = GetCount(classPower, event, ...)
-		
+
 		local barWidth = GetBarWidth(count)
 		for i = 1, MAX_COUNT[class] do
 			local bar = classPower[i]
@@ -136,7 +136,7 @@ function module.SetClassIcon(self)
 		end
 		classPower:Show()
 	end
-	
+
 	classPower:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 	if CLASS_EVENTS[class] then
 		for i = 1, #CLASS_EVENTS[class] do
@@ -175,7 +175,7 @@ function module.SetRuneBar(self)
 	runeBar:SetSize(db.Width, db.Height)
 	runeBar:SetPoint("BOTTOMLEFT", self.Health, "TOPLEFT", db.X, db.Y)
 	self.Runes = runeBar
-	
+
 	local barWidth = GetBarWidth(MAX_RUNES)
 	for i = 1, MAX_RUNES do
 		runeBar[i] = CreateFrame("StatusBar", runeBar:GetDebugName()..i, runeBar)

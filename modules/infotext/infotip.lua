@@ -221,7 +221,7 @@ function element:NewInfotip(infotext)
 	for k, v in pairs(InfotipMixin) do
 		newtip[k] = v
 	end
-	
+
 	--Set Properties
 	newtip:EnableMouse(true)
 	newtip:SetFrameStrata("TOOLTIP")
@@ -244,7 +244,7 @@ function element:NewInfotip(infotext)
 	-- Enforce Infotip minimum width.
 	newtip.minWidth = INFOTIP_MIN_WIDTH
 	element:SecureHook(newtip, "SetWidth", "EnforceMinWidth")
-	
+
 	-- Initialize some values
 	newtip.maxHeight = 0
 	newtip.maxWidth = INFOTIP_MIN_WIDTH
@@ -252,7 +252,7 @@ function element:NewInfotip(infotext)
 	-- Calculate Infotip highest numbers of possible lines.
 	newtip.maxLines = floor((UIParent:GetHeight() - GAP * 2) / BUTTON_HEIGHT - INFOTIP_MAXLINE_CUTOFF)
 	newtip.totalLines = 0
-	
+
 	return newtip
 end
 

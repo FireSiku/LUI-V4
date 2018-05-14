@@ -40,19 +40,19 @@ function module:SetBars()
 	MultiBarRight:SetParent(UIParent)
 	MultiBarBottomLeft:SetParent(UIParent)
 	MultiBarBottomRight:SetParent(UIParent)
-	
+
 	--MainMenuBarArtFrame:SetAlpha(0)
-	
+
 	--[[for i = 1, 12 do
 		button = _G["ActionButton"..i]
 		button:SetParent(UIParent)
 	end]]
-	
+
 	--Bar1 does not have a parent bar, so we make one.
 	local ActionBar1 = CreateFrame("Frame", "ActionBar1", UIParent)
 	ActionBar1:SetSize(500, 38)
 	ActionBar1:SetPoint("BOTTOM", 0, 30)
-	
+
 	ActionBar1:SetBackdrop({
 		bgFile = module:FetchBackground("Frame"),
 		edgeFile = module:FetchBorder("Frame"),
@@ -73,15 +73,15 @@ function module:SetBars()
 	ActionBar5:SetPoint("BOTTOMLEFT", ActionButton1, "TOPLEFT")
 	MultiBarBottomLeft:SetParent(ActionBar5)
 	MultiBarBottomLeft:SetAllPoints(ActionBar5)
-	
+
 	--MultiBarBottomLeft:ClearAllPoints()
 	--MultiBarBottomLeft:SetPoint("BOTTOMLEFT", ActionButton1, "TOPLEFT", 0, 0)
-	
+
 	--That should be its own thing
 	MainMenuExpBar:SetParent(UIParent)
 	MainMenuExpBar:ClearAllPoints()
 	MainMenuExpBar:SetPoint("BOTTOM", 0, 15)
-	
+
 	--Hide the art
 	MainMenuBarArtFrame.OrigShow = MainMenuBarArtFrame.Show
 	MainMenuBarArtFrame.Show = MainMenuBarArtFrame.Hide

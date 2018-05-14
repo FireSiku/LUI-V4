@@ -9,17 +9,17 @@ local L = LUI.L
 -- Unit is the actual unit token as per Blizzard API (ex: "player", "target", ...)
 
 function module.SetStyle(self, unit, isSingle)
-	
+
 	--Fetch settings for the unit
 	self.db = module:GetUnitDB(unit)
-	
+
 	if(isSingle) then
 		self:SetSize(self.db.Width, self.db.Height)
 	end
 
 	-- // Health Bar
 	module.SetHealth(self)
-	
+
 	-- // Power Bar
 	module.SetPower(self)
 
@@ -41,7 +41,7 @@ function module.SetStyle(self, unit, isSingle)
 	-- creating a frame as anchor for icons, other texts etc
 	self.Overlay = CreateFrame("Frame", nil, self)
 	self.Overlay:SetAllPoints(self.Health)
-	
+
 	-- // Name
 	local name = self.Overlay:CreateFontString()
 	local nameFont = self.db.Fonts.NameText
@@ -58,7 +58,7 @@ function module.SetStyle(self, unit, isSingle)
 	name.ShortClassification = db.ShortClassification
 	name.Format = db.Format
 	name:Show()
-	
+
 	self.Name = name
 	self:FormatName()
 
@@ -92,7 +92,7 @@ function module.SetStyle(self, unit, isSingle)
 		dropdown:SetParent(self)
 		ToggleDropDownMenu(1, nil, dropdown, "cursor", 0, 0)
 	end
-	
+
 	--Remove Focus from list
 	for k,v in pairs(UnitPopupMenus) do
 		for x,y in pairs(UnitPopupMenus[k]) do
@@ -103,34 +103,34 @@ function module.SetStyle(self, unit, isSingle)
 			end
 		end
     end
-	
+
 	--Check for any unit-specific additions here
-	
+
 	--TODO:AddClassPower Call
 
 end
 
 function module.SetHealth(self)
 	local health = CreateFrame("StatusBar", nil, self)
-	
+
 	-- Position and Size
 	local db = self.db.HealthBar
 	health:SetSize(db.Width, db.Height)
 	health:SetStatusBarTexture(Media:Fetch("statusbar", db.Texture))
 	health:SetPoint("TOPLEFT", self, "TOPLEFT")
-	
+
 	--oUF Options
 	health.frequentUpdates = true
 	--health.colorReaction = true
 	health.colorHealth = true
-	
+
 	-- Background
 	local healthBG = health:CreateTexture(nil, "BORDER")
 	healthBG:SetAllPoints(health)
 	healthBG:SetTexture(Media:Fetch("statusbar", db.TextureBG))
 	healthBG:SetAlpha(db.BGAlpha)
 	healthBG.multiplier = 0.4
-	
+
 	-- Testing Absorb
 	local absorbBar = CreateFrame('StatusBar', nil, health)
 	absorbBar:SetPoint('TOP')
@@ -157,7 +157,7 @@ function module.SetHealth(self)
 	healthText:SetJustifyH("CENTER")
 	healthText:SetTextColor(1,1,1)
 	healthText:Show()
-	
+
 	local db = self.db.HealthPercent
 	local fdb = self.db.Fonts.HealthPercent
 	local healthPercText = health:CreateFontString(nil, "OVERLAY")
@@ -166,7 +166,7 @@ function module.SetHealth(self)
 	healthPercText:SetJustifyH("CENTER")
 	healthPercText:SetTextColor(1,1,1)
 	healthPercText:Show()
-	
+
 	health.PostUpdate = function(health_, unit_, min, max)
 		local percent = (max == 0 and 0) or 100 * (min/max)
 		healthPercText:SetFormattedText("%.1f%%", percent)
@@ -176,7 +176,7 @@ function module.SetHealth(self)
 	end
 
 	self:RegisterEvent('UNIT_ABSORB_AMOUNT_CHANGED', self.UpdateAllElements)
-	
+
 	--Register those with oUF
 	self.Health = health
 	self.Health.bg = healthBG
@@ -188,7 +188,7 @@ function module.SetHealth(self)
         overAbsorb = overAbsorbBar,
         frequentUpdates = true,
 	}
-	
+
 	function self.HealthPrediction:PostUpdate(unit, myIncomingHeal_, otherIncomingHeal_, absorb,
 		                                      healAbsorb_, hasOverAbsorb, hasOverHealAbsorb_)
 		if hasOverAbsorb then
@@ -205,7 +205,7 @@ end
 
 function module.SetPower(self)
 	local power = CreateFrame("StatusBar", nil, self)
-	
+
 	local db = self.db.PowerBar
 	power:SetSize(db.Width, db.Height)
 	power:SetStatusBarTexture(Media:Fetch("statusbar", db.Texture))
@@ -214,13 +214,13 @@ function module.SetPower(self)
 	power.colorClass = true
 	power.colorClassNPC = true
 	power.frequentUpdates = true
-	
+
 	local powerBG = power:CreateTexture(nil, "BORDER")
 	powerBG:SetAllPoints(power)
 	powerBG:SetTexture(Media:Fetch("statusbar", db.Texture))
 	powerBG:SetAlpha(db.BGAlpha)
 	powerBG.multiplier = 0.4
-	
+
 	-- Power Text
 	local db = self.db.PowerText
 	local fdb = self.db.Fonts.PowerText
@@ -230,7 +230,7 @@ function module.SetPower(self)
 	powerText:SetJustifyH("CENTER")
 	powerText:SetTextColor(1,1,1)
 	powerText:Show()
-	
+
 	local db = self.db.PowerPercent
 	local fdb = self.db.Fonts.PowerPercent
 	local powerPercText = power:CreateFontString(nil, "OVERLAY")
@@ -239,16 +239,16 @@ function module.SetPower(self)
 	powerPercText:SetJustifyH("CENTER")
 	powerPercText:SetTextColor(1,1,1)
 	powerPercText:Show()
-	
+
 	power.PostUpdate = function(self, unit_, cur_, min, max)
 		min = min or 0
 		local percent = (max == 0) and 0 or 100 * (min/max)
 		powerText:SetFormattedText("%d", min)
 		powerPercText:SetFormattedText("%.1f%%", percent)
 	end
-	
+
 	self.Power = power
 	self.Power.bg = powerBG
 	self.Power.value = powerText
-	
+
 end

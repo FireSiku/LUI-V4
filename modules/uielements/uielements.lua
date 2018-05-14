@@ -64,7 +64,7 @@ function module:SetHiddenFrames()
 			DurabilityFrame_SetAlerts()
 		end
 	end
-	
+
 	if db.OrderHallCommandBar.HideFrame and not orderUI then
 		module:SecureHook("OrderHall_LoadUI", function()
 			ForceHide(OrderHallCommandBar)

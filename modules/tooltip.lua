@@ -138,7 +138,7 @@ function module:RevertHealthBar()
 	health:SetHeight(oldDefault.Health.Height)
 	health:SetStatusBarTexture(oldDefault.Health.StatusBarTexture)
 end
- 
+
 ------------------------------------------------------
 -- / MODULE FUNCTIONS / --
 ------------------------------------------------------
