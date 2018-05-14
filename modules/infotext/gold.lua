@@ -2,7 +2,7 @@
 
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Infotext")
 local element = module:NewElement("Gold", "AceEvent-3.0")
 local L = LUI.L
@@ -126,7 +126,7 @@ function element:UpdateRealmMoney()
 	dbRealm[LUI.playerName] = GetMoney()
 	--Update for realm list
 	local realmGold = 0
-	for name, money in pairs(dbRealm) do
+	for _, money in pairs(dbRealm) do
 		realmGold = realmGold + money
 	end
 	if SUPPORTED_FACTION[LUI.playerFaction] then
@@ -134,7 +134,7 @@ function element:UpdateRealmMoney()
 	end
 end
 
-function element.OnClick(frame, button)
+function element.OnClick(frame_, button)
 	if button == "RightButton" then
 		moneySpent = 0
 		moneyProfit = 0

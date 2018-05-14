@@ -5,7 +5,7 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:NewModule("Infotext")
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
 module.RegisterLDBCallback = LDB.RegisterCallback
@@ -250,7 +250,7 @@ function module:DataObjectCreated(name, element)
 	module:RegisterLDBCallback("LibDataBroker_AttributeChanged_"..name, "AttributeChanged")
 end
 
-function module:AttributeChanged(event, name, attr, value, element)
+function module:AttributeChanged(event_, name, attr, value, element_)
 	local frame = elementFrames[name]
 	if attr == "text" then
 		frame.text:SetText(value)
@@ -315,11 +315,12 @@ end
 
 module.enableButton = true
 
-local function IsInfotextGroupHidden(info) return not db[info[#info]].Enable end -- Objects that are disabled shouldn't clog your option tabs.
+-- Objects that are disabled shouldn't clog your option tabs.
+local function IsInfotextGroupHidden(info) return not db[info[#info]].Enable end
 local function IsYPositionHidden(info) return (info[#info] == "Y") and not db.General.AllowY or false end
 
 -- Template for infotext option menus
-function module:NewInfotextOptionGroup(name, order, childGroups)
+function module:NewInfotextOptionGroup(name, order, childGroups_)
 
 	local optionGroup = module:NewGroup(name, order, nil, nil, {
 		Header = module:NewHeader(L["Settings"], 1),
@@ -343,19 +344,21 @@ function module:NewInfotextOptionGroup(name, order, childGroups)
 	return optionGroup
 	--[[return module:NewGroup(name, order, nil, nil, "PanelGetter", "PanelSetter", {
 		TexHead = module:NewHeader(L["Texture"], 1),
-		ImageDesc = { 
+		ImageDesc = {
 			type = "description", name = " ", order = 2, image = GetOptionImageTexture,
 			imageWidth = 256, imageHeight = 128, imageCoords = GetOptionTexCoords,
 		},
 		TexMode = module:NewSelect(L["Panels_Options_Category"], nil, 3, TEX_MODE_SELECT),
 		Texture = module:NewInput(L["Texture"], L["Panels_Options_Texture_Desc"], 4, nil, nil, nil, IsTextureInputHidden),
-		TextureSelect = module:NewSelect(L["Panels_Options_TextureSelect"], L["Panels_Options_TextureSelect_Desc"], 4, PRESET_LUI_TEXTURES, nil, texSelectMeta, nil, nil, IsTextureSelectHidden),
+		TextureSelect = module:NewSelect(L["Panels_Options_TextureSelect"], L["Panels_Options_TextureSelect_Desc"], 4,
+		                                 PRESET_LUI_TEXTURES, nil, texSelectMeta, nil, nil, IsTextureSelectHidden),
 		LineBreak1 = module:NewLineBreak(5),
 		Anchored = module:NewToggle(L["Panels_Options_Anchored"], L["Panels_Options_Anchored_Desc"], 6, nil, "normal"),
 		Parent = module:NewInput(L["Parent"], L["Panels_Options_Parent_Desc"], 7, nil, nil, IsAnchorParentDisabled),
 		HorizontalFlip = module:NewToggle(L["Panels_Options_HorizontalFlip"], L["Panels_Options_HorizontalFlip_Desc"], 8),
 		VerticalFlip = module:NewToggle(L["Panels_Options_VerticalFlip"], L["Panels_Options_VerticalFlip_Desc"], 9),
-		CustomTexCoords = module:NewToggle(L["Panels_Options_CustomTexCoords"], L["Panels_Options_CustomTexCoords_Desc"], 10, nil, nil, nil, IsCustomTexCoordsHidden),
+		CustomTexCoords = module:NewToggle(L["Panels_Options_CustomTexCoords"], L["Panels_Options_CustomTexCoords_Desc"],
+		                                   10, nil, nil, nil, IsCustomTexCoordsHidden),
 		Left = module:NewInput(L["Point_Left"], nil, 11, nil, "half", nil, IsTexCoordsHidden),
 		Right = module:NewInput(L["Point_Right"], nil, 12, nil, "half", nil, IsTexCoordsHidden),
 		Up = module:NewInput(L["Point_Up"], nil, 13, nil, "half", nil, IsTexCoordsHidden),
@@ -377,7 +380,7 @@ function module:LoadOptions()
 	local options = {
 		Header = {
 			name = "Infotext",
-		  	type = "header",
+			type = "header",
 			order = 1,
 		},
 		General = {
@@ -390,7 +393,7 @@ function module:LoadOptions()
 	}
 	
 	local orderCount = 10
-	for name, element in pairs(elementFrames) do
+	for name, element_ in pairs(elementFrames) do
 		options[name] = module:NewInfotextOptionGroup(name, orderCount)
 		orderCount = orderCount + 1
 	end

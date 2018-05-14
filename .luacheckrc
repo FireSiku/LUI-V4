@@ -41,6 +41,9 @@ stds["Ace"] = {
 -- Most of the FrameXML related globals
 stds["WoW"] = {
 	globals = {
-		"StaticPopupDialogs", "MainMenuBarArtFrame", "MainMenuBar",
+		string = { fields = {
+			"split",
+		}},
+		"StaticPopupDialogs", "MainMenuBarArtFrame", "MainMenuBar", "FriendsFrame",
     }
 }

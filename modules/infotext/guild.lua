@@ -3,7 +3,7 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Infotext")
 local element = module:NewElement("Guild", "AceEvent-3.0")
 local L = LUI.L
@@ -44,7 +44,7 @@ local TEXT_OFFSET = 5
 local GAP = 10
 
 -- locals
-local guildEntries = {}
+--local guildEntries = {}
 local totalGuild = 0
 local onlineGuild = 0
 local infotip
@@ -139,8 +139,12 @@ local function ShowGuild()
 end
 
 function element:GetStatusString(status, isMobile)
-	local MOBILE_BUSY_ICON = isMobile and "|TInterface\\ChatFrame\\UI-ChatIcon-ArmoryChat-BusyMobile:14:14:0:0:16:16:0:16:0:16|t" or ""
-	local MOBILE_AWAY_ICON = isMobile and "|TInterface\\ChatFrame\\UI-ChatIcon-ArmoryChat-AwayMobile:14:14:0:0:16:16:0:16:0:16|t" or ""
+	local MOBILE_BUSY_ICON = ""
+	local MOBILE_AWAY_ICON = ""
+	if isMobile then
+		MOBILE_BUSY_ICON = "|TInterface\\ChatFrame\\UI-ChatIcon-ArmoryChat-BusyMobile:14:14:0:0:16:16:0:16:0:16|t"
+		MOBILE_AWAY_ICON = "|TInterface\\ChatFrame\\UI-ChatIcon-ArmoryChat-AwayMobile:14:14:0:0:16:16:0:16:0:16|t"
+	end
 	--Status Color: 0.7, 0.7, 0.7 to change when tooltip setup.
 	local statusString = ""
 	if status == STATUS_DND then
@@ -169,7 +173,7 @@ function element:UpdateGuild()
 		element.text = L["InfoGuild_NoGuild"]
 		return
 	end
-	local totalNumGuild, guildNumOnline, guildNumOnlineRemote = GetNumGuildMembers()
+	local totalNumGuild, guildNumOnline_, guildNumOnlineRemote = GetNumGuildMembers()
 	local formatString = (db.showTotal) and "%s: %d/%d" or "%s: %d"
 
 	element.text = format(formatString, GUILD, guildNumOnlineRemote, totalNumGuild)
@@ -215,7 +219,7 @@ end
 --Click to open Guild Roster.
 --Right-Click to display Guild Information.
 --Button4 to toggle notes.
-function element.OnClick(frame, button)
+function element.OnClick(frame_, button)
 	if not IsInGuild() then
 		-- If you arent in a guild, toggle the guild finder.
 		ToggleGuildFrame()
@@ -247,7 +251,7 @@ function element:OnSliderUpdate()
 	element:UpdateInfotip()
 end
 
-function element.OnEnter(frame)
+function element.OnEnter(frame_)
 	ShowGuild()
 	if not infotip then element:BuildTooltip() end
 	local maxWidth, maxHeight
@@ -271,14 +275,14 @@ function element.OnEnter(frame)
 		--   online guild members that should be shown.
 		local i, lineIndex = 1, 1
 		while i <= GetNumGuildMembers() and lineIndex <= onlineGuild do
-			local fullName, rank, rankIndex, level, _, zone, note, officerNote, isOnline, status, class, _, _, isMobile = GetGuildRosterInfo(i)
+			local fullName, rank, _, level, _, zone, note, officerNote, isOnline, status, class, _, _, isMobile = GetGuildRosterInfo(i)
 			if isOnline or isMobile then
 				local statusString = element:GetStatusString(status, isMobile)
 				local member = element:CreateGuildMember(lineIndex)
 				lineIndex = lineIndex + 1
 
 				--Name Column
-				local displayName, realmName = strsplit("-",fullName)
+				local displayName, realmName_ = strsplit("-",fullName)
 				local name = (db.hideRealm) and displayName or fullName
 				member.unit = fullName
 				member.guildIndex = i
@@ -317,8 +321,8 @@ function element.OnEnter(frame)
 		local offset = infotip:GetSliderOffset()
 
 		-- Adjust things such as width and hide/show for every created lines.
-		for i = 1, #infotip.Members do
-			local member = infotip.Members[i]
+		for j = 1, #infotip.Members do
+			local member = infotip.Members[j]
 			member.name:SetWidth(nameColumnWidth)
 			member.level:SetWidth(levelColumnWidth)
 			member.zone:SetWidth(zoneColumnWidth)
@@ -327,9 +331,9 @@ function element.OnEnter(frame)
 			element:UpdateGuildAnchorPoints(i)
 
 			-- Show/Hide the needed members.
-			if i < offset then member:Hide()                          -- Do not show if below the offset
-			elseif i > onlineGuild then member:Hide()                 -- Do not show if higher than total online people
-			elseif i >= infotip.maxLines + offset then member:Hide()  -- Do not show if higher than tooltip can display
+			if j < offset then member:Hide()                          -- Do not show if below the offset
+			elseif j > onlineGuild then member:Hide()                 -- Do not show if higher than total online people
+			elseif j >= infotip.maxLines + offset then member:Hide()  -- Do not show if higher than tooltip can display
 			else
 				maxHeight = maxHeight + member:GetHeight()            -- Only add height based on shown buttons.
 				member:Show()
@@ -357,7 +361,7 @@ function element.OnEnter(frame)
 	onBlock = true
 end
 
-function element.OnLeave(frame)
+function element.OnLeave(frame_)
 	if not infotip:IsMouseOver() then
 		infotip:Hide()
 		onBlock = false

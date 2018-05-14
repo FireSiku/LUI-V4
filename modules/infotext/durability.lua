@@ -3,11 +3,10 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Infotext")
 local element = module:NewElement("Durability", "AceEvent-3.0")
 local L = LUI.L
-local db
 
 -- Local copies
 local floor, format, pairs = floor, format, pairs
@@ -67,7 +66,7 @@ function element:UpdateDurability()
 	element:UpdateTooltip()
 end
 
-function element.OnClick(frame, button)
+function element.OnClick(frame_, button_)
 	--TODO: Add feature to summon mammoth with Right-Click
 	ToggleCharacter("PaperDollFrame")
 end

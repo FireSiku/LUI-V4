@@ -4,7 +4,7 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Infotext")
 local element = module:NewModule("Infotip", "AceHook-3.0")
 local L = LUI.L
@@ -22,15 +22,15 @@ local ICON_SIZE = 13
 
 --Find better name for these constants
 local GAP = 10
-local TEXT_OFFSET = 5
+--local TEXT_OFFSET = 5
 
 --Colors for the Guild/Friends, to be moved to their db when it's time.
-local GF_COLORS = {
-	Broadcast = {1, 0.1, 0.1},
-	Title = {1, 1, 1},
-	Realm = {1, 0.8, 0},
-	Status = {0.7, 0.7, 0.7},
-}
+-- local GF_COLORS = {
+-- 	Broadcast = {1, 0.1, 0.1},
+-- 	Title = {1, 1, 1},
+-- 	Realm = {1, 0.8, 0},
+-- 	Status = {0.7, 0.7, 0.7},
+-- }
 
 -- locals
 local infotipStorage = {}
@@ -188,7 +188,7 @@ function element:AddSlider(newtip)
 	})
 	slider:SetValueStep(1)
 	local infotext = newtip.infotext
-	slider:SetScript("OnValueChanged", function(self, value)
+	slider:SetScript("OnValueChanged", function(self, value_)
 		if newtip:IsMouseOver() and infotext.OnSliderUpdate then
 			infotext:OnSliderUpdate()
 		end
@@ -200,7 +200,7 @@ function element:ApplyBackdropColors()
 	local modTooltip = LUI:GetModule("Tooltip")
 	local isModded = (modTooltip and modTooltip:IsEnabled()) and true or false
 	local colorDB = (isModded) and modTooltip:GetDB(nil, "Colors")
-	for name, infotip in pairs(infotipStorage) do
+	for _, infotip in pairs(infotipStorage) do
 		if isModded then
 			infotip:SetBackdropColor(colorDB.Background.r, colorDB.Background.g, colorDB.Background.b)
 			infotip:SetBackdropBorderColor(colorDB.Border.r, colorDB.Border.g, colorDB.Border.b)

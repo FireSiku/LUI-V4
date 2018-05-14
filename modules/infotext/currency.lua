@@ -3,11 +3,10 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Infotext")
 local element = module:NewElement("Currency", "AceEvent-3.0", "AceHook-3.0")
 local L = LUI.L
-local db
 
 -- local copies
 local wipe, format, tconcat = wipe, format, table.concat
@@ -49,7 +48,7 @@ function element:UpdateCurrency()
 end
 
 -- Click: Open Currency Frame
-function element.OnClick(frame, button)
+function element.OnClick(frame_, button_)
 	ToggleCharacter("TokenFrame")
 end
 

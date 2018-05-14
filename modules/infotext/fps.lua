@@ -3,11 +3,10 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Infotext")
 local element = module:NewElement("FPS")
 local L = LUI.L
-local db
 
 -- Local copies
 local floor, format = floor, format
@@ -44,7 +43,8 @@ end
 
 function element:UpdateFPSLatency()
 	local _, _, lagHome, lagWorld = GetNetStats()
-	element.text = format("%d%s   %d%s | %d%s", floor(GetFramerate()), FPS_ABBR, lagHome, MILLISECONDS_ABBR, lagWorld, MILLISECONDS_ABBR)
+	element.text = format("%d%s   %d%s | %d%s", floor(GetFramerate()), FPS_ABBR,
+	                                            lagHome, MILLISECONDS_ABBR, lagWorld, MILLISECONDS_ABBR)
 	element:UpdateTooltip()
 end
 

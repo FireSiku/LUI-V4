@@ -3,17 +3,15 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Infotext")
 local element = module:NewElement("Bags", "AceEvent-3.0")
 local L = LUI.L
-local db
 
 --local copies
 local wipe, format, pairs = wipe, format, pairs
 local GetContainerNumFreeSlots = GetContainerNumFreeSlots
 local GetContainerNumSlots = GetContainerNumSlots
-local OpenAllBags = OpenAllBags
 
 -- Constants
 local NUM_BAG_SLOTS = NUM_BAG_SLOTS
@@ -62,7 +60,7 @@ function element:UpdateBags()
 	element:UpdateTooltip()
 end
 
-function element.OnClick(frame, button)
+function element.OnClick(frame_, button_)
 	ToggleAllBags()
 end
 
@@ -80,7 +78,9 @@ function element.OnTooltipShow(GameTooltip)
 	end
 
 	for k, free in pairs(freeSlots) do
-		GameTooltip:AddDoubleLine(format("%s:", BAG_TYPES[k] or L["InfoBags_BagType_Unknown"]), format("%d / %d", totalSlots[k]-free, totalSlots[k]), 1,1,1, 1,1,1)
+		GameTooltip:AddDoubleLine(format("%s:", BAG_TYPES[k] or L["InfoBags_BagType_Unknown"]),
+								  format("%d / %d", totalSlots[k]-free, totalSlots[k]),
+								  1, 1, 1, 1, 1, 1) --AddDoubleLine requires color definitions at the end.
 	end
 
 	element:AddHint(L["InfoBags_Hint_Any"])

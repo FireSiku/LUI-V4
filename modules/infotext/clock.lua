@@ -3,7 +3,7 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Infotext")
 local element = module:NewElement("Clock", "AceEvent-3.0", "AceHook-3.0")
 local L = LUI.L
@@ -40,7 +40,7 @@ local CVAR_LOCAL = "timeMgrUseLocalTime"
 local CLOCK_UPDATE_TIME = 1
 
 --Instance Difficulty constants
-local TAG_GUILD_GROUP = " |cff66c7ffG|r"
+--local TAG_GUILD_GROUP = " |cff66c7ffG|r"
 local RAID_INFO_WORLD_BOSS = RAID_INFO_WORLD_BOSS
 
 --Do not localize those strings. All of them have an associated localized InfoClock_Instance_* entry
@@ -156,8 +156,8 @@ function element:UpdateCVar()
 	TimeManagerMilitaryTimeCheck:SetChecked((cvarMilitary) and true or false)
 	TimeManagerLocalTimeCheck:SetChecked((cvarLocal) and true or false)
 	-- Only Refresh the options if the option panel is loaded.
-	if element.RefreshOptionsPanel then 
-		element:RefreshOptionsPanel() 
+	if element.RefreshOptionsPanel then
+		element:RefreshOptionsPanel()
 	end
 	element:UpdateClock()
 end
@@ -193,7 +193,7 @@ end
 
 -- Click: Open Calendar Frame
 -- RightClick: Open Time Manager
-function element.OnClick(frame, button)
+function element.OnClick(frame_, button)
 	if button == "RightButton" then
 		TimeManager_Toggle()
 	else
@@ -205,8 +205,10 @@ function element.OnTooltipShow(GameTooltip)
 	element:TooltipHeader(TIMEMANAGER_TITLE)
 
 	--Display both set of times.
-	GameTooltip:AddDoubleLine(cvarLocal and TIMEMANAGER_TOOLTIP_LOCALTIME or TIMEMANAGER_TOOLTIP_REALMTIME, element:GetTime(cvarLocal))
-	GameTooltip:AddDoubleLine(cvarLocal and TIMEMANAGER_TOOLTIP_REALMTIME or TIMEMANAGER_TOOLTIP_LOCALTIME, element:GetTime(not cvarLocal))
+	GameTooltip:AddDoubleLine(cvarLocal and TIMEMANAGER_TOOLTIP_LOCALTIME or TIMEMANAGER_TOOLTIP_REALMTIME,
+	                         element:GetTime(cvarLocal))
+	GameTooltip:AddDoubleLine(cvarLocal and TIMEMANAGER_TOOLTIP_REALMTIME or TIMEMANAGER_TOOLTIP_LOCALTIME,
+	                          element:GetTime(not cvarLocal))
 
 	local oneraid -- Used so we dont display "Saved Raids:" unless you are saved to at least one.
 	if db.showSavedRaids then
@@ -217,7 +219,9 @@ function element.OnTooltipShow(GameTooltip)
 				local r, g, b = 1, 1, 1
 				if extended then r, g, b = 0.5, 1, 0.5 end
 				oneraid = OneRaidCheck(oneraid)
-				GameTooltip:AddDoubleLine(format("%s |cffaaaaaa%s%s (%s/%s)", name, maxPlayers, localizedDiff, defeatedBosses, maxBosses), formatTime(reset), 1,1,1, r,g,b)
+				local nameFormat = format("%s |cffaaaaaa%s%s", name, maxPlayers, localizedDiff)
+				nameFormat = format("%s (%s/%s)", nameFormat, defeatedBosses, maxBosses)
+				GameTooltip:AddDoubleLine(nameFormat, formatTime(reset), 1,1,1, r,g,b)
 			end
 		end
 	end
@@ -226,7 +230,8 @@ function element.OnTooltipShow(GameTooltip)
 		for i = 1, GetNumSavedWorldBosses() do
 			local name, _, reset = GetSavedWorldBossInfo(i)
 			oneraid = OneRaidCheck(oneraid)
-			GameTooltip:AddDoubleLine(format("%s |cffaaaaaa(%s)", name, RAID_INFO_WORLD_BOSS), formatTime(reset), 1,1,1, 1,1,1)
+			GameTooltip:AddDoubleLine(format("%s |cffaaaaaa(%s)", name, RAID_INFO_WORLD_BOSS),
+			                          formatTime(reset), 1,1,1, 1,1,1)
 		end
 	end
 
@@ -237,7 +242,7 @@ end
 -- / API FUNCTIONS / --
 ------------------------------------------------------
 function element:LoadOptions()
-	local function MilitaryTime(info, value)
+	local function MilitaryTime(info_, value)
 		--Set
 		if type(value) == "boolean" then
 			SetCVar(CVAR_MILITARY, value and 1 or 0, true)
@@ -247,7 +252,7 @@ function element:LoadOptions()
 			return cvarMilitary
 		end
 	end
-	local function LocalTime(info, value)
+	local function LocalTime(info_, value)
 		--Set
 		if type(value) == "boolean" then
 			SetCVar(CVAR_LOCAL, value and 1 or 0, true)
@@ -259,13 +264,16 @@ function element:LoadOptions()
 	end
 	local militaryMeta = { get = MilitaryTime, set = MilitaryTime }
 	local localMeta = { get = LocalTime, set = LocalTime }
-	
+
 	local options = {
 		setClock24h = element:NewToggle(TIMEMANAGER_24HOURMODE, nil, 1, militaryMeta, "normal"),
 		setClockLocal = element:NewToggle(TIMEMANAGER_LOCALTIME, nil, 2, localMeta, "normal"),
-		instanceDifficulty = element:NewToggle(L["InfoClock_InstanceDifficulty_Name"], L["InfoClock_InstanceDifficulty_Desc"], 3, "UpdateClock"),
-		showSavedRaids = element:NewToggle(L["InfoClock_ShowSavedRaids_Name"], L["InfoClock_ShowSavedRaids_Desc"], 5, "UpdateTooltip"),
-		showWorldBosses = element:NewToggle(L["InfoClock_ShowWorldBosses_Name"], L["InfoClock_ShowWorldBosses_Desc"], 6, "UpdateTooltip"),
+		instanceDifficulty = element:NewToggle(L["InfoClock_InstanceDifficulty_Name"],
+		                                       L["InfoClock_InstanceDifficulty_Desc"], 3, "UpdateClock"),
+		showSavedRaids = element:NewToggle(L["InfoClock_ShowSavedRaids_Name"],
+		                                   L["InfoClock_ShowSavedRaids_Desc"], 5, "UpdateTooltip"),
+		showWorldBosses = element:NewToggle(L["InfoClock_ShowWorldBosses_Name"],
+		                                    L["InfoClock_ShowWorldBosses_Desc"], 6, "UpdateTooltip"),
 
 	}
 	return options

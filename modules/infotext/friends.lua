@@ -3,18 +3,16 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Infotext")
 local element = module:NewElement("Friends", "AceEvent-3.0")
 local L = LUI.L
 local db
 
 -- local copies
-local format, gsub, wipe = format, gsub, wipe
+local format = format
 local FriendsFrame_BattlenetInvite = FriendsFrame_BattlenetInvite
 local BNet_GetClientTexture = BNet_GetClientTexture
-local BNGetFriendToonInfo = BNGetFriendToonInfo
-local BNGetNumFriendToons = BNGetNumFriendToons
 local ToggleFriendsFrame = ToggleFriendsFrame
 local BNFeaturesEnabled = BNFeaturesEnabled
 local StaticPopup_Show = StaticPopup_Show
@@ -29,17 +27,16 @@ local BNGetInfo = BNGetInfo
 -- constants
 local FRIENDS_OTHER_NAME_COLOR_CODE = FRIENDS_OTHER_NAME_COLOR_CODE
 local FRIENDS_BNET_NAME_COLOR_CODE = FRIENDS_BNET_NAME_COLOR_CODE
-local FRIENDS_PRESENCE_COLOR_CODE = FRIENDS_PRESENCE_COLOR_CODE
+--local FRIENDS_PRESENCE_COLOR_CODE = FRIENDS_PRESENCE_COLOR_CODE
 local BATTLENET_UNAVAILABLE = BATTLENET_UNAVAILABLE
 local BATTLENET_BROADCAST = BATTLENET_BROADCAST
 local CHAT_FLAG_AFK = CHAT_FLAG_AFK
 local CHAT_FLAG_DND = CHAT_FLAG_DND
 local FRIENDS = FRIENDS
-local UNKNOWN = UNKNOWN
 local FRIENDS_UPDATE_TIME = 15
 local SOCIAL_TAB_FRIENDS = 1
-local BLANK_NOTE = "|cffffcc00-"
-local TOOLTIP_ICON_FORMAT = "|T%s:13:13:0:0|t"
+-- local BLANK_NOTE = "|cffffcc00-"
+-- local TOOLTIP_ICON_FORMAT = "|T%s:13:13:0:0|t"
 local BNPLAYER_HYPERLINK_FORMAT = "|HBNplayer:%1$s|h[%1$s]|h"
 local PLAYER_HYPERLINK_FORMAT = "|Hplayer:%1$s|h[%1$s]|h"
 local BNPLAYER_LINK_FORMAT = "BNplayer:%s"
@@ -52,18 +49,18 @@ local GAP = 10
 
 -- BNET_CLIENT Constants
 local BNET_CLIENT_WOW       = BNET_CLIENT_WOW
-local BNET_CLIENT_SC        = BNET_CLIENT_SC
-local BNET_CLIENT_SC2       = BNET_CLIENT_SC2
-local BNET_CLIENT_D3        = BNET_CLIENT_D3
-local BNET_CLIENT_WTCG      = BNET_CLIENT_WTCG
-local BNET_CLIENT_APP       = BNET_CLIENT_APP
-local BNET_CLIENT_HEROES    = BNET_CLIENT_HEROES
-local BNET_CLIENT_OVERWATCH = BNET_CLIENT_OVERWATCH
-local BNET_CLIENT_DESTINY2  = BNET_CLIENT_DESTINY2
+-- local BNET_CLIENT_SC        = BNET_CLIENT_SC
+-- local BNET_CLIENT_SC2       = BNET_CLIENT_SC2
+-- local BNET_CLIENT_D3        = BNET_CLIENT_D3
+-- local BNET_CLIENT_WTCG      = BNET_CLIENT_WTCG
+-- local BNET_CLIENT_APP       = BNET_CLIENT_APP
+-- local BNET_CLIENT_HEROES    = BNET_CLIENT_HEROES
+-- local BNET_CLIENT_OVERWATCH = BNET_CLIENT_OVERWATCH
+-- local BNET_CLIENT_DESTINY2  = BNET_CLIENT_DESTINY2
 local BNET_CLIENT_MOBILE    = "BSAp" -- Doesnt seem to have an official constant yet.
 
 -- locals
-local friendEntries = {}
+--local friendEntries = {}
 local totalFriends = 0
 local onlineFriends = 0
 local totalBNFriends = 0
@@ -244,7 +241,10 @@ function element:IsBNClientShown(i, index)
 
 	--Previous check filters out people connected on mobile and app at same time, or connected on two apps.
 	local _, _, nextClient = BNGetFriendGameAccountInfo(i, index + 1)
-	if numAccounts == 2 and client == BNET_CLIENT_APP and (nextClient == BNET_CLIENT_MOBILE or nextClient == BNET_CLIENT_APP) then return true end
+	if numAccounts == 2 and client == BNET_CLIENT_APP and
+	    (nextClient == BNET_CLIENT_MOBILE or nextClient == BNET_CLIENT_APP) then
+		return true
+	end
 
 	return false
 
@@ -256,7 +256,7 @@ function element:DisplayBNFriends()
 	infotip.bnIndex = 0 -- BNFriends
 	infotip.bcIndex = 0 -- Friend Broadcasts
 	for i = 1, onlineBNFriends do
-		local accountID, accountName, battleTag, isBattleTag, _, _, _, _, _, isAFK, isDND, broadcast, note = BNGetFriendInfo(i)
+		local accountID, accountName, _, _, _, _, _, _, _, isAFK, isDND, broadcast, note = BNGetFriendInfo(i)
 		local btagString = format("%s%s|r", FRIENDS_BNET_NAME_COLOR_CODE, accountName)
 		local statusString = element:GetBNFriendStatusString(isAFK, isDND)
 
@@ -264,7 +264,7 @@ function element:DisplayBNFriends()
 		-- Problem: If a friend has 2+ accounts that are all only signed into the app, they get ignored and shit gets fucked.
 		
 		for accountIndex = 1, numAccounts do
-			local _, charName, client, realmName, _, faction, race, class, _, zone, level, gameText = BNGetFriendGameAccountInfo(i, accountIndex)
+			local _, charName, client, realmName, _, faction, _, class, _, zone, level, gameText = BNGetFriendGameAccountInfo(i, accountIndex)
 			if element:IsBNClientShown(i, accountIndex) then
 				infotip.bnIndex = infotip.bnIndex + 1
 				local bnfriend = element:CreateBNFriend(infotip.bnIndex)
@@ -523,7 +523,7 @@ end
 --Click to open Friends List.
 --Right-Click to add a Friend.
 --Button4 to toggle notes.
-function element.OnClick(frame, button)
+function element.OnClick(frame_, button)
 	if button == "RightButton" then
 		FriendsFrameAddFriendButton:Click()
 	elseif button == "Button4" then
@@ -535,7 +535,7 @@ function element.OnClick(frame, button)
 	end
 end
 
-function element.OnEnter(frame)
+function element.OnEnter(frame_)
 	ShowFriends()
 	if not infotip then element:BuildTooltip() end
 
@@ -604,7 +604,7 @@ function element.OnEnter(frame)
 	onBlock = true
 end
 
-function element.OnLeave(frame)
+function element.OnLeave(frame_)
 	if not infotip:IsMouseOver() then
 		infotip:Hide()
 		onBlock = false

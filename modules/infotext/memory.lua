@@ -3,11 +3,10 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Infotext")
 local element = module:NewElement("Memory")
 local L = LUI.L
-local db
 
 local format = format
 local collectgarbage = collectgarbage
@@ -71,7 +70,7 @@ function element:UpdateMemory()
 	element:UpdateTooltip()
 end
 
-function element.OnClick(frame, button)
+function element.OnClick(frame_, button_)
 	collectgarbage("collect")
 	element:UpdateMemory()
 end

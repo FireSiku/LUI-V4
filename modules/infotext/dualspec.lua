@@ -3,7 +3,7 @@
 ------------------------------------------------------
 -- / SETUP AND LOCALS / --
 ------------------------------------------------------
-local addonname, LUI = ...
+local _, LUI = ...
 local module = LUI:GetModule("Infotext")
 local element = module:NewElement("Dualspec", "AceEvent-3.0")
 local L = LUI.L
@@ -132,7 +132,7 @@ end
 -- Click: Switch Talent Group
 -- Right-Click: Open Talent Frame
 -- Shift-Click: Open Glyph Frame (TODO)
-function element.OnClick(frame, button)
+function element.OnClick(frame_, button)
 	if IsShiftKeyDown() then
 		element:ToggleTalentTab(TALENT_TAB_GLYPHS)
 	elseif button == "RightButton" then
@@ -140,7 +140,7 @@ function element.OnClick(frame, button)
 	else
 		if not HasDualSpec() then return end
 		SetActiveSpecGroup(3 - GetActiveSpecGroup())
- 	end
+	end
 end
 
 function element.OnTooltipShow(GameTooltip)
