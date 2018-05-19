@@ -15,7 +15,6 @@ LUI = LibStub("AceAddon-3.0"):NewAddon(LUI, addonName, "AceConsole-3.0", "AceEve
 LUI.L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 LUI:SetDefaultModuleLibraries("AceEvent-3.0")
 local L = LUI.L
-local db
 
 --For Testing Purposes Only
 _G["LUI"] = LUI
@@ -55,7 +54,7 @@ LUI.playerRace = select(2, UnitRace("player"))
 LUI.playerFaction = UnitFactionGroup("player")
 LUI.playerName =  UnitName("player")
 LUI.playerRealm = GetRealmName()
-LUI.playerFullName = format("%s-%s",LUI.playerName,LUI.playerRealm)
+LUI.playerFullName = format("%s-%s", LUI.playerName, LUI.playerRealm)
 LUI.otherFaction = (LUI.playerFaction == "Alliance") and "Horde" or "Alliance"
 
 LUI.defaults = {
@@ -112,6 +111,7 @@ LUI.blank = [[Interface\AddOns\LUI4\media\blank]]
 
 --- Check if LUI is installed.
 function LUI:CheckInstall()
+	local db = LUI:GetDB()
 	--Check for the big install
 	if not db.installed.LUI then LUI:OnInstall() end
 
@@ -139,10 +139,9 @@ function LUI:CheckInstall()
 end
 
 function LUI:OnInstall()
-
-	self.db:SetProfile(format("%s - %s",LUI.playerName,LUI.playerRealm))
+	self.db:SetProfile(format("%s - %s", LUI.playerName, LUI.playerRealm))
 	-- Got nothing to put here for now.
-	db.installed.LUI = true
+	self.db.profile.installed.LUI = true
 	--Also placeholder print. Possibly?
 	LUI:Print(L["Core_InstallSucess"])
 end
@@ -307,7 +306,7 @@ end
 --Function that will create a namespace for each module.
 -- module - Ace Object from :NewModule
 function LUI:RegisterModule(module)
-
+	local db = LUI:GetDB()
 	local mName = module:GetName()
 
 	--If a module hasn't been installed yet and should be disabled by default, disable it.
@@ -356,9 +355,8 @@ function LUI:OnInitialize()
 	self.db.RegisterCallback(self, "OnProfileChanged", "Refresh")
 	self.db.RegisterCallback(self, "OnProfileCopied", "Refresh")
 	self.db.RegisterCallback(self, "OnProfileReset", "Refresh")
-	db = self.db.profile
 
-	for k, v in pairs(db.modules) do
+	for k, v in pairs(self.db.profile.modules) do
 		LUI:Print("Init", k, v)
 	end
 
@@ -376,14 +374,13 @@ function LUI:OnEnable()
 end
 
 function LUI:Refresh()
-	db = self.db.profile
 	if not IsLoggedIn() then return end -- in case of db callbacks fires before OnEnable function
 
 	--Failsafe calling OnEnable/OnDisable on Profile change to
 	for name_, module in self:IterateModules() do
-		local mdb = module.db
-		if mdb and mdb.profile and mdb.profile.Enable ~= nil then
-			module[mdb.profile.Enable and "Enable" or "Disable"](module)
+		local db = module.db
+		if db and db.profile and db.profile.Enable ~= nil then
+			module[db.profile.Enable and "Enable" or "Disable"](module)
 		end
 	end
 end

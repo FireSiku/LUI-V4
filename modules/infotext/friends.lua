@@ -7,7 +7,6 @@ local _, LUI = ...
 local module = LUI:GetModule("Infotext")
 local element = module:NewElement("Friends", "AceEvent-3.0")
 local L = LUI.L
-local db
 
 -- local copies
 local format = format
@@ -188,7 +187,7 @@ function element:CreateFriendBroadcast(index)
 	bc.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 	--Broadcast Text
 	bc.text = bc:AddFontString("LEFT", bc.icon, TEXT_OFFSET, element:Color("FriendBroadcast"))
-	
+
 	infotip.FriendsBC[index] = bc
 	return bc
 end
@@ -262,7 +261,7 @@ function element:DisplayBNFriends()
 
 		local numAccounts = BNGetNumFriendGameAccounts(i)
 		-- Problem: If a friend has 2+ accounts that are all only signed into the app, they get ignored and shit gets fucked.
-		
+
 		for accountIndex = 1, numAccounts do
 			local _, charName, client, realmName, _, faction, _, class, _, zone, level, gameText = BNGetFriendGameAccountInfo(i, accountIndex)
 			if element:IsBNClientShown(i, accountIndex) then
@@ -273,7 +272,7 @@ function element:DisplayBNFriends()
 				bnfriend.accountName = accountName
 				bnfriend.client = client
 				bnfriend.note:SetText(note)
-				
+
 				-- WoW BN Friends have additional information about their currently active toon.
 				if client == BNET_CLIENT_WOW then
 					-- Name Column
@@ -281,7 +280,7 @@ function element:DisplayBNFriends()
 					bnfriend:SetClassIcon(bnfriend.class, class)
 					local nameString =  LUI:ColorToString(charName, element:Color(class))
 					bnfriend.name:SetText(format("%s%s - %s",statusString, btagString, nameString))
-					
+
 					-- Level/Faction Column - Only displayed for WoW toons.
 					bnfriend.level:SetText(level)
 					bnfriend.level:SetTextColor(LUI:GetDifficultyColor(level))
@@ -299,10 +298,10 @@ function element:DisplayBNFriends()
 					bnfriend.level:Show()
 					bnfriend.faction:Show()
 					bnfriend.zone:Show()
-				else 
+				else
 					bnfriend.class:SetTexture(BNet_GetClientTexture(client))
 					bnfriend.class:SetTexCoord(0.2, 0.8, 0.2, 0.8)
-					-- if no character name is given, it will be an empty string instead of nil. 
+					-- if no character name is given, it will be an empty string instead of nil.
 					if charName and not charName == "" then
 						local nameString = FRIENDS_OTHER_NAME_COLOR_CODE..charName
 						bnfriend.name:SetText(format("%s%s - %s",statusString, btagString, nameString))
@@ -316,7 +315,7 @@ function element:DisplayBNFriends()
 					bnfriend.zone:Hide()
 					bnfriend.gameText:Show()
 				end
-				
+
 				nameColumnWidth = max(nameColumnWidth, bnfriend.name:GetStringWidth())
 				levelColumnWidth = max(levelColumnWidth, bnfriend.level:GetStringWidth())
 				zoneColumnWidth = max(zoneColumnWidth, bnfriend.zone:GetStringWidth())
@@ -325,7 +324,7 @@ function element:DisplayBNFriends()
 				gameColumnWidth = max(gameColumnWidth, bnfriend.gameText:GetStringWidth())
 			end
 		end
-		
+
 		local bnfriend = infotip.BNFriends[infotip.bnIndex]
 		--Make sure to only display broaawdcast once per friend.
 		if broadcast and broadcast ~= "" then
@@ -333,7 +332,7 @@ function element:DisplayBNFriends()
 			infotip.bcIndex = infotip.bcIndex + 1
 			bnfriend.broadcast = element:CreateFriendBroadcast(infotip.bcIndex)
 			bnfriend.broadcast.text:SetText(broadcast)
-			-- Adjust height if string gets wrapped. 
+			-- Adjust height if string gets wrapped.
 			if bnfriend.broadcast:GetHeight() < bnfriend.broadcast.text:GetStringHeight() then
 			-- 3 seems to be the difference between StringHeight and Height for non-wrapped lines
 			-- Keep that difference to prevent the text from looking squeezed.
@@ -344,7 +343,7 @@ function element:DisplayBNFriends()
 			bnfriend.hasBroadcast = false
 		end
 	end
-	
+
 	for i = 1, #infotip.BNFriends do
 		local bnfriend = infotip.BNFriends[i]
 		bnfriend.name:SetWidth(nameColumnWidth)
@@ -367,12 +366,12 @@ function element:DisplayBNFriends()
 	local maxWidth = TEXT_OFFSET + classIconWidth + nameColumnWidth + noteColumnWidth + GAP * 4
 	maxWidth = maxWidth + max(factionIconWidth + zoneColumnWidth + levelColumnWidth + TEXT_OFFSET + GAP, gameColumnWidth)
 	infotip.maxWidth = max(infotip.maxWidth, maxWidth)
-	
+
 	--Set the broadcast lines to be equal to infotip width.
 	for i = 1, #infotip.FriendsBC do
 		local bc = infotip.FriendsBC[i]
 		bc.text:SetWidth(infotip.maxWidth - BC_OFFSET - TEXT_OFFSET - GAP * 3)
-		
+
 		if i > infotip.bcIndex then bc:Hide()
 		else
 			infotip.maxHeight = infotip.maxHeight + bc:GetHeight()
@@ -504,6 +503,7 @@ end
  -- Friends/Guild have different tooltip implementation, comment all tooltip updates for now.
 
 function element:UpdateFriends()
+	local db = module:GetDB()
 	local formatString = (db.showTotal) and "%s: %d/%d" or "%s: %d"
 	element.text = format(formatString, FRIENDS, onlineFriends + onlineBNFriends, totalFriends + totalBNFriends)
 	--tooltip:Update()
@@ -615,8 +615,6 @@ end
 -- / FRAMEWORK FUNCTIONS / --
 ------------------------------------------------------
 function element:OnCreate()
-	db = element:GetDB()
-
 	element:AddUpdate(ShowFriends, FRIENDS_UPDATE_TIME)
 	element:RegisterEvent("FRIENDLIST_UPDATE", "FriendlistUpdate")
 	ShowFriends()

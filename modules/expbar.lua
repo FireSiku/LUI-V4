@@ -6,7 +6,6 @@
 local _, LUI = ...
 local module = LUI:NewModule("Experience Bar")
 local L = LUI.L
-local db
 
 -- Localize Systems
 local C_Reputation = C_Reputation
@@ -79,6 +78,8 @@ local MAX_LEVEL = 110
 
 -- Function to determine what mode the bar should be in.
 function module:UpdateBarMode()
+	local db = module:GetDB()
+
 	local level = UnitLevel("player")
 	local mult = db.BGMultiplier
 
@@ -163,6 +164,8 @@ function module:UpdateXPBar(bar)
 	local maxXP = UnitXPMax("player")
 	local percentBar = currXP * 100 / maxXP
 	bar:SetValue(percentBar)
+
+	local db = module:GetDB()
 	if db.ShowText then
 		bar.text:SetFormattedText("%."..db.Precision.."f%% "..L["ExpBar_Format_XP"], percentBar)
 	else
@@ -202,6 +205,7 @@ function module:UpdateRepBar(bar)
 	bar:SetMinMaxValues(barMin, barMax)
 	bar:SetValue(barValue)
 
+	local db = module:GetDB()
 	if db.ShowText then
 		bar.text:SetFormattedText("%."..db.Precision.."f%% %s" , percentBar, repText)
 	else
@@ -237,6 +241,7 @@ function module:UpdateAPBar(bar)
 	local percentBar = xp * 100 / xpNextPoint
 	bar:SetMinMaxValues(0, xpNextPoint)
 	bar:SetValue(xp)
+	local db = module:GetDB()
 	if db.ShowText then
 		if numPoints > 0 then
 			bar.text:SetFormattedText("%."..db.Precision.."f%%"..L["ExpBar_Format_AP_Level"] , percentBar, numPoints)
@@ -265,6 +270,7 @@ function module:UpdateHonorBar(bar)
 		bar:SetValue(honorCurrent)
 		percentBar = honorCurrent * 100 / honorMax
 	end
+	local db = module:GetDB()
 	if db.ShowText then
 		bar.text:SetFormattedText("%."..db.Precision.."f%% "..L["ExpBar_Format_Honor"], percentBar, honorLevel)
 	else
@@ -273,6 +279,8 @@ function module:UpdateHonorBar(bar)
 end
 
 function module:CreateBar(name)
+	local db = module:GetDB()
+
 	local bar = CreateFrame("StatusBar", name, UIParent)
 	bar:SetFrameStrata("HIGH")
 	bar:SetSize(db.Width, db.Height)
@@ -295,6 +303,7 @@ function module:CreateBar(name)
 end
 
 function module:SetBar()
+	local db = module:GetDB()
 
 	local anchor = CreateFrame("Frame", "LUI_ExpBarAnchor", UIParent)
 	anchor:SetPoint(db.Point, UIParent, db.RelativePoint, db.X, db.Y)
@@ -316,6 +325,7 @@ end
 module.enableButton = true
 
 function module:RefreshColors()
+	local db = module:GetDB()
 	local mult = db.BGMultiplier
 	-- Bar 1
 	local r1, g1, b1 = module:Color(module.ExpBar.mode)
@@ -380,7 +390,6 @@ function module:OnInitialize()
 end
 
 function module:OnEnable()
-	db = module:GetDB()
 	module:SetBar()
 	--Note: Kinda greedy event listeners. If tracking rep, it would check for rep again when you gain exp.
 	module:RegisterEvent("PLAYER_XP_UPDATE", "UpdateBarMode")

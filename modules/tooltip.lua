@@ -7,7 +7,6 @@ local _, LUI = ...
 local module = LUI:NewModule("Tooltip", "AceHook-3.0")
 local Media = LibStub("LibSharedMedia-3.0")
 local L = LUI.L
-local db
 
 local _G = _G
 local pairs = pairs
@@ -162,6 +161,7 @@ function LUI:ForceTooltipUpdate(ttip)
 end
 
 function module:UpdateTooltipBackdrop()
+	local db = module:GetDB()
 	for i = 1, #TOOLTIPS_LIST do
 		local tooltipName = TOOLTIPS_LIST[i]
 		local tooltip = _G[tooltipName]
@@ -198,6 +198,7 @@ function module:GetUnitColor(unit)
 end
 
 function module:SetTooltip()
+	local db = module:GetDB()
 	module:SecureHook("GameTooltip_SetDefaultAnchor", function(frame, parent)
 		if db.Cursor then
 			frame:SetOwner(parent, "ANCHOR_CURSOR")
@@ -219,6 +220,7 @@ end
 
 function module:SetStatusHealthBar()
 	local health = GameTooltipStatusBar
+	local db = module:GetDB()
 
 	-- Save default data before replacing it (for reverting)
 	if not oldDefault.Health then
@@ -311,6 +313,7 @@ function module.OnStatusBarValueChanged(frame, value_)
 end
 
 function module:OnTooltipShow(frame)
+	local db = module:GetDB()
 	if db.hideCombat and InCombatLockdown() then
 		frame:Hide()
 		return
@@ -322,6 +325,7 @@ function module:OnTooltipShow(frame)
 end
 
 function module:OnGameTooltipSetUnit(frame)
+	local db = module:GetDB()
 	if db.hideCombatUnit and InCombatLockdown() then
 		frame:Hide()
 		return
@@ -405,6 +409,7 @@ function module:OnGameTooltipSetUnit(frame)
 end
 
 function module:HideCombatSkillTooltips(frame)
+	local db = module:GetDB()
 	if db.hideCombatSkills and InCombatLockdown() and not IsShiftKeyDown() then
 		frame:Hide()
 	end
@@ -419,6 +424,7 @@ module.enableButton = true
 function module:LoadOptions()
 
 	local function disableIfTooltipsHidden(info_)
+		local db = module:GetDB()
 		return db.hideCombat
 	end
 
@@ -470,7 +476,6 @@ function module:OnInitialize()
 end
 
 function module:OnEnable()
-	db = module:GetDB()
 	module:UpdateTooltipBackdrop()
 	module:SetTooltip()
 

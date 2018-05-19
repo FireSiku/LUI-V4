@@ -9,7 +9,6 @@
 local _, LUI = ...
 local module = LUI:NewModule("Minimap")
 local L = LUI.L
-local db
 
 -- Constants
 local MINIMAP_LABEL = MINIMAP_LABEL
@@ -163,6 +162,7 @@ function module:RestoreDefaultMinimap()
 end
 
 function module:SetMinimap()
+	local db = module:GetDB()
 
 	--Enable Scroll Zooming
 	Minimap:EnableMouseWheel(true)
@@ -341,6 +341,7 @@ function module:SetMinimapFrames()
 end
 
 function module:SetMinimapSize()
+	local db = module:GetDB()
 	LUI:RegisterConfig(Minimap, db.Position)
 	LUI:RestorePosition(Minimap)
 end
@@ -357,6 +358,7 @@ function module:SetColors()
 end
 
 function module:ToggleMinimapText()
+	local db = module:GetDB()
 	if db.General.alwaysShowText then
 		LUIMinimapZone:Show()
 		LUIMinimapCoord:Show()
@@ -367,6 +369,7 @@ function module:ToggleMinimapText()
 end
 
 function module:ToggleMinimapTextures()
+	local db = module:GetDB()
 	if db.General.showTextures then
 		LUIMinimapBorder:Show()
 		for i = 1, 8 do
@@ -414,7 +417,6 @@ function module:OnInitialize()
 end
 
 function module:OnEnable()
-	db = module:GetDB()
 	module:HideDefaultMinimap()
 	module:SetMinimap()
 end

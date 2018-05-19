@@ -19,7 +19,6 @@ local _, LUI = ...
 local module = LUI:NewModule("Bags", "AceHook-3.0")
 local Media = LibStub("LibSharedMedia-3.0")
 local L = LUI.L
-local db
 
 local format, pairs = format, pairs
 local GetContainerNumFreeSlots = GetContainerNumFreeSlots
@@ -114,6 +113,7 @@ function ContainerMixin:StartMovingFrame()
 end
 
 function ContainerMixin:StopMovingFrame()
+	local db = module:GetDB()
 	self:StopMovingOrSizing()
 	local x, y = self:GetCenter()
 	db.Position[self.name].X = format("%.1f", x)
@@ -848,8 +848,6 @@ function module:OnInitialize()
 end
 
 function module:OnEnable()
-	db = module:GetDB()
-
 	module:RefreshBackdrops()
 	for name, element_ in module:IterateModules() do
 		module:EnableModule(name)

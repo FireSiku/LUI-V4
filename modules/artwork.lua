@@ -4,7 +4,6 @@
 local _, LUI = ...
 local module = LUI:NewModule("Panels")
 local L = LUI.L
-local db
 
 --Defaults
 module.defaults = {
@@ -140,6 +139,8 @@ local LUI_TEX_DIR = "Interface\\AddOns\\LUI4\\media\\textures\\"
 ------------------------------------------------------
 -- / PANELS FUNCTIONS / --
 ------------------------------------------------------
+-- Panel objects have a database point in self.db.
+-- There is no profile scope, nor do they have a :GetDB() function.
 function PanelMixin:GetParent()
 	--TODO: Add support for LibWindow for proper texture scaling when not anchored.
 	if self.db.Anchored then return _G[self.db.Parent]
@@ -223,6 +224,7 @@ end
 
 function module:setPanels()
 	module.panelList = {}
+	local db = module:GetDB()
 	for k, v in pairs(db.Textures) do
 		table.insert(module.panelList, k)
 	end
@@ -230,8 +232,8 @@ function module:setPanels()
 		return db.Textures[a].Order < db.Textures[b].Order
 	end)
 
-	for name, db in pairs(module:GetDB().Textures) do
-		local frame_ = module:CreateNewPanel(name, db)
+	for name, mdb in pairs(db.Textures) do
+		local frame_ = module:CreateNewPanel(name, mdb)
 	end
 end
 
@@ -335,8 +337,9 @@ function module:NewPanel(info)
 		module:ModPrint("A panel by that name already exists")
 		return
 	end
-
-	local panelDB =  db.Textures[nameInput]
+	
+	local db = module:GetDB()
+	local panelDB = db.Textures[nameInput]
 	--Set the order so that, in theory, order values do not overlap.
 	panelDB.Order = #module.panelList+1
 	table.insert(module.panelList, nameInput)
@@ -356,6 +359,8 @@ function module:DeletePanel(info)
 	if not panelName then return end
 	table.remove(module.panelList, panelSelect)
 	_G["LUIPanel_"..panelName]:Hide()
+
+	local db = module:GetDB()
 	db.Textures[panelName] = nil
 
 	info.options.args[info[#info-1]].args[panelName] = nil
@@ -392,7 +397,6 @@ end
 
 function module:OnInitialize()
 	LUI:RegisterModule(module)
-	db = module:GetDB()
 end
 
 function module:OnEnable()

@@ -11,7 +11,6 @@ local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
 module.RegisterLDBCallback = LDB.RegisterCallback
 module.LDB = LDB
 local L = LUI.L
-local db
 
 local select, pairs = select, pairs
 
@@ -197,6 +196,7 @@ function module:IterateModules()
 end
 
 function module:IsPositionSet(name)
+	local db = module:GetDB()
 	return (db[name].X ~= 0) and true or false
 end
 
@@ -229,6 +229,7 @@ function module:DataObjectCreated(name, element)
 	if elementStorage[name] then LUI:EmbedModule(element) end
 	if element.OnCreate then element:OnCreate(frame) end
 
+	local db = module:GetDB()
 	if module:IsPositionSet(name) then
 		local anchor = module:GetAnchor("top")
 		frame:SetParent(anchor)
@@ -286,20 +287,24 @@ function module.OnLeaveHandler(self, ...)
 end
 
 function module:IsInfotextEnabled(name)
+	local db = module:GetDB()
 	return db[name].Enable
 end
 
 function module:ShowInfotext(name)
+	local db = module:GetDB()
 	elementFrames[name]:Show()
 	db[name].Enable = true
 end
 
 function module:HideInfotext(name)
+	local db = module:GetDB()
 	elementFrames[name]:Hide()
 	db[name].Enable = false
 end
 
 function module:ToggleInfotext(name)
+	local db = module:GetDB()
 	local frame = elementFrames[name]
 	if frame:IsShown() then
 		frame:Hide()
@@ -316,8 +321,14 @@ end
 module.enableButton = true
 
 -- Objects that are disabled shouldn't clog your option tabs.
-local function IsInfotextGroupHidden(info) return not db[info[#info]].Enable end
-local function IsYPositionHidden(info) return (info[#info] == "Y") and not db.General.AllowY or false end
+local function IsInfotextGroupHidden(info)
+	local db = module:GetDB()
+	return not db[info[#info]].Enable
+end
+local function IsYPositionHidden(info)
+	local db = module:GetDB()
+	return (info[#info] == "Y") and not db.General.AllowY or false
+end
 
 -- Template for infotext option menus
 function module:NewInfotextOptionGroup(name, order, childGroups_)
@@ -420,7 +431,6 @@ function module:OnInitialize()
 end
 
 function module:OnEnable()
-	db = module:GetDB()
 	SetInfoPanels()
 
 	-- Make sure all objects created before the callback gets properly initialized.

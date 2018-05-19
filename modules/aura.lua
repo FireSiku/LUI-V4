@@ -8,7 +8,6 @@
 local _, LUI = ...
 local module = LUI:NewModule("Auras")
 local L = LUI.L
-local db
 
 local headerStorage = {}
 
@@ -92,6 +91,7 @@ local function FormatTime(seconds)
 end
 
 function module:GetDebuffColor(debuffType)
+	local db = module:GetDB()
 	if db.Colors[debuffType] then
 		return module:Color(debuffType)
 	else
@@ -321,8 +321,6 @@ function module:OnInitialize()
 end
 
 function module:OnEnable()
-	db = module:GetDB()
-
 	BuffFrame:Hide()
 	module:NewAuraHeader("Buffs", true)
 	module:NewAuraHeader("Debuffs")

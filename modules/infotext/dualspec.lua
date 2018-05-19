@@ -7,7 +7,6 @@ local _, LUI = ...
 local module = LUI:GetModule("Infotext")
 local element = module:NewElement("Dualspec", "AceEvent-3.0")
 local L = LUI.L
-local db
 
 -- local copies
 local select, format, tconcat = select, format, table.concat
@@ -116,6 +115,7 @@ function element:UpdateTalents()
 end
 
 function element:UpdateSpec()
+	local db = module:GetDB()
 	local currentSpec = specCache[GetSpecialization()]
 	local specName = (currentSpec) and currentSpec.name or L["InfoDualspec_NoSpec"]
 	if db.lootSpec and GetLootSpecialization() > 0 then
@@ -179,7 +179,6 @@ end
 
 function element:OnCreate()
 	MAX_SPECS = GetNumSpecializations()
-	db = element:GetDB()
 
 	element:CacheSpecInfo()
 	element:RegisterEvent("PLAYER_TALENT_UPDATE", "UpdateTalents")

@@ -7,7 +7,6 @@ local _, LUI = ...
 local module = LUI:GetModule("Infotext")
 local element = module:NewElement("Clock", "AceEvent-3.0", "AceHook-3.0")
 local L = LUI.L
-local db
 
 -- local copies
 local gsub, format = gsub, format
@@ -185,6 +184,7 @@ function element:UpdateClock()
 	if invitesPending then
 		element.text = L["InfoClock_InvitePending"]
 	else
+		local db = module:GetDB()
 		local timeFormat = (db.instanceDifficulty and instanceInfo) and "%s (%s%s)" or "%s"
 		element.text = format(timeFormat, element:GetTime(cvarLocal), instanceInfo or "", guildParty or "")
 	end
@@ -210,6 +210,7 @@ function element.OnTooltipShow(GameTooltip)
 	GameTooltip:AddDoubleLine(cvarLocal and TIMEMANAGER_TOOLTIP_REALMTIME or TIMEMANAGER_TOOLTIP_LOCALTIME,
 	                          element:GetTime(not cvarLocal))
 
+	local db = module:GetDB()
 	local oneraid -- Used so we dont display "Saved Raids:" unless you are saved to at least one.
 	if db.showSavedRaids then
 		for i = 1, GetNumSavedInstances() do
@@ -280,7 +281,6 @@ function element:LoadOptions()
 end
 
 function element:OnCreate()
-	db = element:GetDB()
 	-- Update tags that can be found next to the clock.
 	element:RegisterEvent("GUILD_PARTY_STATE_UPDATED", "UpdateGuildParty")
 	element:RegisterEvent("PLAYER_DIFFICULTY_CHANGED", "UpdateInstanceInfo")

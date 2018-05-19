@@ -7,7 +7,6 @@ local _, LUI = ...
 local module = LUI:GetModule("Infotext")
 local element = module:NewElement("Guild", "AceEvent-3.0")
 local L = LUI.L
-local db
 
 -- local copies
 local format, strsplit = format, strsplit
@@ -173,6 +172,7 @@ function element:UpdateGuild()
 		element.text = L["InfoGuild_NoGuild"]
 		return
 	end
+	local db = module:GetDB()
 	local totalNumGuild, guildNumOnline_, guildNumOnlineRemote = GetNumGuildMembers()
 	local formatString = (db.showTotal) and "%s: %d/%d" or "%s: %d"
 
@@ -257,6 +257,7 @@ function element.OnEnter(frame_)
 	local maxWidth, maxHeight
 	if IsInGuild() then
 		if infotip.noGuild then infotip.noGuild:Hide() end
+		local db = module:GetDB()
 
 		-- Show MOTD
 		local motd = element:CreateMOTD()
@@ -266,7 +267,7 @@ function element.OnEnter(frame_)
 
 		local classIconWidth, nameColumnWidth, levelColumnWidth = 0, 0, 0
 		local zoneColumnWidth, noteColumnWidth, rankColumnWidth = 0, 0, 0
-
+		
 		-- Add Guild members
 		-- Slight complication in this process is that if "Show Offline Members" is checked, the list doesnt return
 		--   online members first, it shows them by whichever sort order the guild roster is in. So we have to assign
@@ -372,8 +373,6 @@ end
 -- / FRAMEWORK FUNCTIONS / --
 ------------------------------------------------------
 function element:OnCreate()
-	db = element:GetDB()
-
 	ShowGuild()
 	element:AddUpdate(ShowGuild, GUILD_UPDATE_TIME)
 	element:RegisterEvent("GUILD_MOTD", "UpdateInfotip")

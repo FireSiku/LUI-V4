@@ -5,7 +5,6 @@ local _, LUI = ...
 local module = LUI:GetModule("Bags")
 local element = module:NewElement("Bags")
 local Media = LibStub("LibSharedMedia-3.0")
-local db
 
 local format, tinsert, wipe = format, tinsert, wipe
 local GetBackpackCurrencyInfo = GetBackpackCurrencyInfo
@@ -76,6 +75,7 @@ function Bags:HideTitleBar()
 end
 
 function Bags:CreateTitleBar()
+	local db = module:GetDB()
 	--TODO: Possibly change those two to use LUI FontStrings api
 	local gold = self:CreateFontString(nil, "ARTWORK", "GameFontHighlightLarge")
 	gold:SetJustifyH("RIGHT")
@@ -165,9 +165,6 @@ local function ToggleBags()
 end
 
 function element:OnEnable()
-	-- We don't want the element-specific db information.
-	db = module:GetDB()
-
 	-- Create container
 	module:CreateNewContainer("Bags", Bags)
 	LUIBags:CreateTitleBar()

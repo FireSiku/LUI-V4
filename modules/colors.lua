@@ -6,7 +6,6 @@
 local _, LUI = ...
 local module = LUI:NewModule("Colors")
 local L = LUI.L
-local db
 
 -- constants
 local SANCTUARY = SANCTUARY_TERRITORY:sub(2, -2)  -- Remove parenthesis.
@@ -221,6 +220,7 @@ function LUI:InverseGradient(perc)
 end
 
 function LUI:GetBGMultiplier()
+	local db = module:GetDB()
 	return db.Advanced.BGMult
 end
 
@@ -342,5 +342,4 @@ function module:OnInitialize()
 end
 
 function module:OnEnable()
-	db = module:GetDB()
 end

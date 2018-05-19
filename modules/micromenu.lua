@@ -4,7 +4,6 @@
 local _, LUI = ...
 local module = LUI:NewModule("Micromenu")
 local L = LUI.L
-local db
 
 local format = format
 
@@ -289,6 +288,7 @@ end
 -- / MICROMENU SETUP / --
 ------------------------------------------------------
 function module:SetMicromenuAnchors()
+	local db = module:GetDB()
 	if db.HideShop then
 		microStorage["Store"]:Hide()
 	else
@@ -321,7 +321,7 @@ end
 
 function module:SetMicromenu()
 	local r, g, b, a_ = module:AlphaColor("Micromenu")
-
+	local db = module:GetDB()
 	-- Note: V3 micromenu_anchor refers to the arrow that open/close the menu. NOT an actual anchor point.
 	-- micromenu_button seems to points to the background behind the buttons.
 
@@ -414,7 +414,8 @@ function module:Refresh()
 	module:SetAlertFrameColors("Talent")
 	module:SetAlertFrameColors("Collections")
 
-	module.background :SetBackdropColor(module:AlphaColor((db.ColorMatch) and "Micromenu" or "Background"))
+	local db = module:GetDB()
+	module.background:SetBackdropColor(module:AlphaColor((db.ColorMatch) and "Micromenu" or "Background"))
 	local r, g, b, a_ = module:AlphaColor("Micromenu")
 	for i = 1, #microList do
 		local button = microStorage[microList[i]]
@@ -427,6 +428,7 @@ function module:LoadOptions()
 		LEFT = L["Point_Left"],
 		RIGHT = L["Point_Right"],
 	}
+	local db = module:GetDB()
 	local colorMatchHide = function() return db.ColorMatch end
 
 	local options = {
@@ -451,7 +453,6 @@ function module:OnInitialize()
 end
 
 function module:OnEnable()
-	db = module:GetDB()
 	module:SetMicromenu()
 end
 
