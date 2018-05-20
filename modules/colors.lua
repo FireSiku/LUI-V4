@@ -224,13 +224,15 @@ function LUI:GetBGMultiplier()
 	return db.Advanced.BGMult
 end
 
+--TODO: Possibly have a full callback system for API, otherwise we will just have more copies of this function.
+--Register a function that will be called back by the Options API when someone change BG Multiplier.
 local multiplierCallback = {}
 function LUI:AddBGMultiplierCallback(id, func)
 	if multiplierCallback[id] then return end
 	multiplierCallback[id] = func
 end
 
---This is used by option API to callback a function call when someone change class/theme colors.
+--Register a function that will be called back by the Options API when someone change class/theme colors.
 local colorCallback = {}
 function LUI:AddColorCallback(id, func)
 	if colorCallback[id] then return end
