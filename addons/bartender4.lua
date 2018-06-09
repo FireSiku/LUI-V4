@@ -1,6 +1,7 @@
-------------------------------------------------------
--- / SETUP AND LOCALS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Setup and Locals #############################################################################################
+-- ####################################################################################################################
+
 local _, LUI = ...
 local module = LUI:GetModule("Addons")
 local element = module:NewElement("Bartender4")
@@ -13,18 +14,22 @@ element.defaults = {
 	},
 }
 
-------------------------------------------------------
--- / MODULE FUNCTIONS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Module Functions #############################################################################################
+-- ####################################################################################################################
 
-function element:DisableMod(name)
-	local Bartender4 = LibStub("AceAddon-3.0"):GetAddon("Bartender4")
-	Bartender4.db:GetNamespace(name).profile.enabled = false
-	Bartender4:GetModule(name):Disable()
+function element:DisableMod(addon, name)
+	addon.db:GetNamespace(name).profile.enabled = false
+	addon:GetModule(name):Disable()
 end
 
-function element:CenterBarTemplate(id, yOffset)
-	local configBar = Bartender4.db:GetNamespace("ActionBars").profile.actionbars
+function element:DisableBar(db, id)
+	local configBar = db:GetNamespace("ActionBars").profile.actionbars
+	configBar[id].enable = false
+end
+
+function element:CenterBarTemplate(db, id, yOffset)
+	local configBar = db:GetNamespace("ActionBars").profile.actionbars
 	configBar[id].enabled = true
 	configBar[id].scale = 1
 	configBar[id].padding = 4
@@ -33,8 +38,8 @@ function element:CenterBarTemplate(id, yOffset)
 	configBar[id].position.point = "BOTTOM"
 end
 
-function element:SetupNamespace(name, point, x, y, scale, padding, rows)
-	local config = Bartender4.db:GetNamespace(name).profile
+function element:SetupNamespace(db, name, point, x, y, scale, padding, rows)
+	local config = db:GetNamespace(name).profile
 	config.position.point = point
 	config.position.x = x
 	config.position.y = y
@@ -45,43 +50,41 @@ end
 
 function element:Install()
 	local Bartender4 = LibStub("AceAddon-3.0"):GetAddon("Bartender4")
+	local db = Bartender4.db
 	-- Make sure Bartender4 is using the same profile name as LUI.
-	Bartender4.db:SetProfile(LUI.db:GetCurrentProfile())
-
-	-- Change bar settings
-	local configBar = Bartender4.db:GetNamespace("ActionBars").profile.actionbars
+	db:SetProfile(LUI.db:GetCurrentProfile())
 
 	-- First, the three main bars in the middle, from bottom to top.
-	element:CenterBarTemplate(1, 62)
-	element:CenterBarTemplate(6, 102)
-	element:CenterBarTemplate(5, 142)
+	element:CenterBarTemplate(db, 1, 62)
+	element:CenterBarTemplate(db, 6, 102)
+	element:CenterBarTemplate(db, 5, 142)
 
 	-- If I do Sidebars, these two will be used
-	configBar[3].enabled = false
-	configBar[4].enabled = false
+	element:DisableBar(db, 3)
+	element:DisableBar(db, 4)
 
 	-- Disable other bars we don't need.
-	configBar[2].enabled = false
-	configBar[7].enabled = false
-	configBar[8].enabled = false
-	configBar[9].enabled = false
-	configBar[10].enabled = false
+	element:DisableBar(db, 2)
+	element:DisableBar(db, 7)
+	element:DisableBar(db, 8)
+	element:DisableBar(db, 9)
+	element:DisableBar(db, 10)
 
 	-- Move the Pet bar and Extra Action to the side.
-	element:SetupNamespace("PetBar", "BOTTOMRIGHT", -195, 295, 1, 2, 2)
-	element:SetupNamespace("ExtraActionBar", "BOTTOMRIGHT", -285, 295, 1)
-	element:SetupNamespace("Vehicle", "BOTTOMRIGHT", -355, 295, 1)
+	element:SetupNamespace(db, "PetBar", "BOTTOMRIGHT", -195, 295, 1, 2, 2)
+	element:SetupNamespace(db, "ExtraActionBar", "BOTTOMRIGHT", -285, 295, 1)
+	element:SetupNamespace(db, "Vehicle", "BOTTOMRIGHT", -355, 295, 1)
 
 	-- Disable some modules
-	element:DisableMod("BagBar")
-	element:DisableMod("MicroMenu")
-	element:DisableMod("StanceBar")
-	element:DisableMod("BlizzardArt")
-	element:DisableMod("RepBar")
-	element:DisableMod("XPBar")
+	element:DisableMod(Bartender4, "BagBar")
+	element:DisableMod(Bartender4, "MicroMenu")
+	element:DisableMod(Bartender4, "StanceBar")
+	element:DisableMod(Bartender4, "BlizzardArt")
+	element:DisableMod(Bartender4, "RepBar")
+	element:DisableMod(Bartender4, "XPBar")
 
 	--[[ Preset Example from Bartender4
-	config = Bartender4.db:GetNamespace("ActionBars").profile
+	config = db:GetNamespace("ActionBars").profile
 	config.actionbars[1].padding = 6
 	SetBarLocation( config.actionbars[1], "BOTTOM", -256, 41.75 )
 	config.actionbars[2].enabled = false
