@@ -4,9 +4,10 @@
 
 -- @type LUI
 
-------------------------------------------------------
--- / SETUP AND LOCALS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Setup and Locals #############################################################################################
+-- ####################################################################################################################
+
 local _, LUI = ...
 local module = LUI:GetModule("API")
 local element_ = module:NewModule("Strings")
@@ -26,11 +27,12 @@ local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE
 -- local UNIT_NAME_FONT_CHINESE = UNIT_NAME_FONT_CHINESE    -- Chinese/Japanese Font
 -- local UNIT_NAME_FONT_CYRILLIC = UNIT_NAME_FONT_CYRILLIC  -- Russian Font
 
-------------------------------------------------------
--- / MODULE FUNCTIONS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### StringUtils: Colors ##########################################################################################
+-- ####################################################################################################################
 
 -- Should most of these functions be moved to the colors file?
+-- Should most of these be deleted and use Blizzard's ColorMixin instead?
 
 --- String Functions
 -- @section stringfunc
@@ -87,6 +89,10 @@ function LUI:StringToLUIColor(s)
 	return color
 end
 
+-- ####################################################################################################################
+-- ##### StringUtils: Classes #########################################################################################
+-- ####################################################################################################################
+
 local localClassNames
 --- Return a class token given a localized class name
 -- @string className The localized name of one of the player classes.
@@ -104,10 +110,10 @@ function LUI:GetTokenFromClassName(className)
 	return localClassNames[className]
 end
 
-------------------------------------------------------
--- / STRING TABLES / --
-------------------------------------------------------
---@local here
+-- ####################################################################################################################
+-- ##### StringUtils: Constant Tables #################################################################################
+-- ####################################################################################################################
+-- Make sure Blizzard doesn't have equivalent Enum tables that we could use.
 
 LUI.DB_TYPES = {
 	"profile",
@@ -136,6 +142,31 @@ LUI.GENDERS = {
 	MALE,		-- 2
 	FEMALE,		-- 3
 }
+
+-- As found in the Colors module.
+LUI.PowerTypes = {
+	"MANA",
+	"RAGE",
+	"FOCUS",
+	"ENERGY",
+	"COMBO_POINTS",
+	"RUNES",
+	"RUNIC_POWER",
+	"SOUL_SHARDS",
+	"LUNAR_POWER",
+	"HOLY_POWER",
+	"MAELSTROM",
+	"CHI",
+	"INSANITY",
+	"ARCANE_CHARGES",
+	"FURY",
+	"PAIN",
+	"FUEL",
+}
+
+-- ####################################################################################################################
+-- ##### StringUtils: Localized Tables ################################################################################
+-- ####################################################################################################################
 
 LUI.FontFlags = {
 	NONE = L["Flag_None"],
@@ -188,26 +219,9 @@ LUI.ColorTypes = {
 	Class = L["Color_Class"],
 }
 
--- As found in the Colors module.
-LUI.PowerTypes = {
-	"MANA",
-	"RAGE",
-	"FOCUS",
-	"ENERGY",
-	"COMBO_POINTS",
-	"RUNES",
-	"RUNIC_POWER",
-	"SOUL_SHARDS",
-	"LUNAR_POWER",
-	"HOLY_POWER",
-	"MAELSTROM",
-	"CHI",
-	"INSANITY",
-	"ARCANE_CHARGES",
-	"FURY",
-	"PAIN",
-	"FUEL",
-}
+-- ####################################################################################################################
+-- ##### StringUtils: Deprecated Common Strings #######################################################################
+-- ####################################################################################################################
 
 -- Cleanup Note: Should I actually bother with this? This function was written back before most modules were written.
 -- As shown by how much I stopped caring at the end of the table. This seems to be too high maintenance to be worth it.

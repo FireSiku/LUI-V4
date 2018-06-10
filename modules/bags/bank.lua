@@ -1,6 +1,6 @@
-------------------------------------------------------
--- / SETUP AND LOCALS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Setup and Locals #############################################################################################
+-- ####################################################################################################################
 local _, LUI = ...
 local module = LUI:GetModule("Bags")
 local element = module:NewElement("Bank", "AceHook-3.0")
@@ -32,7 +32,10 @@ StaticPopupDialogs["CONFIRM_BUY_BANK_SLOT"] = {
 	hideOnEscape = 1,
 }
 
--- Container object
+-- ####################################################################################################################
+-- ##### Bank Container Object ########################################################################################
+-- ####################################################################################################################
+
 local Bank = {
 	--Constants
 	NUM_BAG_IDS = 8,
@@ -103,6 +106,13 @@ function Bank:Layout()
 	end
 end
 
+--Clean this up, using LUIBank global looks dirty.
+function Bank:BankSlotsUpdate()
+	for i = 1, #LUIBank.itemList[-1] do
+		LUIBank:SlotUpdate(LUIBank.itemList[-1][i])
+	end
+end
+
 function Bank:NewItemSlot(id, slot)
 
 	if self.itemList[id] and self.itemList[id][slot] then
@@ -125,6 +135,10 @@ function Bank:NewItemSlot(id, slot)
 	return itemSlot
 end
 
+-- ####################################################################################################################
+-- ##### Bank Container: Toolbars #####################################################################################
+-- ####################################################################################################################
+
 function Bank:CreateBagBar()
 	-- Starting at 2 because we don't need backpack on the BagBar
 	for i = 2, self.NUM_BAG_IDS do
@@ -146,17 +160,9 @@ function Bank:CreateUtilBar()
 	utilBar:AddNewButton(button)
 end
 
---Clean this up, using LUIBank global looks dirty.
-function Bank:BankSlotsUpdate()
-	for i = 1, #LUIBank.itemList[-1] do
-		LUIBank:SlotUpdate(LUIBank.itemList[-1][i])
-	end
-end
-
-------------------------------------------------------
--- / FRAMEWORK FUNCTIONS / --
-------------------------------------------------------
-
+-- ####################################################################################################################
+-- ##### Module Functions #############################################################################################
+-- ####################################################################################################################
 -- When opening bank, open bags if needed.
 -- If bank opened bags, bags should close at same time.
 
@@ -182,6 +188,10 @@ local function CloseBank()
 	end
 	LUIBank:Close()
 end
+
+-- ####################################################################################################################
+-- ##### Framework Events #############################################################################################
+-- ####################################################################################################################
 
 function element:OnEnable()
 	-- Create container

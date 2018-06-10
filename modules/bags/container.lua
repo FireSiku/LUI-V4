@@ -12,9 +12,9 @@ Container Members:
 - bagsBarList- Contains the individual frames for the BagsBar
 - bagList - Contains the individual parent frames for the IDs.
 --]]
-------------------------------------------------------
--- / SETUP AND LOCALS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Setup and Locals #############################################################################################
+-- ####################################################################################################################
 local _, LUI = ...
 local module = LUI:NewModule("Bags", "AceHook-3.0")
 local Media = LibStub("LibSharedMedia-3.0")
@@ -37,7 +37,6 @@ local ITEMSLOT_FILTER_ALPHA = .2
 local BACKGROUND_MULTIPLIER = 0.4
 
 -- Local variables
-local ContainerMixin = {}  -- Mixin
 local containerStorage = {}
 
 
@@ -87,9 +86,10 @@ module.defaults = {
 	},
 }
 
-------------------------------------------------------
--- / CONTAINER API / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Container Mixin ##############################################################################################
+-- ####################################################################################################################
+local ContainerMixin = {}
 function ContainerMixin:Open()
 	self:Show()
 end
@@ -107,17 +107,16 @@ function ContainerMixin:Toggle()
 end
 
 function ContainerMixin:StartMovingFrame()
-	if not db.Lock then
+	if not self.db.Lock then
 		self:StartMoving()
 	end
 end
 
 function ContainerMixin:StopMovingFrame()
-	local db = module:GetDB()
 	self:StopMovingOrSizing()
 	local x, y = self:GetCenter()
-	db.Position[self.name].X = format("%.1f", x)
-	db.Position[self.name].Y = format("%.1f", y)
+	self.db.Position[self.name].X = format("%.1f", x)
+	self.db.Position[self.name].Y = format("%.1f", y)
 end
 
 function ContainerMixin:OnShow()
@@ -149,7 +148,7 @@ end
 -- Function to get a DB option value, will fetch from generic, unless frame-specific settings is enabled
 function ContainerMixin:GetOption(name)
 	--TODO: Add support for frame-specific settings
-	return db[name]
+	return self.db[name]
 end
 
 function ContainerMixin:IsValidID(id)
@@ -193,7 +192,7 @@ function ContainerMixin:SetBagsProperties()
 	--local bagsBar = self.BagsBar
 
 	-- Set Position
-	local position = db.Position[self.name] or {}
+	local position = self.db.Position[self.name] or {}
 	self:SetPoint("CENTER", UIParent, "BOTTOMLEFT", position.X or 0, position.Y or 0)
 
 	self.forceRefresh = true
@@ -225,6 +224,10 @@ function ContainerMixin:SetItemSlotProperties(itemSlot)
 	itemSlot:SetBackdrop(module.itemBackdrop)
 	itemSlot:SetBackdropColor(module:AlphaColor("ItemBackground"))
 end
+
+-- ####################################################################################################################
+-- ##### Container: Slot Update #######################################################################################
+-- ####################################################################################################################
 
 function ContainerMixin:SlotUpdate(itemSlot)
 	local id, slot = itemSlot.id, itemSlot.slot
@@ -367,6 +370,10 @@ function ContainerMixin:BagUpdateEvent(idList)
 	end
 end
 
+-- ####################################################################################################################
+-- ##### Container: Set Anchors #######################################################################################
+-- ####################################################################################################################
+
 -- This function will set all itemslot anchors and the container's dimensions based on that.
 function ContainerMixin:SetAnchors()
 	-- index will help us stay positioned to prevent going above RowSize
@@ -441,9 +448,10 @@ function ContainerMixin:SetAnchors()
 	self:SetSize(self.background:GetWidth(), self.background:GetHeight())
 end
 
-------------------------------------------------------
--- / CONTAINER: SEARCH FUNCTIONS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Container: Search #############################################################################################
+-- ####################################################################################################################
+
 function ContainerMixin:SearchUpdate(text)
 	text = strlower(text or self.editbox:GetText())
 
@@ -477,9 +485,10 @@ function ContainerMixin:SearchReset()
 		end
 	end
 end
-------------------------------------------------------
--- / CONTAINER: TOOLBARS FUNCTIONS / --
-------------------------------------------------------
+
+-- ####################################################################################################################
+-- ##### Container: Toolbars ##########################################################################################
+-- ####################################################################################################################
 -- Toolbars is the generic names for any bar that will be around the main container frame.
 -- By default, this should be the Bags Bar and the utility bar.
 
@@ -568,9 +577,9 @@ function ContainerMixin:CreateToolBar(name)
 	end
 end
 
-------------------------------------------------------
--- / MODULE FUNCTIONS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Module Functions #############################################################################################
+-- ####################################################################################################################
 
 -- Funciton to create a blank slot used for tool bars, items, etc.
 -- Template is optional and defaults to "ItemButtonTemplate" if missing.
@@ -645,6 +654,7 @@ function module:CreateNewContainer(name, obj)
 	end
 	--Add AceBucket to the Container to process bag updates.
 	LibStub("AceBucket-3.0"):Embed(frame)
+	frame.db = module:GetDB()
 
 	--Set up scripts
 	frame:SetScript("OnShow", frame.OnShow)
@@ -696,7 +706,7 @@ end
 function module:CreateSearchEditBox(parent)
 	--Search Text
 	local search = parent:CreateFontString(nil, "OVERLAY", "GameFonthighlightLarge")
-	search:SetPoint("TOPLEFT", parent, db.Padding, -10)
+	search:SetPoint("TOPLEFT", parent, self.db.Padding, -10)
 	search:SetPoint("TOPRIGHT", -40, 0)
 	search:SetJustifyH("LEFT")
 	search:SetText(LUI:ColorToString(SEARCH, module:Color("Search")))
@@ -710,9 +720,9 @@ function module:IsProfessionBag(id)
 	return false
 end
 
-------------------------------------------------------
--- / OPTIONS FUNCTIONS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Module Refresh ###############################################################################################
+-- ####################################################################################################################
 --TODO: Lots of options uses a loop over containers and/or items. We could combine most of them and deduplicate code.
 
 function module:Refresh()
@@ -758,6 +768,7 @@ function module:Refresh()
 end
 
 function module:RefreshBackdrops()
+	local db = module:GetDB()
 	-- Bag Backdrop
 	module.bagBackdrop = {
 		bgFile = Media:Fetch("background", db.Textures.BackgroundTex),
@@ -802,6 +813,10 @@ function module:RefreshColors()
 	end
 end
 
+-- ####################################################################################################################
+-- ##### Options Menu #################################################################################################
+-- ####################################################################################################################
+
 function module:LoadOptions()
 	local options = {
 		Header = module:NewHeader(L["Bags_Name"], 1),
@@ -833,9 +848,9 @@ function module:LoadOptions()
 	return options
 end
 
-------------------------------------------------------
--- / FRAMEWORK FUNCTIONS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Framework Events #############################################################################################
+-- ####################################################################################################################
 module.enableButton = true
 
 function module:OnInitialize()

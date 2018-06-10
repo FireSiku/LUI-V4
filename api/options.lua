@@ -1,9 +1,10 @@
 --- Devapi is responsible for all API related to the option panel.
 -- @classmod OptionsMixin
 
-------------------------------------------------------
--- / SETUP AND LOCALS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Setup and Locals #############################################################################################
+-- ####################################################################################################################
+
 local addonname, LUI = ...
 local module = LUI:GetModule("API")
 local element = module:NewModule("Options")
@@ -22,7 +23,7 @@ local LSM_DCONTROL_BORDER = "LSM30_Border"
 local LSM_DCONTROL_SOUND = "LSM30_Sound"
 --local LSM_DCONTROL_FONT = "LSM30_Font"
 
--- Local variables
+-- Mixin Table
 local OptionsMixin = {} -- Embed Prototype
 
 function LUI:EmbedOptions(target)
@@ -31,12 +32,9 @@ function LUI:EmbedOptions(target)
 	end
 end
 
-------------------------------------------------------
--- / LOCAL FUNCTIONS / --
-------------------------------------------------------
-
---- Local Functions
--- @section localfunc
+-- ####################################################################################################################
+-- ##### Utility Functions #############################################################################################
+-- ####################################################################################################################
 
 --- Forces a refresh on the options panel.
 -- There is a bug that is sometimes causing some items to not properly appear.
@@ -262,7 +260,6 @@ function OptionsMixin:RootSetter(info, value, ...)
 	SetFunc(self, info, value, ...)
 end
 
-
 --Color Get/Set are specific to colors and ignore most meta params.
 -- They check for the color directly into db.Colors
 function OptionsMixin:ColorGetter(info)
@@ -280,9 +277,9 @@ function OptionsMixin:ColorSetter(info, r, g, b, a)
 	SetFunc(self, info, c.r, c.g, c.b, c.a)
 end
 
-------------------------------------------------------
--- / OPTIONS API - OPTIONS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### OptionsMixin: Groups #########################################################################################
+-- ####################################################################################################################
 
 --- Option Generating Functions
 -- @section optionapi
@@ -377,15 +374,9 @@ function OptionsMixin:NewHeader(name, order, width, disabled, hidden)
 	return t
 end
 
---- Generate a Description text block. This function ignores the desc and meta parameters.
--- @function OptionsMixin:NewDesc
--- @param ...
-function OptionsMixin:NewDesc(name, order, width, disabled, hidden)
-	local t = SetVals("description", name, nil, order)
-	t.fontSize = "medium"
-	SetState(t, width or "full", disabled, hidden)
-	return t
-end
+-- ####################################################################################################################
+-- ##### OptionsMixin: Simple Widgets #################################################################################
+-- ####################################################################################################################
 
 --- Generate a line break for options formatting. Does not have most normal parameters.
 -- An empty full description only produces a line break.
@@ -393,6 +384,16 @@ end
 -- @param order, hidden
 function OptionsMixin:NewLineBreak(order, hidden)
 	local t = self:NewDesc("", order, "full", nil, hidden)
+	return t
+end
+
+--- Generate a Description text block. This function ignores the desc and meta parameters.
+-- @function OptionsMixin:NewDesc
+-- @param ...
+function OptionsMixin:NewDesc(name, order, width, disabled, hidden)
+	local t = SetVals("description", name, nil, order)
+	t.fontSize = "medium"
+	SetState(t, width or "full", disabled, hidden)
 	return t
 end
 
@@ -440,6 +441,10 @@ function OptionsMixin:NewEnableButton(name, desc, order, enableFunc, func, width
 	local t = self:NewExecute(nameFunc, desc, order, func, width, disabled, hidden)
 	return t
 end
+
+-- ####################################################################################################################
+-- ##### OptionsMixin: User Input Widgets ############################################################################
+-- ####################################################################################################################
 
 --- Generate an input box.
 -- @function OptionsMixin:NewInput
@@ -499,8 +504,8 @@ function OptionsMixin:NewSlider(name, desc, order, smin, smax, step, isPercent, 
 	return t
 end
 
---Wrapper of Slider for the purpose of Scaling Sliders
---	Ranges: 50-200, Absolutes: 25-300.
+-- Wrapper of Slider for the purpose of Scaling Sliders
+-- Ranges: 50-200, Absolutes: 25-300.
 
 --- Generate a scaling slider
 -- @function OptionsMixin:NewScale
@@ -509,25 +514,6 @@ function OptionsMixin:NewScale(name, desc, order, meta, width, disabled, hidden)
 	local t = self:NewSlider(name, desc, order, 0.5, 2.5, 0.05, true, meta, width, disabled, hidden)
 	t.min, t.max, t.step = 0.25, 3, 0.01
 
-	return t
-end
-
---[[ color args:
-	hasAlpha (boolean) - if true, there will be a transparency slider on
---]]
-
---- Generate a color box
--- @function OptionsMixin:NewColor
--- @param ...
--- @bool hasAlpha Wether the color supports an alpha channel or not.
--- @param ...
-function OptionsMixin:NewColor(name, desc, order, hasAlpha, meta, width, disabled, hidden)
-	local t = SetVals("color", name, desc, order)
-	t.hasAlpha = hasAlpha
-	t.get, t.set = "ColorGetter", "ColorSetter"
-
-	SetupMeta(t, meta)
-	SetState(t, width, disabled, hidden)
 	return t
 end
 
@@ -552,6 +538,10 @@ function OptionsMixin:NewSelect(name, desc, order, values, dcontrol, meta, width
 	return t
 end
 
+-- ####################################################################################################################
+-- ##### OptionsMixin: SharedMedia Widgets ############################################################################
+-- ####################################################################################################################
+
 -- Specialized LSM Selects
 function OptionsMixin:NewTexBackground(name, desc, order, meta, width, disabled, hidden)
 	local t = self:NewSelect(name, desc, order, true, LSM_DCONTROL_BACKGROUND, meta, width, disabled, hidden)
@@ -570,6 +560,10 @@ function OptionsMixin:NewSound(name, desc, order, meta, width, disabled, hidden)
 	return t
 end
 
+-- ####################################################################################################################
+-- ##### OptionsMixin: Position Widgets ###############################################################################
+-- ####################################################################################################################
+
 ---TODO: Add NewBackdrop, should feature Header, Background, Border, BorderSize, BackdropColor, BackdropBorderColor
 
 function OptionsMixin:NewPosition(name, order, isXY, meta, width, disabled, hidden)
@@ -586,6 +580,29 @@ function OptionsMixin:NewPosition(name, order, isXY, meta, width, disabled, hidd
 		parent[info[#info].."Break"] = self:NewLineBreak(order+0.3, hidden)
 		t = nil
 	end)
+	return t
+end
+
+-- ####################################################################################################################
+-- ##### OptionsMixin: Color Widgets ##################################################################################
+-- ####################################################################################################################
+
+--[[ color args:
+	hasAlpha (boolean) - if true, there will be a transparency slider on
+--]]
+
+--- Generate a color box
+-- @function OptionsMixin:NewColor
+-- @param ...
+-- @bool hasAlpha Wether the color supports an alpha channel or not.
+-- @param ...
+function OptionsMixin:NewColor(name, desc, order, hasAlpha, meta, width, disabled, hidden)
+	local t = SetVals("color", name, desc, order)
+	t.hasAlpha = hasAlpha
+	t.get, t.set = "ColorGetter", "ColorSetter"
+
+	SetupMeta(t, meta)
+	SetState(t, width, disabled, hidden)
 	return t
 end
 

@@ -3,9 +3,10 @@
 
 -- @type LUI
 
-------------------------------------------------------
--- / SETUP AND LOCALS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Setup and Locals #############################################################################################
+-- ####################################################################################################################
+
 local _, LUI = ...
 local module = LUI:NewModule("API")
 
@@ -15,15 +16,11 @@ local tinsert, tremove = tinsert, tremove
 local min, max, math = min, max, math
 local GetFunctionCPUUsage = GetFunctionCPUUsage
 
-local LibWin = LibStub("LibWindow-1.1")
-
 -- Constants
 local MAX_AVG_ENTRIES = 10000
 local MS_PER_SECOND = 1000
 
 -- local variables
-local cpuProfile = {}
-local cpuAvgProfile = {}
 
 --Dummy module db for API module.
 module.defaults = {
@@ -32,9 +29,15 @@ module.defaults = {
 	},
 }
 
-------------------------------------------------------
--- / TEXCOORD ATLAS API / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### TexCoord Atlas API ###########################################################################################
+-- ####################################################################################################################
+
+-- Reflection: Is this the right place? Having tables of Texture Coordinates in every table isn't bad
+--             if they are only used in their appropriate module.
+--             Flip side, If we were to allow users to create new artwokr dyanmically
+--             The TexCoords of our textures should be in a central place.
+--             If they were to be centralized, wouldn't having their own file be better then?
 
 -- Instead of having TexCoords Constants peppered amongst various files, keep them all centralized in here.
 -- TexCoords are calculated such as 2/64 means 2 pixels to the left of a 64px file.
@@ -51,10 +54,12 @@ function LUI:GetCoordAtlas(atlas)
 	return t[1], t[2], t[3], t[4]
 end
 
-------------------------------------------------------
--- / LIBWINDOW API / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### LibWindow Wrapper ############################################################################################
+-- ####################################################################################################################
 -- Wrapper around LibWindow for sake of implementation
+
+local LibWin = LibStub("LibWindow-1.1")
 
 -- This call initializes a frame for use with LibWindow, and tells it where configuration data lives.
 -- Note: Since LUI supports profiles, it is needed to do a new .RegisterConfig and .RestorePosition to every frame
@@ -99,9 +104,10 @@ end
 --LibWin.EnableMouseOnAlt
 --LibWin.EnableMouseWheelScaling
 
-------------------------------------------------------
--- / GENERAL API / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Generic Utility API ##########################################################################################
+-- ####################################################################################################################
+-- Clean up: It's very likely Blizzard already implemented some of these utilities.
 
 --Count the number of entries in a table. This is done because #Table only returns array.
 function LUI:Count(t,isPrint)
@@ -163,9 +169,9 @@ function LUI:PrintFullTable(tbl,msg, recurse)
 	if not recurse then LUI:Print("-------------------------") end
 end
 
-------------------------------------------------------
--- / DEV FUNCTIONS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Dev Functions ################################################################################################
+-- ####################################################################################################################
 
 --Function to find a wildcard inside the _G global table.
 function GFind(arg, keyOnly)
@@ -191,6 +197,27 @@ function GFindCTables()
 		end
 	end
 end
+
+--Function to add a bright border around a given frame to help seeing it and its size.
+function LUI:HighlightBorder(frame)
+	local glowBackdrop = {
+		bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
+		edgeFile="Interface\\AddOns\\LUI4\\media\\statusbar\\glowTex.tga",
+		--tile=0, tileSize=0,
+		edgeSize=5,
+		insets={left=3, right=3, top=3, bottom=3}
+	}
+	frame:SetBackdrop(glowBackdrop)
+	frame:SetBackdropColor(0,0,0,0)
+	frame:SetBackdropBorderColor(1,1,0,1)
+end
+
+-- ####################################################################################################################
+-- ##### Dev: Profiling ###############################################################################################
+-- ####################################################################################################################
+
+local cpuProfile = {}
+local cpuAvgProfile = {}
 
 function LUI:CPUProfile(func, include)
 	-- Prepare a table entry for our func
@@ -223,21 +250,9 @@ function LUI:CPUProfile(func, include)
 	LUI:Printf("%.2fms (min: %.2fms, max: %.2fms, avg: %.2fms)", msExecTime, vmin, vmax, avg)
 end
 
---Function to add a bright border around a given frame to help seeing it and its size.
-function LUI:HighlightBorder(frame)
-	local glowBackdrop = {
-		bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
-		edgeFile="Interface\\AddOns\\LUI4\\media\\statusbar\\glowTex.tga",
-		--tile=0, tileSize=0,
-		edgeSize=5,
-		insets={left=3, right=3, top=3, bottom=3}
-	}
-	frame:SetBackdrop(glowBackdrop)
-	frame:SetBackdropColor(0,0,0,0)
-	frame:SetBackdropBorderColor(1,1,0,1)
-end
-
-
+-- ####################################################################################################################
+-- ##### Dev: Performance Testing #####################################################################################
+-- ####################################################################################################################
 
 --Keeping the basic structure of the function for the next time something is needed to profile.
 local function Bench(name, start, finish, mark)

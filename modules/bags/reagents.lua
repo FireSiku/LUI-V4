@@ -1,6 +1,8 @@
-------------------------------------------------------
--- / SETUP AND LOCALS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Setup and Locals #############################################################################################
+-- ####################################################################################################################
+--luacheck: globals LUIReagent
+
 local _, LUI = ...
 local module = LUI:GetModule("Bags")
 local element = module:NewElement("Reagent", "AceHook-3.0", "AceEvent-3.0")
@@ -13,7 +15,10 @@ local REAGENTS_SLOT_NAME_FORMAT = "LUIReagent_Item%d_%d"
 local REAGENTS_DEPOSIT_SOUND = SOUNDKIT.IG_MAINMENU_OPTION
 local REAGENTS_DEPOSIT_ICON = 413587 -- Mobile Banking Icon
 
--- Container object
+-- ####################################################################################################################
+-- ##### Container Object #############################################################################################
+-- ####################################################################################################################
+
 local Reagent = {
 	--Constants
 	NUM_BAG_IDS = 1,
@@ -77,8 +82,8 @@ function Reagent:CreateUtilBar()
             DepositReagentBank()
 		end)
 	depositButton.icon:SetTexture(REAGENTS_DEPOSIT_ICON)
-	utilBar:SetButtonTooltip(button, REAGENTBANK_DEPOSIT)
-	utilBar:AddNewButton(button)
+	utilBar:SetButtonTooltip(depositButton, REAGENTBANK_DEPOSIT)
+	utilBar:AddNewButton(depositButton)
 end
 
 --Clean this up, using LUIReagent global looks dirty.
@@ -126,9 +131,9 @@ function Reagent:CreateUnlockInfo()
 	self.unlockButton = button
 end
 
-------------------------------------------------------
--- / FRAMEWORK FUNCTIONS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Module Functions #############################################################################################
+-- ####################################################################################################################
 
 -- When opening bank, open bags if needed.
 -- If bank opened bags, bags should close at same time.
@@ -155,6 +160,10 @@ local function CloseBank()
 	end
 	LUIReagent:Close()
 end
+
+-- ####################################################################################################################
+-- ##### Framework Events #############################################################################################
+-- ####################################################################################################################
 
 function element:OnEnable()
 	-- Create container

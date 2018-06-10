@@ -1,6 +1,6 @@
-------------------------------------------------------
--- / SETUP AND LOCALS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Setup and Locals #############################################################################################
+-- ####################################################################################################################
 local _, LUI = ...
 local module = LUI:GetModule("Bags")
 local element = module:NewElement("Bags")
@@ -20,7 +20,10 @@ local BAG_SLOT_NAME_FORMAT = "LUIBags_Item%d_%d"
 local CURRENCY_FORMAT = "%d\124T%s:0:0:3:0\124t"
 local BAG_BAGBAR_NAME_FORMAT = "LUIBags_Bag%d"
 
--- Container object
+-- ####################################################################################################################
+-- ##### Bag Container Object #########################################################################################
+-- ####################################################################################################################
+
 local Bags = {
 	--Constants
 	NUM_BAG_IDS = 5,
@@ -64,6 +67,10 @@ function Bags:NewItemSlot(id, slot)
 	return itemSlot
 end
 
+-- ####################################################################################################################
+-- ##### Bag Container: Title Bar #####################################################################################
+-- ####################################################################################################################
+
 function Bags:ShowTitleBar()
 	self.gold:Show()
 	self.currency:Show()
@@ -105,6 +112,27 @@ function Bags:CreateTitleBar()
 	self.currency = currency
 end
 
+local currencyString = {}
+function Bags:GetCurrencyString()
+	wipe(currencyString)
+	for i = 1, MAX_WATCHED_TOKENS do
+		local name, count, icon = GetBackpackCurrencyInfo(i)
+		if name then
+			currencyString[i] = format(CURRENCY_FORMAT,count,icon)
+		end
+	end
+	return table.concat(currencyString, "  ")
+end
+
+function Bags:UpdateCurrencies()
+	self.gold:SetText(GetMoneyString(GetMoney()))
+	self.currency:SetText(self:GetCurrencyString())
+end
+
+-- ####################################################################################################################
+-- ##### Bag Container: Toolbars ######################################################################################
+-- ####################################################################################################################
+
 function Bags:CreateBagBar()
 	-- Starting at 2 because we don't need backpack on the BagBar
 	for i = 2, self.NUM_BAG_IDS do
@@ -126,27 +154,9 @@ function Bags:CreateUtilBar()
 	utilBar:AddNewButton(button)
 end
 
-
-local currencyString = {}
-function Bags:GetCurrencyString()
-	wipe(currencyString)
-	for i = 1, MAX_WATCHED_TOKENS do
-		local name, count, icon = GetBackpackCurrencyInfo(i)
-		if name then
-			currencyString[i] = format(CURRENCY_FORMAT,count,icon)
-		end
-	end
-	return table.concat(currencyString, "  ")
-end
-
-function Bags:UpdateCurrencies()
-	self.gold:SetText(GetMoneyString(GetMoney()))
-	self.currency:SetText(self:GetCurrencyString())
-end
-
-------------------------------------------------------
--- / FRAMEWORK FUNCTIONS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Module Functions #############################################################################################
+-- ####################################################################################################################
 
 local function OpenBags()
 	LUIBags:Open()
@@ -163,6 +173,10 @@ local function ToggleBags()
 		OpenBags()
 	end
 end
+
+-- ####################################################################################################################
+-- ##### Framework Events #############################################################################################
+-- ####################################################################################################################
 
 function element:OnEnable()
 	-- Create container
