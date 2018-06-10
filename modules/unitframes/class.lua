@@ -1,3 +1,9 @@
+-- Unitframe file to contain all the class bar and most class-specific code.
+
+-- ####################################################################################################################
+-- ##### Setup and Locals #############################################################################################
+-- ####################################################################################################################
+
 local _, LUI = ...
 local module = LUI:GetModule("Unitframes")
 local class = LUI.playerClass
@@ -33,6 +39,10 @@ local CLASS_EVENTS = {
 	MONK = {"PLAYER_TALENT_UPDATE"},
 	ROGUE = {"PLAYER_TALENT_UPDATE" },
 }
+
+-- ####################################################################################################################
+-- ##### Module Functions #############################################################################################
+-- ####################################################################################################################
 
 -- This is the function that determines ClassPower visibility
 local function IsPowerActive(classPower)
@@ -75,6 +85,10 @@ local function GetBarWidth(count)
 	if not count then count = 1 end
 	return (db.Width - (db.Padding * (count - 1))) / count
 end
+
+-- ####################################################################################################################
+-- ##### Module Setup #################################################################################################
+-- ####################################################################################################################
 
 -- For the entire file, self will be used to refer to the unitframe
 -- as those functions are called from the style creation.

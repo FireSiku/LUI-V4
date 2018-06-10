@@ -1,4 +1,9 @@
 -- Color Picker UI Element. Adds a few feature to the color picker to make it more accurate.
+
+-- ####################################################################################################################
+-- ##### Setup and Locals #############################################################################################
+-- ####################################################################################################################
+
 local _, LUI = ...
 local module = LUI:GetModule("UI Elements")
 local element = module:NewModule("ColorPicker", "AceHook-3.0")
@@ -11,6 +16,91 @@ local editingText
 
 --Localized variables
 
+-- ####################################################################################################################
+-- ##### Module Functions #############################################################################################
+-- ####################################################################################################################
+
+ -- self: ColorPickerFrame
+function element.ColorPickerFrameShow(self)
+	OldColorSwatch:SetColorTexture(self:GetColorRGB())
+	element:UpdateColorTexts()
+
+	if ColorPickerFrame.hasOpacity then
+		ColorPickerBoxA:Show()
+		ColorPickerBoxLabelA:Show()
+	else
+		ColorPickerBoxA:Hide()
+		ColorPickerBoxLabelA:Hide()
+	end
+end
+
+--See if those are truly needed)
+function element:ColorPickerFrameColorSelect()
+	if not editingText then element:UpdateColorTexts() end
+end
+function element:OpacitySliderFrameValueChanged()
+	if not editingText then element:UpdateColorTexts() end
+end
+
+function element:ColorPickerCopyClick(btn_)
+	colorBuffer.r,  colorBuffer.g, colorBuffer.b = ColorPickerFrame:GetColorRGB()
+
+	ColorPickerPaste:Enable()
+	CopyColorSwatch:SetColorTexture(colorBuffer.r, colorBuffer.g, colorBuffer.b)
+	CopyColorSwatch:Show()
+
+	--Add Alpha to buffer only if color supports alpha.
+	colorBuffer.a = ColorPickerFrame.hasOpacity and OpacitySliderFrame:GetValue() or nil
+end
+
+function element:ColorPickerPasteClick(btn_)
+	ColorPickerFrame:SetColorRGB(colorBuffer.r, colorBuffer.g, colorBuffer.b)
+	ColorSwatch:SetColorTexture(colorBuffer.r, colorBuffer.g, colorBuffer.b)
+
+	--Transfer the alpha only if the new color supports alpha
+	if ColorPickerFrame.hasOpacity and colorBuffer.a then
+		OpacitySliderFrame:SetValue(colorBuffer.a)
+	end
+end
+
+function element:UpdateColorTexts()
+	local r, g, b = ColorPickerFrame:GetColorRGB()
+	ColorPickerBoxR:SetText(string.format("%.2f", r))
+	ColorPickerBoxG:SetText(string.format("%.2f", g))
+	ColorPickerBoxB:SetText(string.format("%.2f", b))
+	if OpacitySliderFrame:IsShown() then
+		local a = 1 - OpacitySliderFrame:GetValue()
+		ColorPickerBoxA:SetText(string.format("%.2f", a))
+	end
+end
+
+function element:UpdateColor(box)
+	local r, g, b = ColorPickerFrame:GetColorRGB()
+	local id = box:GetID()
+
+	if     id == 1 then r = tonumber(box:GetText()) or 0
+	elseif id == 2 then g = tonumber(box:GetText()) or 0
+	elseif id == 3 then b = tonumber(box:GetText()) or 0
+	end
+
+	editingText = true
+	ColorPickerFrame:SetColorRGB(r, g, b)
+	ColorSwatch:SetColorTexture(r, g, b)
+	editingText = nil
+end
+
+function element:UpdateAlpha(box)
+	local a = tonumber(box:GetText()) or 1
+	if a > 1 then a = 1 end
+
+	editingText = true
+	OpacitySliderFrame:SetValue(1 - a)
+	editingText = nil
+end
+
+-- ####################################################################################################################
+-- ##### Framework Events #############################################################################################
+-- ####################################################################################################################
 
 function element:OnEnable()
 	--local db = module.db.profile.ColorPicker
@@ -104,82 +194,4 @@ function element:OnEnable()
 	mover:SetScript("OnMouseUp", function() ColorPickerFrame:StopMovingOrSizing() end)
 	ColorPickerFrame:SetUserPlaced(true)
 	ColorPickerFrame:EnableKeyboard(false)
-end
-
- -- self: ColorPickerFrame
-function element.ColorPickerFrameShow(self)
-	OldColorSwatch:SetColorTexture(self:GetColorRGB())
-	element:UpdateColorTexts()
-
-	if ColorPickerFrame.hasOpacity then
-		ColorPickerBoxA:Show()
-		ColorPickerBoxLabelA:Show()
-	else
-		ColorPickerBoxA:Hide()
-		ColorPickerBoxLabelA:Hide()
-	end
-end
-
---See if those are truly needed)
-function element:ColorPickerFrameColorSelect()
-	if not editingText then element:UpdateColorTexts() end
-end
-function element:OpacitySliderFrameValueChanged()
-	if not editingText then element:UpdateColorTexts() end
-end
-
-function element:ColorPickerCopyClick(btn_)
-	colorBuffer.r,  colorBuffer.g, colorBuffer.b = ColorPickerFrame:GetColorRGB()
-
-	ColorPickerPaste:Enable()
-	CopyColorSwatch:SetColorTexture(colorBuffer.r, colorBuffer.g, colorBuffer.b)
-	CopyColorSwatch:Show()
-
-	--Add Alpha to buffer only if color supports alpha.
-	colorBuffer.a = ColorPickerFrame.hasOpacity and OpacitySliderFrame:GetValue() or nil
-end
-
-function element:ColorPickerPasteClick(btn_)
-	ColorPickerFrame:SetColorRGB(colorBuffer.r, colorBuffer.g, colorBuffer.b)
-	ColorSwatch:SetColorTexture(colorBuffer.r, colorBuffer.g, colorBuffer.b)
-
-	--Transfer the alpha only if the new color supports alpha
-	if ColorPickerFrame.hasOpacity and colorBuffer.a then
-		OpacitySliderFrame:SetValue(colorBuffer.a)
-	end
-end
-
-function element:UpdateColorTexts()
-	local r, g, b = ColorPickerFrame:GetColorRGB()
-	ColorPickerBoxR:SetText(string.format("%.2f", r))
-	ColorPickerBoxG:SetText(string.format("%.2f", g))
-	ColorPickerBoxB:SetText(string.format("%.2f", b))
-	if OpacitySliderFrame:IsShown() then
-		local a = 1 - OpacitySliderFrame:GetValue()
-		ColorPickerBoxA:SetText(string.format("%.2f", a))
-	end
-end
-
-function element:UpdateColor(box)
-	local r, g, b = ColorPickerFrame:GetColorRGB()
-	local id = box:GetID()
-
-	if     id == 1 then r = tonumber(box:GetText()) or 0
-	elseif id == 2 then g = tonumber(box:GetText()) or 0
-	elseif id == 3 then b = tonumber(box:GetText()) or 0
-	end
-
-	editingText = true
-	ColorPickerFrame:SetColorRGB(r, g, b)
-	ColorSwatch:SetColorTexture(r, g, b)
-	editingText = nil
-end
-
-function element:UpdateAlpha(box)
-	local a = tonumber(box:GetText()) or 1
-	if a > 1 then a = 1 end
-
-	editingText = true
-	OpacitySliderFrame:SetValue(1 - a)
-	editingText = nil
 end

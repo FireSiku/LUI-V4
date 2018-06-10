@@ -1,8 +1,9 @@
 -- Clock Infotext
 
-------------------------------------------------------
--- / SETUP AND LOCALS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Setup and Locals #############################################################################################
+-- ####################################################################################################################
+
 local _, LUI = ...
 local module = LUI:GetModule("Infotext")
 local element = module:NewElement("Clock", "AceEvent-3.0", "AceHook-3.0")
@@ -90,7 +91,10 @@ local COLOR_CODES = {
 -- TODO: Look into changing the Instance Difficulty Format using GetDifficultyInfo
 -- name, groupType, isHeroic, isChallengeMode, displayHeroic, displayMythic, toggleDifficultyID = GetDifficultyInfo(id)
 
--- Defaults
+-- ####################################################################################################################
+-- ##### Default Settings #############################################################################################
+-- ####################################################################################################################
+
 element.defaults = {
 	profile = {
 		X = 1660,
@@ -99,9 +103,10 @@ element.defaults = {
 		showWorldBosses = true,
 	},
 }
-------------------------------------------------------
--- / MODULE FUNCTIONS /
-------------------------------------------------------
+
+-- ####################################################################################################################
+-- ##### Module Functions #############################################################################################
+-- ####################################################################################################################
 
 --First we format the secs into a day/hour/minute format. The leading space is necessary.
 --Then we remove spaces followed by a 0, such as 0d or 0h. Those extra spaces are then trimmed.
@@ -147,6 +152,7 @@ function element:UpdateInstanceInfo()
 	instanceInfo = nil
 end
 
+-- luacheck: globals TimeManagerMilitaryTimeCheck TimeManagerLocalTimeCheck
 function element:UpdateCVar()
 	cvarMilitary = GetCVarBool(CVAR_MILITARY)
 	cvarLocal = GetCVarBool(CVAR_LOCAL)
@@ -201,6 +207,10 @@ function element.OnClick(frame_, button)
 	end
 end
 
+-- ####################################################################################################################
+-- ##### Infotext Display #############################################################################################
+-- ####################################################################################################################
+
 function element.OnTooltipShow(GameTooltip)
 	element:TooltipHeader(TIMEMANAGER_TITLE)
 
@@ -214,7 +224,8 @@ function element.OnTooltipShow(GameTooltip)
 	local oneraid -- Used so we dont display "Saved Raids:" unless you are saved to at least one.
 	if db.showSavedRaids then
 		for i = 1, GetNumSavedInstances() do
-			local name, _, reset, difficulty, locked, extended, _, isRaid, maxPlayers, _, maxBosses, defeatedBosses = GetSavedInstanceInfo(i)
+			local name, _, reset, difficulty, locked, extended, _,
+					isRaid, maxPlayers, _, maxBosses, defeatedBosses = GetSavedInstanceInfo(i)
 			if isRaid and (locked or extended) then
 				local localizedDiff = GetLocalizedDifficulty(difficulty)
 				local r, g, b = 1, 1, 1
@@ -239,9 +250,10 @@ function element.OnTooltipShow(GameTooltip)
 	element:AddHint(GAMETIME_TOOLTIP_TOGGLE_CALENDAR, L["InfoClock_Hint_Right"])
 end
 
-------------------------------------------------------
--- / API FUNCTIONS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Options Menu #################################################################################################
+-- ####################################################################################################################
+
 function element:LoadOptions()
 	local function MilitaryTime(info_, value)
 		--Set
@@ -279,6 +291,10 @@ function element:LoadOptions()
 	}
 	return options
 end
+
+-- ####################################################################################################################
+-- ##### Framework Events #############################################################################################
+-- ####################################################################################################################
 
 function element:OnCreate()
 	-- Update tags that can be found next to the clock.

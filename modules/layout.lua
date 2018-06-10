@@ -8,6 +8,10 @@
 
 -- Todo: Redesign this page.
 
+-- ####################################################################################################################
+-- ##### Setup and Locals #############################################################################################
+-- ####################################################################################################################
+
 local _, LUI = ...
 
 local module = LUI:NewModule("Layout") -- Create module
@@ -24,6 +28,10 @@ local bypassList = { "Api", "Layout", }
 --String = Serializer:Serialize(Data); -- serialize those Data into a String
 --Data = Serializer:DeSerialize(String); -- deserialize that String back into Data
 
+-- ####################################################################################################################
+-- ##### Default Settings #############################################################################################
+-- ####################################################################################################################
+
 module.defaults = {
 	global = {
 		layouts = {
@@ -35,17 +43,10 @@ module.defaults = {
 		currentTheme = "Default",
 	},
 }
-function module:OnInitialize()
-	LUI:RegisterModule(module)
-end
 
-function module:OnEnable()
-	layoutDB = module.db.global.layouts
-end
-
-------------------------------------------------------
--- / LAYOUT SAVING TEST FUNCS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Module Functions #############################################################################################
+-- ####################################################################################################################
 
 local layoutText = ""
 local layoutTextNameFormat = L["Layout_TextLength"]
@@ -71,10 +72,6 @@ local function bypassModule(name)
 		end
 	end
 	return false
-end
-
-function LUI:OnLayoutSave()
-	--return dbLayout
 end
 
 --CommonStrings V2. This time it deepcopies the table AND converts it.
@@ -121,6 +118,14 @@ local function ModuleColorsToString(target)
 		end
 	end
 	return target
+end
+
+-- ####################################################################################################################
+-- ##### Layout: Save/Load ############################################################################################
+-- ####################################################################################################################
+
+function LUI:OnLayoutSave()
+	--return dbLayout
 end
 
 local disableOptimize = false -- TestVar. Disable the optimization of the string.
@@ -190,6 +195,10 @@ function LUI:LoadLayout(layoutName_)
 	--]]
 end
 
+-- ####################################################################################################################
+-- ##### Options Menu #################################################################################################
+-- ####################################################################################################################
+
 module.order = 2
 function module:LoadOptions()
 	local options = {
@@ -211,4 +220,16 @@ function module:LoadOptions()
 	}
 
 	return options
+end
+
+-- ####################################################################################################################
+-- ##### Framework Events #############################################################################################
+-- ####################################################################################################################
+
+function module:OnInitialize()
+	LUI:RegisterModule(module)
+end
+
+function module:OnEnable()
+	layoutDB = module.db.global.layouts
 end

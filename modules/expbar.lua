@@ -1,8 +1,9 @@
 -- This module handle various UI Elements by LUI or Blizzard.
 
-------------------------------------------------------
--- / SETUP AND LOCALS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Setup and Locals #############################################################################################
+-- ####################################################################################################################
+
 local _, LUI = ...
 local module = LUI:NewModule("Experience Bar")
 local L = LUI.L
@@ -24,7 +25,23 @@ local UnitLevel = UnitLevel
 local UnitXPMax = UnitXPMax
 local UnitXP = UnitXP
 
---Defaults
+local SHORT_REPUTATION_NAMES = {
+	L["ExpBar_ShortName_Hatred"],		-- Ha
+	L["ExpBar_ShortName_Hostile"],		-- Ho
+	L["ExpBar_ShortName_Unfriendly"],	-- Un
+	L["ExpBar_ShortName_Neutral"],		-- Ne
+	L["ExpBar_ShortName_Friendly"],		-- Fr
+	L["ExpBar_ShortName_Honored"],		-- Hon
+	L["ExpBar_ShortName_Revered"],		-- Rev
+	L["ExpBar_ShortName_Exalted"],		-- Ex
+}
+
+local MAX_LEVEL = 110
+
+-- ####################################################################################################################
+-- ##### Default Settings #############################################################################################
+-- ####################################################################################################################
+
 module.defaults = {
 	profile = {
 		Width = 475,
@@ -59,22 +76,9 @@ module.defaults = {
 	},
 }
 
-local SHORT_REPUTATION_NAMES = {
-	L["ExpBar_ShortName_Hatred"],		-- Ha
-	L["ExpBar_ShortName_Hostile"],		-- Ho
-	L["ExpBar_ShortName_Unfriendly"],	-- Un
-	L["ExpBar_ShortName_Neutral"],		-- Ne
-	L["ExpBar_ShortName_Friendly"],		-- Fr
-	L["ExpBar_ShortName_Honored"],		-- Hon
-	L["ExpBar_ShortName_Revered"],		-- Rev
-	L["ExpBar_ShortName_Exalted"],		-- Ex
-}
-
-local MAX_LEVEL = 110
-
-------------------------------------------------------
--- / MODULE FUNCTIONS / --
-------------------------------------------------------
+-- ####################################################################################################################
+-- ##### Module Functions #############################################################################################
+-- ####################################################################################################################
 
 -- Function to determine what mode the bar should be in.
 function module:UpdateBarMode()
@@ -278,6 +282,10 @@ function module:UpdateHonorBar(bar)
 	end
 end
 
+-- ####################################################################################################################
+-- ##### Module Setup #################################################################################################
+-- ####################################################################################################################
+
 function module:CreateBar(name)
 	local db = module:GetDB()
 
@@ -319,10 +327,9 @@ function module:SetBar()
 	module:UpdateBarMode()
 end
 
-------------------------------------------------------
--- / FRAMEWORK FUNCTIONS / --
-------------------------------------------------------
-module.enableButton = true
+-- ####################################################################################################################
+-- ##### Module Refresh ###############################################################################################
+-- ####################################################################################################################
 
 function module:RefreshColors()
 	local db = module:GetDB()
@@ -340,6 +347,10 @@ end
 function module:Refresh()
 	module:UpdateBarMode()
 end
+
+-- ####################################################################################################################
+-- ##### Options Menu #################################################################################################
+-- ####################################################################################################################
 
 function module:LoadOptions()
 	--local showRestedMeta = {disabledTooltip = "Not Implemented Yet", setfunc = "Refresh"}
@@ -384,6 +395,12 @@ function module:LoadOptions()
 
 	return options
 end
+
+-- ####################################################################################################################
+-- ##### Framework Events #############################################################################################
+-- ####################################################################################################################
+
+module.enableButton = true
 
 function module:OnInitialize()
 	LUI:RegisterModule(module)
