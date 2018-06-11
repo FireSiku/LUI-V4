@@ -88,26 +88,19 @@ local function updateSafeZone(self)
 	local width = self:GetWidth()
 	local _, _, _, ms = GetNetStats()
 
-	-- Guard against GetNetStats returning latencies of 0.
-	if(ms ~= 0) then
-		-- MADNESS!
-		local safeZonePercent = (width / self.max) * (ms / 1e5)
-		if(safeZonePercent > 1) then
-			safeZonePercent = 1
-		end
-
-		safeZone:SetWidth(width * safeZonePercent)
-		safeZone:Show()
-	else
-		safeZone:Hide()
+	local safeZoneRatio = (ms / 1e3) / self.max
+	if(safeZoneRatio > 1) then
+		safeZoneRatio = 1
 	end
+
+	safeZone:SetWidth(width * safeZoneRatio)
 end
 
 local function UNIT_SPELLCAST_START(self, event, unit)
 	if(self.unit ~= unit and self.realUnit ~= unit) then return end
 
 	local element = self.Castbar
-	local name, _, text, texture, startTime, endTime, _, castID, notInterruptible, spellID = UnitCastingInfo(unit)
+	local name, text, texture, startTime, endTime, _, castID, notInterruptible, spellID = UnitCastingInfo(unit)
 	if(not name) then
 		return element:Hide()
 	end
@@ -162,7 +155,7 @@ local function UNIT_SPELLCAST_START(self, event, unit)
 	element:Show()
 end
 
-local function UNIT_SPELLCAST_FAILED(self, event, unit, spellname, _, castID, spellID)
+local function UNIT_SPELLCAST_FAILED(self, event, unit, castID, spellID)
 	if(self.unit ~= unit and self.realUnit ~= unit) then return end
 
 	local element = self.Castbar
@@ -189,11 +182,11 @@ local function UNIT_SPELLCAST_FAILED(self, event, unit, spellname, _, castID, sp
 	* spellID - spell identifier of the failed spell (number)
 	--]]
 	if(element.PostCastFailed) then
-		return element:PostCastFailed(unit, spellname, castID, spellID)
+		return element:PostCastFailed(unit, GetSpellInfo(spellID), castID, spellID)
 	end
 end
 
-local function UNIT_SPELLCAST_INTERRUPTED(self, event, unit, spellname, _, castID, spellID)
+local function UNIT_SPELLCAST_INTERRUPTED(self, event, unit, castID, spellID)
 	if(self.unit ~= unit and self.realUnit ~= unit) then return end
 
 	local element = self.Castbar
@@ -220,7 +213,7 @@ local function UNIT_SPELLCAST_INTERRUPTED(self, event, unit, spellname, _, castI
 	* spellID - spell identifier of the interrupted spell (number)
 	--]]
 	if(element.PostCastInterrupted) then
-		return element:PostCastInterrupted(unit, spellname, castID, spellID)
+		return element:PostCastInterrupted(unit, GetSpellInfo(spellID), castID, spellID)
 	end
 end
 
@@ -268,11 +261,11 @@ local function UNIT_SPELLCAST_NOT_INTERRUPTIBLE(self, event, unit)
 	end
 end
 
-local function UNIT_SPELLCAST_DELAYED(self, event, unit, _, _, _, spellID)
+local function UNIT_SPELLCAST_DELAYED(self, event, unit, _, spellID)
 	if(self.unit ~= unit and self.realUnit ~= unit) then return end
 
 	local element = self.Castbar
-	local name, _, _, _, startTime, _, _, castID = UnitCastingInfo(unit)
+	local name, _, _, startTime, _, _, castID = UnitCastingInfo(unit)
 	if(not startTime or not element:IsShown()) then return end
 
 	local duration = GetTime() - (startTime / 1000)
@@ -297,7 +290,7 @@ local function UNIT_SPELLCAST_DELAYED(self, event, unit, _, _, _, spellID)
 	end
 end
 
-local function UNIT_SPELLCAST_STOP(self, event, unit, spellname, _, castID, spellID)
+local function UNIT_SPELLCAST_STOP(self, event, unit, castID, spellID)
 	if(self.unit ~= unit and self.realUnit ~= unit) then return end
 
 	local element = self.Castbar
@@ -318,15 +311,15 @@ local function UNIT_SPELLCAST_STOP(self, event, unit, spellname, _, castID, spel
 	* spellID - spell identifier of the spell (number)
 	--]]
 	if(element.PostCastStop) then
-		return element:PostCastStop(unit, spellname, castID, spellID)
+		return element:PostCastStop(unit, GetSpellInfo(spellID), castID, spellID)
 	end
 end
 
-local function UNIT_SPELLCAST_CHANNEL_START(self, event, unit, _, _, _, spellID)
+local function UNIT_SPELLCAST_CHANNEL_START(self, event, unit, _, spellID)
 	if(self.unit ~= unit and self.realUnit ~= unit) then return end
 
 	local element = self.Castbar
-	local name, _, _, texture, startTime, endTime, _, notInterruptible = UnitChannelInfo(unit)
+	local name, _, texture, startTime, endTime, _, notInterruptible = UnitChannelInfo(unit)
 	if(not name) then
 		return
 	end
@@ -386,11 +379,11 @@ local function UNIT_SPELLCAST_CHANNEL_START(self, event, unit, _, _, _, spellID)
 	element:Show()
 end
 
-local function UNIT_SPELLCAST_CHANNEL_UPDATE(self, event, unit, _, _, _, spellID)
+local function UNIT_SPELLCAST_CHANNEL_UPDATE(self, event, unit, _, spellID)
 	if(self.unit ~= unit and self.realUnit ~= unit) then return end
 
 	local element = self.Castbar
-	local name, _, _, _, startTime, endTime = UnitChannelInfo(unit)
+	local name, _, _, startTime, endTime = UnitChannelInfo(unit)
 	if(not name or not element:IsShown()) then
 		return
 	end
@@ -417,7 +410,7 @@ local function UNIT_SPELLCAST_CHANNEL_UPDATE(self, event, unit, _, _, _, spellID
 	end
 end
 
-local function UNIT_SPELLCAST_CHANNEL_STOP(self, event, unit, spellname, _, _, spellID)
+local function UNIT_SPELLCAST_CHANNEL_STOP(self, event, unit, _, spellID)
 	if(self.unit ~= unit and self.realUnit ~= unit) then return end
 
 	local element = self.Castbar
@@ -434,7 +427,7 @@ local function UNIT_SPELLCAST_CHANNEL_STOP(self, event, unit, spellname, _, _, s
 		* spellID - spell identifier of the channeled spell (number)
 		--]]
 		if(element.PostChannelStop) then
-			return element:PostChannelStop(unit, spellname, spellID)
+			return element:PostChannelStop(unit, GetSpellInfo(spellID), spellID)
 		end
 	end
 end
@@ -470,7 +463,15 @@ local function onUpdate(self, elapsed)
 		self:SetValue(duration)
 
 		if(self.Spark) then
-			self.Spark:SetPoint('CENTER', self, 'LEFT', (duration / self.max) * self:GetWidth(), 0)
+			local horiz = self.horizontal
+			local size = self[horiz and 'GetWidth' or 'GetHeight'](self)
+
+			local offset = (duration / self.max) * size
+			if(self:GetReverseFill()) then
+				offset = size - offset
+			end
+
+			self.Spark:SetPoint('CENTER', self, horiz and 'LEFT' or 'BOTTOM', horiz and offset or 0, horiz and 0 or offset)
 		end
 	elseif(self.channeling) then
 		local duration = self.duration - elapsed
@@ -502,7 +503,15 @@ local function onUpdate(self, elapsed)
 		self.duration = duration
 		self:SetValue(duration)
 		if(self.Spark) then
-			self.Spark:SetPoint('CENTER', self, 'LEFT', (duration / self.max) * self:GetWidth(), 0)
+			local horiz = self.horizontal
+			local size = self[horiz and 'GetWidth' or 'GetHeight'](self)
+
+			local offset = (duration / self.max) * size
+			if(self:GetReverseFill()) then
+				offset = size - offset
+			end
+
+			self.Spark:SetPoint('CENTER', self, horiz and 'LEFT' or 'BOTTOM', horiz and offset or 0, horiz and 0 or offset)
 		end
 	elseif(self.holdTime > 0) then
 		self.holdTime = self.holdTime - elapsed
@@ -543,6 +552,7 @@ local function Enable(self, unit)
 			self:RegisterEvent('UNIT_SPELLCAST_CHANNEL_STOP', UNIT_SPELLCAST_CHANNEL_STOP)
 		end
 
+		element.horizontal = element:GetOrientation() == 'HORIZONTAL'
 		element.holdTime = 0
 		element:SetScript('OnUpdate', element.OnUpdate or onUpdate)
 
