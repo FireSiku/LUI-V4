@@ -318,31 +318,32 @@ function LUI:RegisterModule(module)
 	LUI:EmbedModule(module)
 	--Register DB Namespace
 	--TODO: Allow for DB-less modules.
-	if not module.defaults then
-		LUI:Print("Cant Proceed, Module ["..mName.."] has no database")
-		return
-	end
-
-	--Merge Defaults from elements.
-	for name, element in module:IterateModules() do
-		if element.defaults then
-			for i, scope in ipairs(LUI.DB_TYPES) do
-				if element.defaults[scope] then
-					if not module.defaults[scope] then module.defaults[scope] = {} end
-					module.defaults[scope][name] = LUI:CopyTable(element.defaults[scope], module.defaults[scope][name])
+	-- if not module.defaults then
+	-- 	LUI:Print("Cant Proceed, Module ["..mName.."] has no database")
+	-- 	return
+	-- end
+	if module.defaults then
+		--Merge Defaults from elements.
+		for name, element in module:IterateModules() do
+			if element.defaults then
+				for i, scope in ipairs(LUI.DB_TYPES) do
+					if element.defaults[scope] then
+						if not module.defaults[scope] then module.defaults[scope] = {} end
+						module.defaults[scope][name] = LUI:CopyTable(element.defaults[scope], module.defaults[scope][name])
+					end
 				end
 			end
 		end
-	end
-	module.db = self.db:RegisterNamespace(mName, module.defaults)
+		module.db = self.db:RegisterNamespace(mName, module.defaults)
 
-	-- Register Callbacks
-	--TODO: Recheck Register Callbacks
-	--if type(module.Refresh) == "function" then
-	--	module.db.RegisterCallback(module, "OnProfileChanged", LUI.RefreshModule, module)
-	--	module.db.RegisterCallback(module, "OnProfileCopied", LUI.RefreshModule, module)
-	--	module.db.RegisterCallback(module, "OnProfileReset", LUI.RefreshModule, module)
-	--end
+		-- Register Callbacks
+		--TODO: Recheck Register Callbacks
+		--if type(module.Refresh) == "function" then
+		--	module.db.RegisterCallback(module, "OnProfileChanged", LUI.RefreshModule, module)
+		--	module.db.RegisterCallback(module, "OnProfileCopied", LUI.RefreshModule, module)
+		--	module.db.RegisterCallback(module, "OnProfileReset", LUI.RefreshModule, module)
+		--end
+	end
 end
 
 -- ####################################################################################################################
