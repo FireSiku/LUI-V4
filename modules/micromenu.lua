@@ -71,6 +71,175 @@ module.defaults = {
 }
 
 -- ####################################################################################################################
+-- ##### MicroButton Definitions ######################################################################################
+-- ####################################################################################################################
+
+local microDefinitions = {
+
+	{ -- [2] Currently 1 due to workaround.
+		name = "Bags",
+		title = L["Bags_Name"],
+		any = L["MicroBags_Any"],
+		isWide = "Right",
+		OnClick = function(self, btn_)
+			ToggleAllBags()
+		end,
+	},
+
+	{ -- [1]
+		name = "Settings",
+		title = L["Options"],
+		left = L["MicroSettings_Left"],
+		right = L["MicroSettings_Right"],
+		OnClick = function(self, btn)
+			if btn == "RightButton" then
+				--WoW Option Panel
+				module:TogglePanel(GameMenuFrame)
+			else
+				--LUI Option Panel
+				LUI:Open()
+			end
+		end,
+		--TODO: Lets not use hungry OnUpdate handlers for the Clicker's alpha.
+		--      Make a function to easily hook frames OnShow/OnHide
+		--Due to LUI Options having no name, we cant use a simple hook, to remove when we find elegant fix.
+		OnUpdate = function(self)
+			if self.Hover then return end
+			if GameMenuFrame:IsShown() or LibStub("AceConfigDialog-3.0").OpenFrames.LUI then
+				self:SetAlpha(1)
+			else
+				self:SetAlpha(0)
+			end
+		end
+	},
+
+	{ -- [3]
+		name = "Store",
+		title = L["MicroStore_Name"],
+		any = L["MicroStore_Any"],
+		OnClick = function(self, btn_)
+			ToggleStoreUI()
+		end,
+	},
+
+	{ -- [4]
+		name = "Collections",
+		alertFrame = "Collections",
+		title = L["MicroCollect_Name"],
+		any = L["MicroCollect_Any"],
+		OnClick = function(self, btn_)
+			ToggleCollectionsJournal()
+		end,
+	},
+
+	-- This button could use some updating. Right click opening Premade Groups for example.
+	{ -- [5]
+		name = "LFG",
+		level = LFG_LEVEL_REQ,
+		title = L["MicroLFG_Name"],
+		left = L["MicroLFG_Left"],
+		right = L["MicroLFG_Right"],
+		OnClick = function(self, btn)
+			if btn == "RightButton" then
+				ToggleRaidBrowser() --Raid Browser
+			else
+				ToggleLFDParentFrame() --Dungeon Finder
+			end
+		end,
+	},
+
+	{ -- [6]
+		name = "EJ",
+		alertFrame = "EJ",
+		title = L["MicroEJ_Name"],
+		any = L["MicroEJ_Any"],
+		OnClick = function(self, btn_)
+			ToggleEncounterJournal()
+		end,
+	},
+
+	--This could be set up much nicer. Possibly add Premade PVP Group to right click
+	{ -- [7]
+		name = "PVP",
+		title = L["MicroPVP_Name"],
+		any = L["MicroPVP_Any"],
+		OnClick = function(self, btn_)
+			TogglePVPUI()
+		end,
+	},
+
+	{ -- [8]
+		name = "Guild",
+		title = L["MicroGuild_Name"],
+		left = L["MicroGuild_Left"],
+		right = L["MicroGuild_Right"],
+		OnClick = function(self, btn)
+			if btn == "RightButton" then
+				ToggleFriendsFrame()
+			else
+				--Those panels may not be loaded before we call them, so deal with that.
+				if IsInGuild() then
+					GuildFrame_LoadUI()
+					module:TogglePanel(GuildFrame)
+				else
+					LookingForGuildFrame_LoadUI()
+					module:TogglePanel(LookingForGuildFrame)
+				end
+			end
+		end,
+	},
+
+	{ -- [9]
+		name = "Quest",
+		title = L["MicroQuest_Name"],
+		any = L["MicroQuest_Any"],
+		OnClick = function(self, btn_)
+			module:TogglePanel(WorldMapFrame)
+		end,
+	},
+
+	{ -- [10]
+		name = "Achievements",
+		title = L["MicroAch_Name"],
+		any = L["MicroAch_Any"],
+		OnClick = function(self, btn_)
+			ToggleAchievementFrame()
+		end,
+	},
+
+	{ -- [11]
+		name = "Talents",
+		alertFrame = "Talent",
+		level = TALENT_LEVEL_REQ,
+		title = L["MicroTalents_Name"],
+		any = L["MicroTalents_Any"],
+		OnClick = function(self, btn_)
+			TalentFrame_LoadUI()
+			module:TogglePanel(PlayerTalentFrame)
+		end,
+	},
+	
+	{ -- [12]
+		name = "Spellbook",
+		title = L["MicroSpell_Name"],
+		any = L["MicroSpell_Any"],
+		OnClick = function(self, btn_)
+			module:TogglePanel(SpellBookFrame)
+		end,
+	},
+
+	{ -- [13]
+		name = "Player",
+		isWide = "Left",
+		title = L["MicroPlayer_Name"],
+		any = L["MicroPlayer_Any"],
+		OnClick = function(self, btn_)
+			module:TogglePanel(CharacterFrame)
+		end,
+	},
+}
+
+-- ####################################################################################################################
 -- ##### Module Functions #############################################################################################
 -- ####################################################################################################################
 
@@ -119,174 +288,31 @@ function module:TogglePanel(panel)
 end
 
 -- ####################################################################################################################
--- ##### MicroButton Functions ########################################################################################
+-- ##### MicroButton Mixin ############################################################################################
 -- ####################################################################################################################
 
-function module:SetSettings(button)
-	--Need Localization
-	button.title = L["Options"]
-	button.left = L["MicroSettings_Left"]
-	button.right = L["MicroSettings_Right"]
-	button.clicker:SetScript("OnClick", function(self, btn)
-		if btn == "RightButton" then
-			--WoW Option Panel
-			module:TogglePanel(GameMenuFrame)
-		else
-			--LUI Option Panel
-			LUI:Open()
-		end
-	end)
-
-	--TODO: Lets not use hungry OnUpdate handlers for the Clicker's alpha.
-	--      Make a function to easily hook frames OnShow/OnHide
-	--Due to LUI Options having no name, we cant use a simple hook, to remove when we find elegant fix.
-	button.clicker:SetScript("OnUpdate", function(self)
-		if self.Hover then return end
-		if GameMenuFrame:IsShown() or LibStub("AceConfigDialog-3.0").OpenFrames.LUI then
-			self:SetAlpha(1)
-		else
-			self:SetAlpha(0)
-		end
-	end)
-end
-
-function module:SetBags(button)
-	button.title = L["Bags_Name"]
-	button.left = L["MicroBags_Any"]
-	button.clicker:SetScript("OnClick", function(self, btn_)
-		ToggleAllBags()
-	end)
-	--Adjust for wide clicker
-	button.isWide = true
-	button:SetWidth(RIGHT_TEXTURE_SIZE_WIDTH)
-	button.clicker:SetSize(WIDE_TEXTURE_CLICK_WIDTH , WIDE_TEXTURE_CLICK_HEIGHT)
-	button.tex:SetTexCoord(LUI:GetCoordAtlas("MicroBtn_Right"))
-end
-
-function module:SetStore(button)
-	button.title = L["MicroStore_Name"]
-	button.left = L["MicroStore_Any"]
-	button.clicker:SetScript("OnClick", function(self, btn_)
-		ToggleStoreUI()
-	end)
-end
-
-function module:SetCollections(button)
-	button.title = L["MicroCollect_Name"]
-	button.left = L["MicroCollect_Any"]
-	button.clicker:SetScript("OnClick", function(self, btn_)
-		ToggleCollectionsJournal()
-	end)
-
-	module:HookAlertFrame("Collections", button)
-end
-
---This button could use some updating. Right click opening Premade Groups
-function module:SetLFG(button)
-	button.title = L["MicroLFG_Name"]
-	button.left = L["MicroLFG_Left"]
-	button.right = L["MicroLFG_Right"]
-	button.level = LFG_LEVEL_REQ
-	button.clicker:SetScript("OnClick", function(self, btn)
-		if btn == "RightButton" then
-			--Raid Browser
-			ToggleRaidBrowser()
-		else
-			--Dungeon Finder
-			ToggleLFDParentFrame()
-		end
-	end)
-end
-
-function module:SetEJ(button)
-	button.title = L["MicroEJ_Name"]
-	button.left = L["MicroEJ_Any"]
-	button.clicker:SetScript("OnClick", function(self, btn_)
-		ToggleEncounterJournal()
-	end)
-
-	module:HookAlertFrame("EJ", button)
-end
-
---This could be set up much nicer. Possibly add Premade Group to right click
-function module:SetPVP(button)
-	button.title = L["MicroPVP_Name"]
-	button.left = L["MicroPVP_Any"]
-	button.level = PVP_LEVEL_REQ
-
-	button.clicker:SetScript("OnClick", function(self, btn_)
-		TogglePVPUI()
-	end)
-end
-
-function module:SetGuild(button)
-	button.title = L["MicroGuild_Name"]
-	button.left = L["MicroGuild_Left"]
-	button.right = L["MicroGuild_Right"]
-
-	button.clicker:SetScript("OnClick", function(self, btn)
-		if btn == "RightButton" then
-			ToggleFriendsFrame()
-		else
-			--Those panels may not be loaded before we call them, so deal with that.
-			if IsInGuild() then
-				GuildFrame_LoadUI()
-				module:TogglePanel(GuildFrame)
-			else
-				LookingForGuildFrame_LoadUI()
-				module:TogglePanel(LookingForGuildFrame)
-			end
-		end
-	end)
-end
-
-function module:SetQuests(button)
-	button.title = L["MicroQuest_Name"]
-	button.left = L["MicroQuest_Any"]
-	button.clicker:SetScript("OnClick", function(self, btn_)
-		module:TogglePanel(WorldMapFrame)
-	end)
-end
-
-function module:SetAchievements(button)
-	button.title = L["MicroAch_Name"]
-	button.left = L["MicroAch_Any"]
-	button.clicker:SetScript("OnClick", function(self, btn_)
-		ToggleAchievementFrame()
-	end)
-end
-
-function module:SetTalents(button)
-	button.title = L["MicroTalents_Name"]
-	button.left = L["MicroTalents_Any"]
-	button.level = TALENT_LEVEL_REQ
-	button.clicker:SetScript("OnClick", function(self, btn_)
-		TalentFrame_LoadUI()
-		module:TogglePanel(PlayerTalentFrame)
-	end)
-
-	module:HookAlertFrame("Talent", button)
-end
-
-function module:SetSpellbook(button)
-	button.title = L["MicroSpell_Name"]
-	button.left = L["MicroSpell_Any"]
-	button.clicker:SetScript("OnClick", function(self, btn_)
-		module:TogglePanel(SpellBookFrame)
-	end)
-end
-
-function module:SetPlayer(button)
-	button.title = L["MicroPlayer_Name"]
-	button.left = L["MicroPlayer_Any"]
-	button.clicker:SetScript("OnClick", function(self, btn_)
-		module:TogglePanel(CharacterFrame)
-	end)
-	--Adjust for wide clicker
-	button.isWide = true
-	button.clicker:SetSize(WIDE_TEXTURE_CLICK_WIDTH , WIDE_TEXTURE_CLICK_HEIGHT)
-	button:SetWidth(LEFT_TEXTURE_SIZE_WIDTH)
-	button.tex:SetTexCoord(LUI:GetCoordAtlas("MicroBtn_Left"))
+function module:NewMicroButton(button, id)
+	local definition = microDefinitions[id]
+	button.title = definition.title or ""
+	button.left = definition.left
+	button.right = definition.right
+	button.any = definition.any
+	if definition.OnClick then
+		button.clicker:SetScript("OnClick", definition.OnClick)
+	end
+	if definition.OnUpdate then
+		button.clicker:SetScript("OnUpdate", definition.OnClick)
+	end
+	if definition.alertFrame then
+		module:HookAlertFrame(definition.alertFrame, button)
+	end
+	if definition.isWide then
+		button.isWide = true
+		local width = (definition.isWide == "Right" and RIGHT_TEXTURE_SIZE_WIDTH) or LEFT_TEXTURE_SIZE_WIDTH
+		button:SetWidth(width)
+		button.clicker:SetSize(WIDE_TEXTURE_CLICK_WIDTH , WIDE_TEXTURE_CLICK_HEIGHT)
+		button.tex:SetTexCoord(LUI:GetCoordAtlas("MicroBtn_"..definition.isWide))
+	end
 end
 
 -- ####################################################################################################################
@@ -395,10 +421,8 @@ function module:SetMicromenu()
 		--Push down the clicker frame so it doesn't go above the texture.
 		button.clicker:SetFrameLevel(button:GetFrameLevel()-1)
 
-		-- See if there's a function for per-button instructions.
-		if module["Set"..name] then
-			module["Set"..name](self, button)
-		end
+		-- See if there's some per-button instructions.
+		module:NewMicroButton(button, name)
 
 		--Add generic OnEnter/OnLeave using information from the functions.
 		button.clicker:SetScript("OnEnter", OnEnterFunc)
