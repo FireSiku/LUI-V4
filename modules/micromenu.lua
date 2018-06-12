@@ -161,6 +161,7 @@ local microDefinitions = {
 	--This could be set up much nicer. Possibly add Premade PVP Group to right click
 	{ -- [7]
 		name = "PVP",
+		level = PVP_LEVEL_REQ,
 		title = L["MicroPVP_Name"],
 		any = L["MicroPVP_Any"],
 		OnClick = function(self, btn_)
@@ -173,6 +174,7 @@ local microDefinitions = {
 		title = L["MicroGuild_Name"],
 		left = L["MicroGuild_Left"],
 		right = L["MicroGuild_Right"],
+		--luacheck: globals LookingForGuildFrame
 		OnClick = function(self, btn)
 			if btn == "RightButton" then
 				ToggleFriendsFrame()
@@ -288,31 +290,84 @@ function module:TogglePanel(panel)
 end
 
 -- ####################################################################################################################
--- ##### MicroButton Mixin ############################################################################################
+-- ##### MicroButton Creation #########################################################################################
 -- ####################################################################################################################
+local MicroButtonClickerMixin = {}
 
-function module:NewMicroButton(button, id)
-	local definition = microDefinitions[id]
-	button.title = definition.title or ""
-	button.left = definition.left
-	button.right = definition.right
-	button.any = definition.any
-	if definition.OnClick then
-		button.clicker:SetScript("OnClick", definition.OnClick)
+function MicroButtonClickerMixin:OnEnter()
+	self:SetAlpha(1)
+	self.Hover = true
+	GameTooltip:SetOwner(self, "ANCHOR_NONE ", 40, -100)
+
+	local parent = self:GetParent()
+	GameTooltip:SetText(parent.title)
+	if parent.any then GameTooltip:AddLine(parent.any, 1, 1, 1) end
+	if parent.left then GameTooltip:AddLine(parent.left, 1, 1, 1) end
+	if parent.right then GameTooltip:AddLine(parent.right, 1, 1, 1) end
+	if parent.level and UnitLevel("player") < parent.level then
+		GameTooltip:AddLine(format(L["Micro_PlayerReq"], parent.level), LUI:NegativeColor())
 	end
-	if definition.OnUpdate then
-		button.clicker:SetScript("OnUpdate", definition.OnClick)
+
+	GameTooltip:Show()
+end
+
+function MicroButtonClickerMixin:OnLeave()
+	self:SetAlpha(0)
+	self.Hover = nil
+	GameTooltip:Hide()
+end
+
+MicroButtonClickerMixin.clickerBackdrop = {
+	bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+	edgeFile = nil, tile = false, tileSize = 0, edgeSize = 1,
+	insets = {left = 0, right = 0, top = 0, bottom = 0}
+}
+
+function module:NewMicroButton(buttonData)
+	local r, g, b, a_ = module:AlphaColor("Micromenu")
+	local name = buttonData.name
+	
+	local button = CreateFrame("Frame", "LUIMicromenu_"..name, UIParent)
+	button:SetSize(TEXTURE_SIZE_WIDTH, TEXTURE_SIZE_HEIGHT)
+	Mixin(button, buttonData)
+
+	button.tex = button:CreateTexture(nil, "ARTWORK")
+	button.tex:SetAllPoints()
+	button.tex:SetTexture(format(TEXTURE_PATH_FORMAT,strlower(name)))
+	button.tex:SetTexCoord(LUI:GetCoordAtlas("MicroBtn_Default"))
+	button.tex:SetVertexColor(r, g, b)
+
+	-- Make a button for the clickable area of the texture with black background.
+	button.clicker = CreateFrame("Button", nil, button)
+	button.clicker:SetSize(TEXTURE_CLICK_WIDTH , TEXTURE_CLICK_HEIGHT)
+	button.clicker:RegisterForClicks("AnyUp")
+	button.clicker:SetBackdrop(MicroButtonClickerMixin.clickerBackdrop)
+	button.clicker:SetPoint("CENTER", button, "CENTER", -1, 0)
+	button.clicker:SetBackdropColor(0, 0, 0, 1)
+	button.clicker:SetAlpha(0)
+	--Push down the clicker frame so it doesn't go above the texture.
+	button.clicker:SetFrameLevel(button:GetFrameLevel()-1)
+
+	-- Handle some definition-based info
+	if button.OnClick then
+		button.clicker:SetScript("OnClick", button.OnClick)
 	end
-	if definition.alertFrame then
-		module:HookAlertFrame(definition.alertFrame, button)
+	if button.OnUpdate then
+		button.clicker:SetScript("OnUpdate", button.OnUpdate)
 	end
-	if definition.isWide then
-		button.isWide = true
-		local width = (definition.isWide == "Right" and RIGHT_TEXTURE_SIZE_WIDTH) or LEFT_TEXTURE_SIZE_WIDTH
+	if button.alertFrame then
+		module:HookAlertFrame(button.alertFrame, button)
+	end
+	if button.isWide then
+		local width = (button.isWide == "Right" and RIGHT_TEXTURE_SIZE_WIDTH) or LEFT_TEXTURE_SIZE_WIDTH
 		button:SetWidth(width)
 		button.clicker:SetSize(WIDE_TEXTURE_CLICK_WIDTH , WIDE_TEXTURE_CLICK_HEIGHT)
-		button.tex:SetTexCoord(LUI:GetCoordAtlas("MicroBtn_"..definition.isWide))
+		button.tex:SetTexCoord(LUI:GetCoordAtlas("MicroBtn_"..button.isWide))
 	end
+
+	button.clicker:SetScript("OnEnter", MicroButtonClickerMixin.OnEnter)
+	button.clicker:SetScript("OnLeave", MicroButtonClickerMixin.OnLeave)
+	return button
 end
 
 -- ####################################################################################################################
@@ -352,38 +407,9 @@ function module:SetMicromenuAnchors()
 end
 
 function module:SetMicromenu()
-	local r, g, b, a_ = module:AlphaColor("Micromenu")
 	local db = module:GetDB()
 	-- Note: V3 micromenu_anchor refers to the arrow that open/close the menu. NOT an actual anchor point.
 	-- micromenu_button seems to points to the background behind the buttons.
-
-	--Reusable backdrop table
-	local clickerBackdrop = {
-		bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-		edgeFile = nil, tile = false, tileSize = 0, edgeSize = 1,
-		insets = {left = 0, right = 0, top = 0, bottom = 0}
-	}
-
-	--Create reusable functions for OnEnter/OnLeave
-	local function OnEnterFunc(self)
-		self:SetAlpha(1)
-		self.Hover = true
-		GameTooltip:SetOwner(self, "ANCHOR_NONE ", 40, -100)
-		local parent = self:GetParent()
-		GameTooltip:SetText(parent.title)
-		if parent.left then GameTooltip:AddLine(parent.left, 1, 1, 1) end
-		if parent.right then GameTooltip:AddLine(parent.right, 1, 1, 1) end
-		if parent.level and UnitLevel("player") < parent.level then
-			GameTooltip:AddLine(format(L["Micro_PlayerReq"],parent.level), LUI:NegativeColor())
-		end
-		GameTooltip:Show()
-	end
-
-	local function OnLeaveFunc(self)
-		self:SetAlpha(0)
-		self.Hover = nil
-		GameTooltip:Hide()
-	end
 
 	--Create Micromenu background
 	local background = CreateFrame("Frame", "LUIMicromenu_Background", UIParent)
@@ -399,35 +425,8 @@ function module:SetMicromenu()
 	module.background = background
 
 	--Create Micromenu buttons
-	for i = 1, #microList do
-		local name = microList[i]
-		local button = CreateFrame("Frame", "LUIMicromenu_"..name, UIParent)
-		button:SetSize(TEXTURE_SIZE_WIDTH, TEXTURE_SIZE_HEIGHT)
-
-		button.tex = button:CreateTexture(nil, "ARTWORK")
-		button.tex:SetAllPoints()
-		button.tex:SetTexture(format(TEXTURE_PATH_FORMAT,strlower(name)))
-		button.tex:SetTexCoord(LUI:GetCoordAtlas("MicroBtn_Default"))
-		button.tex:SetVertexColor(r, g, b)
-
-		-- Make a button for the clickable area of the texture with black background.
-		button.clicker = CreateFrame("Button", nil, button)
-		button.clicker:SetSize(TEXTURE_CLICK_WIDTH , TEXTURE_CLICK_HEIGHT)
-		button.clicker:RegisterForClicks("AnyUp")
-		button.clicker:SetBackdrop(clickerBackdrop)
-		button.clicker:SetPoint("CENTER", button, "CENTER", -1, 0)
-		button.clicker:SetBackdropColor(0, 0, 0, 1)
-		button.clicker:SetAlpha(0)
-		--Push down the clicker frame so it doesn't go above the texture.
-		button.clicker:SetFrameLevel(button:GetFrameLevel()-1)
-
-		-- See if there's some per-button instructions.
-		module:NewMicroButton(button, name)
-
-		--Add generic OnEnter/OnLeave using information from the functions.
-		button.clicker:SetScript("OnEnter", OnEnterFunc)
-		button.clicker:SetScript("OnLeave", OnLeaveFunc)
-		microStorage[name] = button
+	for i = 1, #microDefinitions do
+		microStorage[microDefinitions[i].name] = module:NewMicroButton(microDefinitions[i])
 	end
 
 	module:SetMicromenuAnchors()
