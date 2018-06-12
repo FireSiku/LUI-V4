@@ -5,7 +5,7 @@
 	<Script file="LUI.lua"/>
 	<Script file="api\curse.lua"/>
 	<Include file="api\oUF\oUF.xml"/>
-	<Script file="api\coreapi.lua"/>
+	<Script file="api\utils.lua"/>
 	<Script file="api\modapi.lua"/>
 	<Script file="api\options.lua"/>
 	<Script file="api\strings.lua"/>
