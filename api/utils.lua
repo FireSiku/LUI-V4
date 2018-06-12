@@ -8,7 +8,6 @@
 -- ####################################################################################################################
 
 local _, LUI = ...
-local module = LUI:NewModule("API")
 
 local type, pairs = type, pairs
 local strmatch, tostring = strmatch, tostring

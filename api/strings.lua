@@ -9,8 +9,6 @@
 -- ####################################################################################################################
 
 local _, LUI = ...
-local module = LUI:GetModule("API")
-local element_ = module:NewModule("Strings")
 local L = LUI.L
 
 --local copies

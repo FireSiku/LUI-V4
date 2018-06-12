@@ -7,8 +7,6 @@
 
 -- Addon building reference.
 local addonname, LUI = ...
-local module = LUI:GetModule("API")
-local element = module:NewModule("Modules")
 local Media = LibStub("LibSharedMedia-3.0")
 
 --local copies
@@ -17,7 +15,6 @@ local pairs = pairs
 --Local variables
 local ModuleMixin = {}
 local ModuleCreationMixin = {}
-local modColor  -- Will hold color module.
 
 function LUI:EmbedModule(target)
 	for k, v in pairs(ModuleMixin) do
@@ -54,7 +51,7 @@ function ModuleMixin:Color(colorName)
 			color = db[colorName]
 		end
 	else
-		color = modColor.db.profile.Colors[colorName]
+		color = LUI:GetModule("Colors").db.profile.Colors[colorName]
 	end
 	if color then return color.r, color.g, color.b end
 end
@@ -73,7 +70,7 @@ function ModuleMixin:AlphaColor(colorName, altAlpha)
 			color = db[colorName]
 		end
 	else
-		color = modColor.db.profile.Colors[colorName]
+		color = LUI:GetModule("Colors").db.profile.Colors[colorName]
 	end
 	if color then return color.r, color.g, color.b, color.a or altAlpha end
 end
@@ -246,12 +243,4 @@ function LUI:OnModuleCreated(new_module)
 	for k, v in pairs(ModuleCreationMixin) do
 		new_module[k] = v
 	end
-end
-
--- ####################################################################################################################
--- ##### Framework Events #############################################################################################
--- ####################################################################################################################
--- @local here
-function element:OnInitialize()
-	modColor = LUI:GetModule("Colors")
 end

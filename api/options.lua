@@ -6,8 +6,6 @@
 -- ####################################################################################################################
 
 local addonname, LUI = ...
-local module = LUI:GetModule("API")
-local element = module:NewModule("Options")
 local Media = LibStub("LibSharedMedia-3.0")
 local L = LUI.L
 
