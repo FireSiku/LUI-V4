@@ -245,7 +245,7 @@ end
 -- ####################################################################################################################
 -- ##### Dev: Performance Testing #####################################################################################
 -- ####################################################################################################################
-
+--luacheck: ignore
 --Keeping the basic structure of the function for the next time something is needed to profile.
 local function Bench(name, start, finish, mark)
 	LUI:Print(name, finish - start, format("(%.f%%)", ((finish-start)/mark)*100))

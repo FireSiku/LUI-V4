@@ -200,14 +200,14 @@ end
 -- ####################################################################################################################
 -- @local here
 function ModuleCreationMixin:NewElement(name, ...)
-	local new_element = self:NewModule(name, ...)
-	LUI:EmbedModule(new_element)
-	return new_element
+	local newElement = self:NewModule(name, ...)
+	LUI:EmbedModule(newElement)
+	return newElement
 end
 
 --Make sure every element also has a :GetParent()
-function ModuleCreationMixin:OnModuleCreated(new_element)
-	new_element.GetParent = function()
+function ModuleCreationMixin:OnModuleCreated(newElement)
+	newElement.GetParent = function()
 		return self:GetName(), self
 	end
 end
@@ -222,15 +222,15 @@ end
 -- This function is not avaible to elements or LUI.
 -- @function Toggle
 
-function LUI:OnModuleCreated(new_module)
-	new_module.GetParent = function()
+function LUI:OnModuleCreated(newModule)
+	newModule.GetParent = function()
 		return self:GetName(), self
 	end
 
 	--Only modules with an enableButton should be toggle-able.
-	new_module.Toggle = function()
-		local name = new_module:GetName()
-		local state = not new_module:IsEnabled()
+	newModule.Toggle = function()
+		local name = newModule:GetName()
+		local state = not newModule:IsEnabled()
 		if state then
 			LUI:EnableModule(name)
 		else
@@ -241,6 +241,6 @@ function LUI:OnModuleCreated(new_module)
 	end
 
 	for k, v in pairs(ModuleCreationMixin) do
-		new_module[k] = v
+		newModule[k] = v
 	end
 end
