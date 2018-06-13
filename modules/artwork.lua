@@ -151,29 +151,34 @@ local LUI_TEX_DIR = "Interface\\AddOns\\LUI4\\media\\textures\\"
 -- There is no profile scope, nor do they have a :GetDB() function.
 function PanelMixin:GetParent()
 	--TODO: Add support for LibWindow for proper texture scaling when not anchored.
-	if self.db.Anchored then return _G[self.db.Parent]
-	else return UIParent
+	if self.db.Anchored then
+		return _G[self.db.Parent]
+	else
+		return UIParent
 	end
 end
 
 function PanelMixin:GetTexture()
 	-- TODO: Add support for various texture directories in the future.
-	if self.db.TexMode == 3 then return self.db.Texture
-	else return LUI_TEX_DIR..self.db.Texture
+	if self.db.TexMode == 3 then
+		return self.db.Texture
+	else
+		return LUI_TEX_DIR..self.db.Texture
 	end
 end
 
 function PanelMixin:GetTexCoord()
+	local db = self.db
 	--PH: Grab TexCoord valuess from db entries
-	local left, right, up, down = self.db.Left, self.db.Right, self.db.Up, self.db.Down
+	local left, right, up, down = db.Left, db.Right, db.Up, db.Down
 
-	if LUI_TEXTURES_INFO[self.db.Texture] then
-		local coord = LUI_TEXTURES_INFO[self.db.Texture]
+	if LUI_TEXTURES_INFO[db.Texture] then
+		local coord = LUI_TEXTURES_INFO[db.Texture]
 		left, right, up, down = coord[1], coord[2], coord[3], coord[4]
 	end
 
-	local hFlip = self.db.HorizontalFlip
-	local vFlip = self.db.VerticalFlip
+	local hFlip = db.HorizontalFlip
+	local vFlip = db.VerticalFlip
 
 	if hFlip and vFlip then
 		--Flip Horizontally and Vertically
@@ -253,8 +258,8 @@ end
 -- info[#info-1] inside an PanelOptionGroup returns the texture's name, setPanels[name] returns the frame
 local function IsAnchorParentDisabled(info) return not setPanels[info[#info-1]].db.Anchored end
 local function IsTexCoordsHidden(info) return not setPanels[info[#info-1]].db.CustomTexCoords end
-local function IsTextureInputHidden(info) return setPanels[info[#info-1]].db.TexMode == 1 end
-local function IsTextureSelectHidden(info) return setPanels[info[#info-1]].db.TexMode ~= 1 end
+local function IsTextureInputHidden(info) return (setPanels[info[#info-1]].db.TexMode == 1) end
+local function IsTextureSelectHidden(info) return (setPanels[info[#info-1]].db.TexMode ~= 1) end
 local function GetOptionTexCoords(info) return setPanels[info[#info-1]]:GetTexCoord() end
 local function GetOptionImageTexture(info) return setPanels[info[#info-1]]:GetTexture() end
 local function RefreshPanel(info) return setPanels[info[#info-1]]:Refresh() end
