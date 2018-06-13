@@ -16,7 +16,7 @@ local unitSpawns = { "player", "target", }
 -- ####################################################################################################################
 
 function module:GetUnitDB(unit)
-	return module:GetDB().Units[unit]
+	return module:GetDB("Units")[unit]
 end
 
 --TODO: Fix color system so we don't have to create new tables every call.
@@ -94,8 +94,7 @@ function SpawnMixin:Color(colorName)
 			color = self.db.Colors[colorName]
 		end
 	else
-		local colorDB = LUI:GetModule("Colors"):GetDB()
-		color = colorDB.Colors[colorName]
+		color = LUI:GetModule("Colors"):GetDB("Colors")[colorName]
 	end
 	if color then
 		return color.r, color.g, color.b

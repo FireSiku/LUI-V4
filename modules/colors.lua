@@ -227,8 +227,7 @@ function LUI:InverseGradient(perc)
 end
 
 function LUI:GetBGMultiplier()
-	local db = module:GetDB()
-	return db.Advanced.BGMult
+	return module:GetDB("Advanced").BGMult
 end
 
 --TODO: Possibly have a full callback system for API, otherwise we will just have more copies of this function.

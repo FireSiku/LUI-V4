@@ -202,8 +202,8 @@ function module:IterateModules()
 end
 
 function module:IsPositionSet(name)
-	local db = module:GetDB()
-	return (db[name].X ~= 0) and true or false
+	local db = module:GetDB(name)
+	return (db.X ~= 0) and true or false
 end
 
 -- ####################################################################################################################
@@ -235,18 +235,18 @@ function module:DataObjectCreated(name, element)
 	if elementStorage[name] then LUI:EmbedModule(element) end
 	if element.OnCreate then element:OnCreate(frame) end
 
-	local db = module:GetDB()
+	local db = module:GetDB(name)
 	if module:IsPositionSet(name) then
 		local anchor = module:GetAnchor("top")
 		frame:SetParent(anchor)
 		-- To remove "or 0" when nil issue is fixed.
-		frame.text:SetPoint("TOPLEFT", anchor, "TOPLEFT", db[name].X, db[name].Y or 0)
+		frame.text:SetPoint("TOPLEFT", anchor, "TOPLEFT", db.X, db.Y or 0)
 	else
 		local anchor = module:GetAnchor("bottom")
 		frame:SetParent(anchor)
 		defaultPositions = defaultPositions + 1
 		local defaultX = -100 + (145 * defaultPositions)
-		frame.text:SetPoint("BOTTOMLEFT", anchor, "BOTTOMLEFT", defaultX, db[name].Y)
+		frame.text:SetPoint("BOTTOMLEFT", anchor, "BOTTOMLEFT", defaultX, db.Y)
 	end
 	frame:SetAllPoints(frame.text)
 
@@ -301,31 +301,30 @@ end
 -- ####################################################################################################################
 
 function module:IsInfotextEnabled(name)
-	local db = module:GetDB()
-	return db[name].Enable
+	return module:GetDB(name).Enable
 end
 
 function module:ShowInfotext(name)
-	local db = module:GetDB()
+	local db = module:GetDB(name)
 	elementFrames[name]:Show()
-	db[name].Enable = true
+	db.Enable = true
 end
 
 function module:HideInfotext(name)
-	local db = module:GetDB()
+	local db = module:GetDB(name)
 	elementFrames[name]:Hide()
-	db[name].Enable = false
+	db.Enable = false
 end
 
 function module:ToggleInfotext(name)
-	local db = module:GetDB()
+	local db = module:GetDB(name)
 	local frame = elementFrames[name]
 	if frame:IsShown() then
 		frame:Hide()
-		db[name].Enable = false
+		db.Enable = false
 	else
 		frame:Show()
-		db[name].Enable = true
+		db.Enable = true
 	end
 end
 
@@ -335,12 +334,16 @@ end
 
 -- Objects that are disabled shouldn't clog your option tabs.
 local function IsInfotextGroupHidden(info)
-	local db = module:GetDB()
-	return not db[info[#info]].Enable
+	local db = module:GetDB(info[#info])
+	return not db.Enable
 end
 local function IsYPositionHidden(info)
-	local db = module:GetDB()
-	return (info[#info] == "Y") and not db.General.AllowY or false
+	if info[#info] == "Y" then
+		local db = module:GetDB("General")
+		return not db.AllowY
+	else
+		return false
+	end
 end
 
 -- Template for infotext option menus

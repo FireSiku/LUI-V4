@@ -96,8 +96,8 @@ local function FormatTime(seconds)
 end
 
 function module:GetDebuffColor(debuffType)
-	local db = module:GetDB()
-	if db.Colors[debuffType] then
+	local db = module:GetDB("Colors")
+	if db[debuffType] then
 		return module:Color(debuffType)
 	else
 		return module:Color("None")
@@ -146,8 +146,7 @@ end
 -- Turn into HeaderMixin?
 
 function Header:GetOption(name)
-	local db = module:GetDB()
-	return db[self.auraType][name]
+	return module:GetDB(self.auraType)[name]
 end
 
 function Header:Update(event, ...)

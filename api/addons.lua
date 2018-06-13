@@ -25,8 +25,8 @@ module.defaults = {
 -- ####################################################################################################################
 
 function module:SetInstalled(name, bool)
-	local db = module:GetDB()
-	db.installed[name] = bool or true
+	local db = module:GetDB("installed")
+	db[name] = bool or true
 end
 
 -- ####################################################################################################################
@@ -46,10 +46,10 @@ function module:OnInitialize()
 end
 
 function module:OnEnable()
-	local db = module:GetDB()
+	local db = module:GetDB("installed")
 	for name, element in module:IterateModules() do
 		-- Explicit nil check because false should have a different result
-		if db.installed[name] == nil then
+		if db[name] == nil then
 			StaticPopupDialogs["LUI_ADDON"..name] = {
 				text = format("LUI detected you installed %s and has preset configuration available."
 				               .. " Do you want LUI to apply these settings?", name),

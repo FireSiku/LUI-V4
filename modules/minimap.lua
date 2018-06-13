@@ -366,8 +366,8 @@ function module:SetColors()
 end
 
 function module:ToggleMinimapText()
-	local db = module:GetDB()
-	if db.General.alwaysShowText then
+	local db = module:GetDB("General")
+	if db.alwaysShowText then
 		LUIMinimapZone:Show()
 		LUIMinimapCoord:Show()
 	else
@@ -377,8 +377,8 @@ function module:ToggleMinimapText()
 end
 
 function module:ToggleMinimapTextures()
-	local db = module:GetDB()
-	if db.General.showTextures then
+	local db = module:GetDB("General")
+	if db.showTextures then
 		LUIMinimapBorder:Show()
 		for i = 1, 8 do
 			_G["LUIMinimapTexture"..i]:Show()

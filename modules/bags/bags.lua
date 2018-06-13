@@ -82,19 +82,19 @@ function Bags:HideTitleBar()
 end
 
 function Bags:CreateTitleBar()
-	local db = module:GetDB()
+	local db = module:GetDB("Fonts")
 	--TODO: Possibly change those two to use LUI FontStrings api
 	local gold = self:CreateFontString(nil, "ARTWORK", "GameFontHighlightLarge")
 	gold:SetJustifyH("RIGHT")
 	gold:SetPoint("RIGHT", self.closeButton, "LEFT", -3, 0)
-	gold:SetFont(Media:Fetch("font", db.Fonts.Bags.Name), db.Fonts.Bags.Size, db.Fonts.Bags.Flag)
+	gold:SetFont(Media:Fetch("font", db.Bags.Name), db.Bags.Size, db.Bags.Flag)
 
 	-- Watched Currency Display, next to gold
 	local currency = self:CreateFontString(nil, "ARTWORK", "GameFontHighlightLarge")
 	currency:SetJustifyH("RIGHT")
 	currency:SetPoint("RIGHT", gold, "LEFT", -10, 0)
 	currency:SetText(self:GetCurrencyString())
-	currency:SetFont(Media:Fetch("font", db.Fonts.Bags.Name), db.Fonts.Bags.Size, db.Fonts.Bags.Flag)
+	currency:SetFont(Media:Fetch("font", db.Bags.Name), db.Bags.Size, db.Bags.Flag)
 
 	--Hooking this function allows to update watched currencies without a ReloadUI
 	local updateFunc = function() self:UpdateCurrencies() end

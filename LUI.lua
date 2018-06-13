@@ -110,25 +110,25 @@ LUI.blank = [[Interface\AddOns\LUI4\media\blank]]
 
 --- Check if LUI is installed.
 function LUI:CheckInstall()
-	local db = LUI:GetDB()
+	local db = LUI:GetDB("installed")
 	--Check for the big install
-	if not db.installed.LUI then LUI:OnInstall() end
+	if not db.LUI then LUI:OnInstall() end
 
 	for name, module in self:IterateModules() do
 		--module.db = self.db:RegisterNamespace(mName, module.defaults)
-		if (module.db) and (module.db.profile) and (not db.installed[name]) then
+		if (module:GetDB()) and (not db[name]) then
 			--If there is a module OnInstall, call it.
 			if module.OnInstall and (type(module.OnInstall) == "function") then
 				local installed, err = module.OnInstall()
 				if installed then
-					db.installed[name] = true -- Installed correctly
+					db[name] = true -- Installed correctly
 				elseif err then
 					-- Print Error, otherwise fails silently.
 					LUI:Print(format(L["Core_ModuleInstallFail_Format"],name,err))
 				end
 			--If not, assume the module has no install required and proceed.
 			else
-				db.installed[name] = true
+				db[name] = true
 				-- Print for testing purposes while we setup all modules during development.
 				LUI:Print("Module "..name.." required no installation")
 			end

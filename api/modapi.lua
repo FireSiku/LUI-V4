@@ -51,7 +51,7 @@ function ModuleMixin:Color(colorName)
 			color = db[colorName]
 		end
 	else
-		color = LUI:GetModule("Colors").db.profile.Colors[colorName]
+		color = LUI:GetModule("Colors"):GetDB("Colors")[colorName]
 	end
 	if color then return color.r, color.g, color.b end
 end
@@ -70,7 +70,7 @@ function ModuleMixin:AlphaColor(colorName, altAlpha)
 			color = db[colorName]
 		end
 	else
-		color = LUI:GetModule("Colors").db.profile.Colors[colorName]
+		color = LUI:GetModule("Colors"):GetDB("Colors")[colorName]
 	end
 	if color then return color.r, color.g, color.b, color.a or altAlpha end
 end
@@ -157,8 +157,8 @@ function ModuleMixin:SetFontString(frame, gName, mFont, layer, hJustify, vJustif
 end
 
 function ModuleMixin:RefreshFontString(fs, mFont)
-	local db = self:GetDB()
-	local font = db.Fonts[mFont]
+	local db = self:GetDB("Fonts")
+	local font = db[mFont]
 	fs:SetFont(Media:Fetch("font", font.Name), font.Size, font.Flag)
 	fs:SetTextColor(self:Color(mFont))
 end
@@ -176,7 +176,7 @@ function ModuleMixin:GetDB(subTable)
 	return (subTable and db[subTable]) or db
 end
 
---- Returns a database scope table. 
+--- Returns a database scope table.
 -- @tparam[opt] ?string scope The scope to look up. Can be one of the nine database types as specified by AceDB.
 function ModuleMixin:GetDBScope(scope)
 	scope = scope or "profile"
@@ -199,8 +199,8 @@ end
 -- Those prints will not appear if ModuleMessages is disabled
 -- @string msg Message to print. Note that this print automatically adds the module name at the start.
 function ModuleMixin:ModPrint(...)
-	local db = LUI:GetDB()
-	if db.General.ModuleMessages then
+	local db = LUI:GetDB("General")
+	if db.ModuleMessages then
 		LUI:Print(self:GetName()..":", ...)
 	end
 end
@@ -246,8 +246,8 @@ function LUI:OnModuleCreated(newModule)
 		else
 			LUI:DisableModule(name)
 		end
-		local db = LUI:GetDB()
-		db.modules[name] = state
+		local db = LUI:GetDB("modules")
+		db[name] = state
 	end
 
 	for k, v in pairs(ModuleCreationMixin) do

@@ -771,17 +771,17 @@ function module:Refresh()
 end
 
 function module:RefreshBackdrops()
-	local db = module:GetDB()
+	local db = module:GetDB("Textures")
 	-- Bag Backdrop
 	module.bagBackdrop = {
-		bgFile = Media:Fetch("background", db.Textures.BackgroundTex),
-		edgeFile = Media:Fetch("border", db.Textures.BorderTex),
+		bgFile = Media:Fetch("background", db.BackgroundTex),
+		edgeFile = Media:Fetch("border", db.BorderTex),
 		edgeSize = 15, insets = { left = 3, right = 3, top = 3, bottom = 3 }
 	}
 	-- Item Backdrop
 	module.itemBackdrop = {
-		bgFile = Media:Fetch("background", db.Textures.BackgroundTex),
-		edgeFile = Media:Fetch("border", db.Textures.BorderTex),
+		bgFile = Media:Fetch("background", db.BackgroundTex),
+		edgeFile = Media:Fetch("border", db.BorderTex),
 		edgeSize = 15, insets = { left = 3, right = 3, top = 3, bottom = 3 },
 	}
 end

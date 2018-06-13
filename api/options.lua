@@ -215,7 +215,7 @@ function OptionsMixin:setter(info, value, ...)
 	local parent = CheckMeta(info, "parent", "string") or info[#info-1]
 	local scope = CheckMeta(info, "scope", "string")
 	local root = CheckMeta(info, "root", "boolean")
-	
+
 	local db = (scope and self:GetDBScope(scope)) or self:GetDB()
 	if not root then db = db[parent] end
 
@@ -266,14 +266,14 @@ end
 --Color Get/Set are specific to colors and ignore most meta params.
 -- They check for the color directly into db.Colors
 function OptionsMixin:ColorGetter(info)
-	local db = self:GetDB("profile", "Colors")
+	local db = self:GetDB("Colors")
 	local c = db[info[#info]]
 	return c.r, c.g, c.b, c.a
 end
 
 local function shortNum(num) return format(tonumber(num) < 1 and "%.2f" or "%d", tonumber(num)) end
 function OptionsMixin:ColorSetter(info, r, g, b, a)
-	local db = self:GetDB("profile", "Colors")
+	local db = self:GetDB("Colors")
 	local c = db[info[#info]]
 	c.r, c.g, c.b, c.a = shortNum(r), shortNum(g), shortNum(b), shortNum(a)
 	if not info.option.hasAlpha then c.a = nil end
@@ -617,7 +617,7 @@ function OptionsMixin:NewColorMenu(name, order, hasAlpha, meta, width_, disabled
 	OptionHook(t, function(info, parent)
 		local opt = info[#info]
 		local optMenu = opt.."Menu"
-		local db = self:GetDB("profile", "Colors")
+		local db = self:GetDB("Colors")
 		parent[opt] = self:NewColor(name, nil, order+0.2, hasAlpha, meta, nil, disabled, hidden)
 		parent[optMenu] = self:NewSelect(name, nil, order+0.1, LUI.ColorTypes, nil, meta, nil, disabled, hidden)
 		--Custom get/set for the dropdown menu
@@ -655,7 +655,7 @@ function(info)
 	local curOpt = strsub(optName, -5)
 
 	--How to get self out of the info table?
-	local db = self:GetDB("profile", "Colors")
+	local db = self:GetDB("Colors")
 
 	--Alpha Slider should be hidden when under Custom/Individual, displayed all other cases.
 	if curOpt == "Alpha" then

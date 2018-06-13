@@ -167,7 +167,7 @@ function LUI:ForceTooltipUpdate(ttip)
 end
 
 function module:UpdateTooltipBackdrop()
-	local db = module:GetDB()
+	local db = module:GetDB("Textures")
 	for i = 1, #TOOLTIPS_LIST do
 		local tooltipName = TOOLTIPS_LIST[i]
 		local tooltip = _G[tooltipName]
@@ -180,8 +180,8 @@ function module:UpdateTooltipBackdrop()
 				initialScale[tooltipName] = tooltip:GetScale()
 			end
 			tooltip:SetBackdrop({
-				bgFile = Media:Fetch("background", db.Textures.backgroundTex),
-				edgeFile = Media:Fetch("border", db.Textures.borderTex),
+				bgFile = Media:Fetch("background", db.backgroundTex),
+				edgeFile = Media:Fetch("border", db.borderTex),
 				edgeSize = db.Textures.borderSize, tile = false,
 				insets = {left = 0, right = 0, top = 0, bottom = 0, }
 			})
@@ -228,6 +228,7 @@ function module:SetTooltip()
 	module:SecureHook(GameTooltip, "SetShapeshift", "HideCombatSkillTooltips")
 end
 
+-- luacheck: globals GameTooltipStatusBar
 function module:SetStatusHealthBar()
 	local health = GameTooltipStatusBar
 	local db = module:GetDB()

@@ -87,18 +87,17 @@ function module:ChangeHeaderColor(header, r, g, b)
 end
 
 function module:SetObjectiveFrame()
-	local db = module:GetDB()
-	if db.ObjectiveTracker.HeaderColor then
+	local db = module:GetDB("ObjectiveTracker")
+	if db.HeaderColor then
 		module:SecureHook("ObjectiveTracker_Initialize", function()
 			for i, v in pairs(ObjectiveTrackerFrame.MODULES) do
 				module:ChangeHeaderColor(v.Header, module:Color(LUI.playerClass))
 			end
 		end)
 	end
-	if db.ObjectiveTracker.ManagePosition then
+	if db.ManagePosition then
 		module:SecureHook("ObjectiveTracker_Update", function()
-			ObjectiveTrackerFrame:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT",
-			                                db.ObjectiveTracker.OffsetX, db.ObjectiveTracker.OffsetY)
+			ObjectiveTrackerFrame:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", db.OffsetX, db.OffsetY)
 		end)
 	end
 end

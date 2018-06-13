@@ -347,8 +347,7 @@ function module:NewPanel(info)
 		return
 	end
 	
-	local db = module:GetDB()
-	local panelDB = db.Textures[nameInput]
+	local panelDB = module:GetDB("Textures")[nameInput]
 	--Set the order so that, in theory, order values do not overlap.
 	panelDB.Order = #module.panelList+1
 	table.insert(module.panelList, nameInput)
@@ -369,8 +368,7 @@ function module:DeletePanel(info)
 	table.remove(module.panelList, panelSelect)
 	_G["LUIPanel_"..panelName]:Hide()
 
-	local db = module:GetDB()
-	db.Textures[panelName] = nil
+	module:GetDB("Textures")[panelName] = nil
 
 	info.options.args[info[#info-1]].args[panelName] = nil
 	LUI:RefreshOptionsPanel()
@@ -395,10 +393,10 @@ function module:LoadOptions()
 		                                    5, module.panelList, nil, panelSelectMeta),
 		DeletePanel = module:NewExecute(L["Panels_Options_DeletePanel"], nil, 6, "DeletePanel"),
 	}
-	local db = module:GetDB()
+	local db = module:GetDB("Textures")
 	for i = 1, #module.panelList do
 		local panelName = module.panelList[i]
-		local panelDB = db.Textures[panelName]
+		local panelDB = db[panelName]
 		options[panelName] = module:NewPanelOptionGroup(panelName, panelDB.Order)
 	end
 
