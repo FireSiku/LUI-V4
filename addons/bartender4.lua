@@ -70,7 +70,7 @@ function element:Install()
 	-- Move the Pet bar and Extra Action to the side.
 	element:SetupNamespace(db, "PetBar", "BOTTOMRIGHT", -195, 295, 1, 2, 2)
 	element:SetupNamespace(db, "ExtraActionBar", "BOTTOMRIGHT", -285, 295, 1)
-	element:SetupNamespace(db, "Vehicle", "BOTTOMRIGHT", -355, 295, 1)
+	--element:SetupNamespace(db, "Vehicle", "BOTTOMRIGHT", -355, 295, 1)
 
 	-- Disable some modules
 	element:DisableMod(Bartender4, "BagBar")
