@@ -199,9 +199,12 @@ end
 
 function OptionsMixin:getter(info)
 	local parent = CheckMeta(info, "parent", "string") or info[#info-1]
-	local scope = CheckMeta(info, "scope", "string") or "profile"
+	local scope = CheckMeta(info, "scope", "string")
 	local root = CheckMeta(info, "root", "boolean")
-	local db = self:GetDB(scope, (not root) and parent)
+
+	local db = (scope and self:GetDBScope(scope)) or self:GetDB()
+	if not root then db = db[parent] end
+
 	local value = db[info[#info]]
 	--HACK: Inputs cannot display numbers. Have to convert to string.
 	if info.option.type == "input" then return tostring(value) end
@@ -210,9 +213,11 @@ end
 
 function OptionsMixin:setter(info, value, ...)
 	local parent = CheckMeta(info, "parent", "string") or info[#info-1]
-	local scope = CheckMeta(info, "scope", "string") or "profile"
+	local scope = CheckMeta(info, "scope", "string")
 	local root = CheckMeta(info, "root", "boolean")
-	local db = self:GetDB(scope, (not root) and parent)
+	
+	local db = (scope and self:GetDBScope(scope)) or self:GetDB()
+	if not root then db = db[parent] end
 
 	--HACK: Inputs always return value as a string.
 	if CheckMeta(info, "isNumber") then value = tonumber(value) end
@@ -223,7 +228,7 @@ end
 
 -- Drop most of the useless bullshit of getter/setter
 function OptionsMixin:GenericGetter(info)
-	local db = self:GetDB("profile", info[#info-1])
+	local db = self:GetDB(info[#info-1])
 	local value = db[info[#info]]
 	--Inputs cannot display numbers. Have to convert to string.
 	if info.option.type == "input" then return tostring(value) end
@@ -231,7 +236,7 @@ function OptionsMixin:GenericGetter(info)
 end
 
 function OptionsMixin:GenericSetter(info, value, ...)
-	local db = self:GetDB("profile", info[#info-1])
+	local db = self:GetDB(info[#info-1])
 	-- Make sure not to save a number as a string
 	if tonumber(value) then
 		value = tonumber(value)

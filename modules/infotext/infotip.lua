@@ -205,7 +205,7 @@ end
 function element:ApplyBackdropColors()
 	local modTooltip = LUI:GetModule("Tooltip")
 	local isModded = (modTooltip and modTooltip:IsEnabled()) and true or false
-	local colorDB = (isModded) and modTooltip:GetDB(nil, "Colors")
+	local colorDB = (isModded) and modTooltip:GetDB("Colors")
 	for _, infotip in pairs(infotipStorage) do
 		if isModded then
 			infotip:SetBackdropColor(colorDB.Background.r, colorDB.Background.g, colorDB.Background.b)

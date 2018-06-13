@@ -42,7 +42,7 @@ function ModuleMixin:Color(colorName)
 	--TODO: Fix the issue with RGB colors as RGBA colors in the options
 	--TODO: Add Better Element/Module support, order to check should be the element,then parent module, then Colors.
 	local color
-	local db = self:GetDB("profile", "Colors")
+	local db = self:GetDB("Colors")
 	if db and db[colorName] then
 		-- TODO: Check for all planned types (.t)
 		if db[colorName].t and db[colorName].t == "Class" then
@@ -61,7 +61,7 @@ function ModuleMixin:AlphaColor(colorName, altAlpha)
 	if not altAlpha then altAlpha = 1 end
 
 	local color
-	local db = self:GetDB("profile", "Colors")
+	local db = self:GetDB("Colors")
 	if db and db[colorName] then
 		-- TODO: Check for all planned types (.t)
 		if db[colorName].t and db[colorName].t == "Class" then
@@ -77,21 +77,21 @@ end
 
 -- Wrapper around SharedMedia fetch features.
 function ModuleMixin:FetchStatusBar(name)
-	local db = self:GetDB("profile", "StatusBars")
+	local db = self:GetDB("StatusBars")
 	if db and db[name] then
 		return Media:Fetch("statusbar", db[name])
 	end
 end
 
 function ModuleMixin:FetchBorder(name)
-	local db = self:GetDB("profile", "Borders")
+	local db = self:GetDB("Borders")
 	if db and db[name] then
 		return Media:Fetch("border", db[name])
 	end
 end
 
 function ModuleMixin:FetchBackground(name)
-	local db = self:GetDB("profile", "Backgrounds")
+	local db = self:GetDB("Backgrounds")
 	if db and db[name] then
 		return Media:Fetch("background", db[name])
 	end
@@ -102,7 +102,7 @@ end
 -- If Tile or Insets options aren't found in the DB, they can be optionally be set through parameters.
 -- Requires a DB.Backdrop entry based on name.
 function ModuleMixin:FetchBackdrop(name, tile, tileSize, l, r, t, b)
-	local db = self:GetDB("profile", "Backdrop")
+	local db = self:GetDB("Backdrop")
 	if db and db[name] then
 		local backdrop
 		-- Check if backdrop exists, if not create it.
@@ -148,7 +148,7 @@ end
 -- @tparam[opt] ?string vJustify Set the font vertical alignment.
 function ModuleMixin:SetFontString(frame, gName, mFont, layer, hJustify, vJustify)
 	local fs = frame:CreateFontString(gName, layer)
-	local db = self:GetDB("profile", "Fonts")
+	local db = self:GetDB("Fonts")
 	local font = db[mFont]
 	fs:SetFont(Media:Fetch("font", font.Name), font.Size, font.Flag)
 	if hJustify then fs:SetJustifyH(hJustify) end
@@ -163,19 +163,29 @@ function ModuleMixin:RefreshFontString(fs, mFont)
 	fs:SetTextColor(self:Color(mFont))
 end
 
---- Returns a database table. It will return the profile scope by defaults.
--- @tparam[opt] ?string scope The scope to look up. Can be one of the nine database types as specified by AceDB.
--- @tparam[opt] ?string extra The name of a table in the database to return.
-function ModuleMixin:GetDB(scope, extra)
-	scope = scope or "profile"
+--- Returns the profile database table.
+-- @tparam[opt] ?string tbl The name of a table in the database to return.
+function ModuleMixin:GetDB(subTable)
 	local db
 	if self:IsElement() then
 		local _, parent = self:GetParent()
-		db = parent.db[scope][self:GetName()]
+		db = parent.db.profile[self:GetName()]
 	else
-		db = self.db[scope]
+		db = self.db.profile
 	end
-	return (extra) and db[extra] or db
+	return (subTable and db[subTable]) or db
+end
+
+--- Returns a database scope table. 
+-- @tparam[opt] ?string scope The scope to look up. Can be one of the nine database types as specified by AceDB.
+function ModuleMixin:GetDBScope(scope)
+	scope = scope or "profile"
+	if self:IsElement() then
+		local _, parent = self:GetParent()
+		return parent.db[scope][self:GetName()]
+	else
+		return self.db[scope]
+	end
 end
 
 --- Check if the module is an element.

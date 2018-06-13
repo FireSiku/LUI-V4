@@ -174,8 +174,8 @@ function element.OnTooltipShow(GameTooltip)
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddLine(L["InfoGold_Characters"] )
 	for i, faction in ipairs(FACTION_ORDER_REALM) do
-		local dbRealm = element:GetDB("realm", faction)
-		for name, money in pairs(dbRealm) do
+		local realmDB = element:GetDBScope("realm")
+		for name, money in pairs(realmDB[faction]) do
 			local r, g, b = LUI:GetFactionColor(faction)
 			GameTooltip:AddDoubleLine(name, element:FormatMoney(money, true), r, g, b, 1,1,1)
 		end
@@ -183,8 +183,8 @@ function element.OnTooltipShow(GameTooltip)
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddLine(L["InfoGold_Realms"])
 	for i, faction in ipairs(FACTION_ORDER_GLOBAL) do
-		local dbGlobal = element:GetDB("global", faction)
-		for realm, money in pairs(dbGlobal) do
+		local globalDB = element:GetDBScope("global")
+		for realm, money in pairs(globalDB[faction]) do
 			local r, g, b = LUI:GetFactionColor(faction)
 			GameTooltip:AddDoubleLine(format("%s-%s", realm, faction), element:FormatMoney(money, true), r, g, b, 1,1,1)
 		end

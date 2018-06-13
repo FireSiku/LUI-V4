@@ -135,9 +135,9 @@ module.childGroups = "tree"
 function module:NewUnitOptionGroup(unit, order)
 	-- Create an object to represent the unit, GetDB is the only function we need to recreate for the Options API.
 	local opt = {}
-	function opt:GetDB(scope_, extra)
+	function opt:GetDB(subTable)
 		local db = module:GetDB()
-		return (extra and db.Units[unit][extra]) or db.Units[unit]
+		return (subTable and db.Units[unit][subTable]) or db.Units[unit]
 	end
 	LUI:EmbedOptions(opt)
 
