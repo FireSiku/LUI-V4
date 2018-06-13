@@ -146,6 +146,7 @@ end
 -- Turn into HeaderMixin?
 
 function Header:GetOption(name)
+	local db = module:GetDB()
 	return db[self.auraType][name]
 end
 
@@ -248,7 +249,7 @@ function Aura:OnUpdate(elapsed)
 end
 
 function Aura:Update(...)
-	local name, _, icon, count, dispelType, duration, expires, caster = UnitAura(...)
+	local name, icon, count, dispelType, duration, expires, caster = UnitAura(...)
 	-- Blizzard has a bug with SecureAuraHeaders that causes extra aura buttons to sometimes be shown
 	-- It occurs when the consolidation or tempEnchants are shown, an extra button gets added
 	-- to the end of the list for each one shown
