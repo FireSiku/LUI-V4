@@ -7,13 +7,6 @@ local module = LUI:GetModule("Addons")
 local element = module:NewElement("Bartender4")
 local L = LUI.L
 
---Defaults
-element.defaults = {
-	profile = {
-		Enable = true, -- Placeholder
-	},
-}
-
 -- ####################################################################################################################
 -- ##### Module Functions #############################################################################################
 -- ####################################################################################################################
@@ -84,8 +77,6 @@ function element:Install()
 	element:DisableMod(Bartender4, "MicroMenu")
 	element:DisableMod(Bartender4, "StanceBar")
 	element:DisableMod(Bartender4, "BlizzardArt")
-	element:DisableMod(Bartender4, "RepBar")
-	element:DisableMod(Bartender4, "XPBar")
 
 	--[[ Preset Example from Bartender4
 	config = db:GetNamespace("ActionBars").profile
@@ -95,7 +86,7 @@ function element:Install()
 	config.actionbars[3].padding = 5 --]]
 
 	Bartender4:UpdateModuleConfigs()
-	module:GetDB().installed.Bartender4 = true
+	module:SetInstalled("Bartender4")
 end
 
 -- ####################################################################################################################

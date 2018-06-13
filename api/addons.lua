@@ -9,8 +9,25 @@ local module = LUI:NewModule("Addons")
 local L = LUI.L
 
 -- ####################################################################################################################
+-- ##### Default Settings #############################################################################################
+-- ####################################################################################################################
+
+module.defaults = {
+	profile = {
+		installed = {
+			["*"] = false,
+		},
+	},
+}
+
+-- ####################################################################################################################
 -- ##### Module Functions #############################################################################################
 -- ####################################################################################################################
+
+function module:SetInstalled(name, bool)
+	local db = module:GetDB()
+	db.installed[name] = bool or true
+end
 
 -- ####################################################################################################################
 -- ##### Framework Events #############################################################################################
@@ -35,11 +52,13 @@ function module:OnEnable()
 		if db.installed[name] == nil then
 			StaticPopupDialogs["LUI_ADDON"..name] = {
 				text = format("LUI detected you installed %s and has preset configuration available."
-				               .. "Do you want LUI to apply these settings?", name),
+				               .. " Do you want LUI to apply these settings?", name),
 				button1 = YES,
 				button2 = NO,
 				OnAccept = element.Install,
-				OnCancel = function() db.installed[name] = false end,
+				OnCancel = function()
+					module:SetInstalled(name, false)
+				end,
 				timeout = 0,
 				whileDead = true,
 			}
