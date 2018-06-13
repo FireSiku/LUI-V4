@@ -8,7 +8,6 @@ local _, LUI = ...
 local module = LUI:GetModule("Infotext")
 local element = module:NewElement("Gold", "AceEvent-3.0")
 local L = LUI.L
-local db, dbRealm, dbGlobal
 
 -- local copies
 local pairs, ipairs, mod = pairs, ipairs, mod
@@ -81,7 +80,10 @@ element.defaults = {
 -- ####################################################################################################################
 
 function element:FormatMoney(money, color)
-	if db.useBlizzard then return GetMoneyString(money) end
+	local db = element:GetDB()
+	if db.useBlizzard then
+		return GetMoneyString(money)
+	end
 
 	money = abs(money)
 	local gold = floor(money / (COPPER_PER_GOLD))
@@ -105,7 +107,14 @@ function element:FormatMoney(money, color)
 end
 
 function element:UpdateGold()
+	local db = element:GetDB()
+	local realm = LUI.playerRealm
+	local faction = LUI.playerFaction
+	local realmDB = element:GetDBScope("realm")[faction]
+	local globalDB = element:GetDBScope("global")[faction]
+
 	local newMoney = GetMoney()
+
 	-- Change will be positive if we gain money
 	local change = newMoney - previousMoney
 
@@ -117,26 +126,30 @@ function element:UpdateGold()
 
 	--Update gold count
 	previousMoney = newMoney
-	dbRealm[LUI.playerName] = newMoney
-	if SUPPORTED_FACTION[LUI.playerFaction] then
-		dbGlobal[LUI.playerRealm] = dbGlobal[LUI.playerRealm] + change
+	realmDB[LUI.playerName] = newMoney
+	if SUPPORTED_FACTION[faction] then
+		globalDB[realm] = globalDB[realm] + change
 	end
 
-	local money = (db.showRealm) and dbGlobal[LUI.playerRealm] or newMoney
+	local money = (db.showRealm and globalDB[realm]) or newMoney
 	element.text = element:FormatMoney(money)
 	element:UpdateTooltip()
 end
 
 function element:UpdateRealmMoney()
+	local faction = LUI.playerFaction
+	local realmDB = element:GetDBScope("realm")[faction]
+	local globalDB = element:GetDBScope("global")[faction]
+	
 	--Update for current character
-	dbRealm[LUI.playerName] = GetMoney()
+	realmDB[LUI.playerName] = GetMoney()
 	--Update for realm list
 	local realmGold = 0
-	for _, money in pairs(dbRealm) do
+	for _, money in pairs(realmDB) do
 		realmGold = realmGold + money
 	end
-	if SUPPORTED_FACTION[LUI.playerFaction] then
-		dbGlobal[LUI.playerRealm] = realmGold
+	if SUPPORTED_FACTION[faction] then
+		globalDB[LUI.playerRealm] = realmGold
 	end
 end
 
@@ -146,6 +159,7 @@ function element.OnClick(frame_, button)
 		moneyProfit = 0
 		element:UpdateTooltip()
 	else
+		local db = element:GetDB()
 		db.showRealm = not db.showRealm
 		element:UpdateGold()
 	end
@@ -198,9 +212,6 @@ end
 -- ####################################################################################################################
 
 function element:OnCreate()
-	db = element:GetDB()
-	dbRealm = element:GetDB("realm", LUI.playerFaction)
-	dbGlobal = element:GetDB("global", LUI.playerFaction)
 	previousMoney = GetMoney()
 
 	element:RegisterEvent("PLAYER_MONEY", "UpdateGold")
