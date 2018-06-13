@@ -214,13 +214,16 @@ function module:SetMinimap()
 	minimapCoordText:SetText("00,00")
 
 	minimapCoord:SetScript("OnUpdate", function(self)
-		local x , y = GetPlayerMapPosition("player")
+		local mapID = C_Map.GetBestMapForUnit("player")
+		local x, y = C_Map.GetPlayerMapPosition(mapID, "player"):GetXY()
+		-- local x, y = C_Map.GetPlayerMapPosition( C_Map.GetBestMapForUnit("player"), "player" ):GetXY()
+		-- local x , y = GetPlayerMapPosition("player")
 		-- Inside dungeons, the call can fail and x and y will be nil
 		if not x then x, y = 0, 0 end
 		if db.General.hideMissingCoord and x == 0 and y == 0 then
 			minimapCoordText:SetText("")
 		else
-			minimapCoordText:SetFormattedText(COORD_FORMAT_LIST[db.General.coordPrecision], x*100, y*100)
+			minimapCoordText:SetFormattedText(COORD_FORMAT_LIST[db.General.coordPrecision], x * 100, y * 100)
 		end
 	end)
 
