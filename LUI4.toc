@@ -57,7 +57,7 @@ modules\minimap.lua
 modules\tooltip.lua
 modules\micromenu.lua
 modules\expbar.lua
-modules\bars.lua
+## modules\bars.lua
 modules\aura.xml
 
 ## Load Unitframes

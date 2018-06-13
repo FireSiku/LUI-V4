@@ -1,7 +1,7 @@
 --[[
-	Module.....: Minimap
+	Module.....: Bars
 	Elements...: None
-	Description: Replace the default minimap.
+	Description: Replace the action bars and surrounding graphics. Bartender Lite.
 ]]
 -- ####################################################################################################################
 -- ##### Setup and Locals #############################################################################################
@@ -80,11 +80,6 @@ function module:SetBars()
 
 	--MultiBarBottomLeft:ClearAllPoints()
 	--MultiBarBottomLeft:SetPoint("BOTTOMLEFT", ActionButton1, "TOPLEFT", 0, 0)
-
-	--That should be its own thing
-	MainMenuExpBar:SetParent(UIParent)
-	MainMenuExpBar:ClearAllPoints()
-	MainMenuExpBar:SetPoint("BOTTOM", 0, 15)
 
 	--Hide the art
 	MainMenuBarArtFrame.OrigShow = MainMenuBarArtFrame.Show
