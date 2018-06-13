@@ -376,15 +376,16 @@ end
 
 function module:SetMicromenuAnchors()
 	local db = module:GetDB()
+	-- TODO: Have a more defined system for hiding buttons.
 	if db.HideShop then
-		microStorage["Store"]:Hide()
+		microStorage[3]:Hide()
 	else
-		microStorage["Store"]:Show()
+		microStorage[3]:Show()
 	end
 
 	local firstAnchor, previousAnchor
-	for i = 1, #microList do
-		local button = microStorage[microList[i]]
+	for i = 1, #microStorage do
+		local button = microStorage[i]
 		button:ClearAllPoints()
 		if i == 1 then
 			button:SetPoint(db.Point, UIParent, db.Point, db.X, db.Y)
@@ -426,7 +427,7 @@ function module:SetMicromenu()
 
 	--Create Micromenu buttons
 	for i = 1, #microDefinitions do
-		microStorage[microDefinitions[i].name] = module:NewMicroButton(microDefinitions[i])
+		table.insert(microStorage, module:NewMicroButton(microDefinitions[i]))
 	end
 
 	module:SetMicromenuAnchors()
