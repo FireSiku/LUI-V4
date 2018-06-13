@@ -11,6 +11,9 @@ local _, LUI = ...
 local module = LUI:NewModule("Minimap")
 local L = LUI.L
 
+-- luacheck: globals Minimap MinimapZoomIn MinimapZoomOut GarrisonLandingPageMinimapButton MiniMapTrackingDropDown
+-- luacheck: globals LUIMinimapZone LUIMinimapCoord LUIMinimapBorder
+
 -- Constants
 local MINIMAP_LABEL = MINIMAP_LABEL
 
@@ -71,6 +74,7 @@ module.defaults = {
 -- For others mods with a minimap button, community API to know minimap shape.
 function GetMinimapShape() return minimapShape end
 
+-- luacheck: push ignore
 function module:HideDefaultMinimap()
 
 	-- Hide Several Frames surrounding minimap
@@ -79,7 +83,6 @@ function module:HideDefaultMinimap()
 	MinimapZoomIn:Hide()           --Zoom
 	MinimapZoomOut:Hide()
 	MiniMapWorldMapButton:Hide()   --World Map
-	MiniMapVoiceChatFrame:Hide()   --Voice Chat
 	TimeManagerClockButton:Hide()  --Clock
 	MiniMapTracking:Hide()         --Tracking
 	GameTimeFrame:Hide()           --Calendar
@@ -139,9 +142,6 @@ function module:RestoreDefaultMinimap()
 	Minimap:SetMaskTexture(MINIMAP_ROUND_TEXTURE_MASK)
 	minimapShape = "ROUND"
 
-	--Show Voice Chat if the feature is enabled
-	MiniMapVoiceChatFrame:Hide()  -- PH: Doing them a favor keeping it hidden.
-
 	-- Move Mail icon
 	--MiniMapMailFrame:ClearAllPoints()
 	MiniMapMailBorder:Show()
@@ -160,6 +160,7 @@ function module:RestoreDefaultMinimap()
 	Minimap:SetPoint(oldDefault.point, oldDefault.relativeTo, oldDefault.relativePoint, oldDefault.X, oldDefault.Y)
 	Minimap:SetSize(oldDefault.width, oldDefault.height)
 end
+-- luacheck: pop
 
 -- ####################################################################################################################
 -- ##### Module Setup #################################################################################################
