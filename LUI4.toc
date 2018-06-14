@@ -26,10 +26,8 @@ libs\AceTimer-3.0\AceTimer-3.0.xml
 libs\AceBucket-3.0\AceBucket-3.0.xml
 libs\LibSharedMedia-3.0\lib.xml
 libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
-libs\LibKeyBound-1.0\lib.xml
 libs\LibDataBroker-1-1\LibDataBroker-1.1.lua
 libs\LibWindow-1.1\LibWindow-1.1.lua
-libs\LibSerialize\serializer.lua
 libs\LibCompress\LibCompress.lua
 
 ## Load Localization Files
