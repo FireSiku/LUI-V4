@@ -169,11 +169,18 @@ function ModuleMixin:GetDB(subTable)
 	local db
 	if self:IsElement() then
 		local _, parent = self:GetParent()
-		db = parent.db.profile[self:GetName()]
+		if parent and parent.db and parent.db.profile then
+			db = parent.db.profile[self:GetName()]
+		end
 	else
-		db = self.db.profile
+		if self.db then
+			db = self.db.profile
+		end
 	end
-	return (subTable and db[subTable]) or db
+	if db and subTable and type(db[subTable] == "table") then
+		return db[subTable]
+	end
+	return db
 end
 
 --- Returns a database scope table.
@@ -182,9 +189,13 @@ function ModuleMixin:GetDBScope(scope)
 	scope = scope or "profile"
 	if self:IsElement() then
 		local _, parent = self:GetParent()
-		return parent.db[scope][self:GetName()]
+		if parent and parent.db and parent.db[scope] then
+			return parent.db[scope][self:GetName()]
+		end
 	else
-		return self.db[scope]
+		if self.db then
+			return self.db[scope]
+		end
 	end
 end
 

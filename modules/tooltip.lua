@@ -182,7 +182,7 @@ function module:UpdateTooltipBackdrop()
 			tooltip:SetBackdrop({
 				bgFile = Media:Fetch("background", db.backgroundTex),
 				edgeFile = Media:Fetch("border", db.borderTex),
-				edgeSize = db.Textures.borderSize, tile = false,
+				edgeSize = db.borderSize, tile = false,
 				insets = {left = 0, right = 0, top = 0, bottom = 0, }
 			})
 			if not module:IsHooked(tooltip, "OnShow") then
