@@ -132,7 +132,7 @@ end
 function element:CreateBroadcast()
 	if infotip.broadcast then return infotip.broadcast end
 	local bc = infotip:NewLine()
-	bc.name = bc:AddFontString("LEFT", element:Color("Broadcast"))
+	bc.name = bc:AddFontString("LEFT", element:RGB("Broadcast"))
 	bc.name:SetJustifyV("TOP")
 	bc.name:SetPoint("TOPLEFT")
 	bc.name:SetPoint("TOPRIGHT")
@@ -170,11 +170,11 @@ function element:CreateBNFriend(index)
 
 	bnfriend.class = bnfriend:AddTexture()
 	bnfriend.name = bnfriend:AddFontString("LEFT", bnfriend.class, TEXT_OFFSET)
-	bnfriend.gameText = bnfriend:AddFontString("LEFT", bnfriend.name, nil, element:Color("GameText"))
+	bnfriend.gameText = bnfriend:AddFontString("LEFT", bnfriend.name, nil, element:RGB("GameText"))
 	bnfriend.level = bnfriend:AddFontString("CENTER", bnfriend.name)
 	bnfriend.faction = bnfriend:AddTexture(bnfriend.level, GAP)
-	bnfriend.zone = bnfriend:AddFontString("LEFT", bnfriend.faction, TEXT_OFFSET, element:Color("Zone"))
-	bnfriend.note = bnfriend:AddFontString("CENTER", bnfriend.zone, nil, element:Color("Note"))
+	bnfriend.zone = bnfriend:AddFontString("LEFT", bnfriend.faction, TEXT_OFFSET, element:RGB("Zone"))
+	bnfriend.note = bnfriend:AddFontString("CENTER", bnfriend.zone, nil, element:RGB("Note"))
 
 	bnfriend:SetScript("OnClick", element.OnBNFriendButtonClick)
 	bnfriend:AddHighlight()
@@ -193,7 +193,7 @@ function element:CreateFriendBroadcast(index)
 	bc.icon:SetTexture([[Interface\FriendsFrame\BroadcastIcon]])
 	bc.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 	--Broadcast Text
-	bc.text = bc:AddFontString("LEFT", bc.icon, TEXT_OFFSET, element:Color("FriendBroadcast"))
+	bc.text = bc:AddFontString("LEFT", bc.icon, TEXT_OFFSET, element:RGB("FriendBroadcast"))
 
 	infotip.FriendsBC[index] = bc
 	return bc
@@ -202,9 +202,9 @@ end
 function element:GetBNFriendStatusString(isAFK, isDND)
 	local statusString = ""
 	if isDND then
-		statusString = LUI:ColorToString(CHAT_FLAG_DND, 0.7, 0.7, 0.7)
+		statusString = LUI:RGBToString(CHAT_FLAG_DND, 0.7, 0.7, 0.7)
 	elseif isAFK then
-		statusString = LUI:ColorToString(CHAT_FLAG_AFK, 0.7, 0.7, 0.7)
+		statusString = LUI:RGBToString(CHAT_FLAG_AFK, 0.7, 0.7, 0.7)
 	end
 	return statusString
 end
@@ -283,7 +283,7 @@ function element:DisplayBNFriends()
 					-- Name Column
 					class = LUI:GetTokenFromClassName(class)
 					bnfriend:SetClassIcon(bnfriend.class, class)
-					local nameString =  LUI:ColorToString(charName, element:Color(class))
+					local nameString =  LUI:RGBToString(charName, element:RGB(class))
 					bnfriend.name:SetText(format("%s%s - %s",statusString, btagString, nameString))
 
 					-- Level/Faction Column - Only displayed for WoW toons.
@@ -294,7 +294,7 @@ function element:DisplayBNFriends()
 					-- Zone Column - Also display Realm if they are on a different one.
 					local realmString = ""
 					if realmName ~= LUI.playerRealm then
-						realmString = LUI:ColorToString(" - "..realmName, element:Color("GameText"))
+						realmString = LUI:RGBToString(" - "..realmName, element:RGB("GameText"))
 					end
 					bnfriend.zone:SetText(zone..realmString)
 
@@ -414,8 +414,8 @@ function element:CreateFriend(index)
 	friend.class = friend:AddTexture()
 	friend.name = friend:AddFontString("LEFT", friend.class, TEXT_OFFSET)
 	friend.level = friend:AddFontString("CENTER", friend.name)
-	friend.zone = friend:AddFontString("LEFT", friend.level, nil, element:Color("Zone"))
-	friend.note = friend:AddFontString("CENTER", friend.zone, nil, element:Color("Note"))
+	friend.zone = friend:AddFontString("LEFT", friend.level, nil, element:RGB("Zone"))
+	friend.note = friend:AddFontString("CENTER", friend.zone, nil, element:RGB("Note"))
 
 	friend:SetScript("OnClick", element.OnFriendButtonClick)
 	friend:AddHighlight()
@@ -424,7 +424,7 @@ function element:CreateFriend(index)
 end
 
 function element:GetFriendStatusString(status)
-	return LUI:ColorToString(status, 0.7, 0.7, 0.7)
+	return LUI:RGBToString(status, 0.7, 0.7, 0.7)
 end
 
 function element:UpdateFriendAnchorPoints(i)
@@ -452,7 +452,7 @@ function element:DisplayFriends()
 		-- Name Column
 		friend.unit = name
 		friend.name:SetText(statusString..name)
-		friend.name:SetTextColor(element:Color(class))
+		friend.name:SetTextColor(element:RGB(class))
 		friend:SetClassIcon(friend.class, class)
 
 		friend.level:SetText(level)
@@ -557,7 +557,7 @@ function element.OnEnter(frame_)
 
 			-- Show Broadcast
 			local broadcast = element:CreateBroadcast()
-			broadcast.name:SetText(format("%s %s", LUI:ColorToString(BATTLENET_BROADCAST..":",1,1,1), select(4, BNGetInfo())))
+			broadcast.name:SetText(format("%s %s", LUI:RGBToString(BATTLENET_BROADCAST..":",1,1,1), select(4, BNGetInfo())))
 			infotip.sep:SetPoint("TOPLEFT", broadcast, "BOTTOMLEFT")
 			infotip.maxWidth = broadcast.name:GetStringWidth() + GAP * 2
 			infotip.maxHeight = broadcast:GetHeight() + infotip.sep:GetHeight() + GAP * 2

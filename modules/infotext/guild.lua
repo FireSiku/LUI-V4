@@ -82,7 +82,7 @@ end
 function element:CreateMOTD()
 	if infotip.motd then return infotip.motd end
 	local motd = infotip:NewLine()
-	motd.name = motd:AddFontString("LEFT", element:Color("MOTD"))
+	motd.name = motd:AddFontString("LEFT", element:RGB("MOTD"))
 	motd.name:SetJustifyV("TOP")
 	motd.name:SetPoint("TOPLEFT")
 	motd.name:SetPoint("TOPRIGHT")
@@ -110,9 +110,9 @@ function element:CreateGuildMember(index)
 	mem.class = mem:AddTexture()
 	mem.name = mem:AddFontString("LEFT", mem.class, TEXT_OFFSET)
 	mem.level = mem:AddFontString("CENTER", mem.name)
-	mem.zone = mem:AddFontString("LEFT", mem.level, nil, element:Color("Zone"))
-	mem.note = mem:AddFontString("CENTER", mem.zone, nil, element:Color("Note"))
-	mem.rank = mem:AddFontString("RIGHT", mem.note, nil, element:Color("Rank"))
+	mem.zone = mem:AddFontString("LEFT", mem.level, nil, element:RGB("Zone"))
+	mem.note = mem:AddFontString("CENTER", mem.zone, nil, element:RGB("Note"))
+	mem.rank = mem:AddFontString("RIGHT", mem.note, nil, element:RGB("Rank"))
 
 	mem:SetScript("OnClick", element.OnGuildButtonClick)
 	mem:AddHighlight()
@@ -154,9 +154,9 @@ function element:GetStatusString(status, isMobile)
 	--Status Color: 0.7, 0.7, 0.7 to change when tooltip setup.
 	local statusString = ""
 	if status == STATUS_DND then
-		statusString = LUI:ColorToString(CHAT_FLAG_DND..MOBILE_BUSY_ICON, 0.7, 0.7, 0.7)
+		statusString = LUI:RGBToString(CHAT_FLAG_DND..MOBILE_BUSY_ICON, 0.7, 0.7, 0.7)
 	elseif status == STATUS_AFK then
-		statusString = LUI:ColorToString(CHAT_FLAG_AFK..MOBILE_AWAY_ICON, 0.7, 0.7, 0.7)
+		statusString = LUI:RGBToString(CHAT_FLAG_AFK..MOBILE_AWAY_ICON, 0.7, 0.7, 0.7)
 	elseif isMobile then
 		statusString = ChatFrame_GetMobileEmbeddedTexture(73/255, 177/255, 73/255)
 	end
@@ -272,7 +272,7 @@ function element.OnEnter(frame_)
 
 		-- Show MOTD
 		local motd = element:CreateMOTD()
-		motd.name:SetText(format("%s %s", LUI:ColorToString(MOTD_COLON, 1, 1, 1), GetGuildRosterMOTD()))
+		motd.name:SetText(format("%s %s", LUI:RGBToString(MOTD_COLON, 1, 1, 1), GetGuildRosterMOTD()))
 		maxWidth = motd.name:GetStringWidth() + GAP * 2
 		maxHeight = motd:GetHeight() + infotip.sep:GetHeight() + GAP * 2
 
@@ -299,7 +299,7 @@ function element.OnEnter(frame_)
 				member.unit = fullName
 				member.guildIndex = i
 				member.name:SetText(statusString..name)
-				member.name:SetTextColor(element:Color(class))
+				member.name:SetTextColor(element:RGB(class))
 				member:SetClassIcon(member.class, class)
 
 				--Level Column

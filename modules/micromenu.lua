@@ -247,7 +247,7 @@ local microDefinitions = {
 
 -- Function to attach the alert frame to point to micromenu buttonsw
 function module:HookAlertFrame(name, anchor)
-	local r, g, b, a = module:AlphaColor("Micromenu")
+	local r, g, b, a = module:RGBA("Micromenu")
 	local alertFrame      = _G[name.."MicroButtonAlert"]
 	local alertFrameBg    = _G[name.."MicroButtonAlertBg"]
 	local alertFrameArrow = _G[name.."MicroButtonAlertArrow"]
@@ -270,7 +270,7 @@ end
 -- Function to change the color of an alert frame to match micromenu.
 local gAlertGlows = {"TopLeft", "TopRight", "BottomLeft", "BottomRight", "Top", "Bottom", "Left", "Right"}
 function module:SetAlertFrameColors(name)
-	local r, g, b, a = module:AlphaColor("Micromenu")
+	local r, g, b, a = module:RGBA("Micromenu")
 	_G[name.."MicroButtonAlertBg"]:SetGradientAlpha("VERTICAL", r/4, g/4, b/4, 1, 0, 0, 0, 1)
 	_G[name.."MicroButtonAlertArrow"]:SetVertexColor(r, g, b, a * ALERT_ALPHA_MULT)
 	_G[name.."MicroButtonAlertGlow"]:SetVertexColor(r, g, b, a * ALERT_ALPHA_MULT)
@@ -324,7 +324,7 @@ MicroButtonClickerMixin.clickerBackdrop = {
 }
 
 function module:NewMicroButton(buttonData)
-	local r, g, b, a_ = module:AlphaColor("Micromenu")
+	local r, g, b, a_ = module:RGBA("Micromenu")
 	local name = buttonData.name
 	
 	local button = CreateFrame("Frame", "LUIMicromenu_"..name, UIParent)
@@ -421,7 +421,7 @@ function module:SetMicromenu()
 		insets = { left = 0, right = 0, top = 0, bottom = 0 }
 	})
 	background:SetFrameStrata("BACKGROUND")
-	background:SetBackdropColor(module:AlphaColor((db.ColorMatch) and "Micromenu" or "Background"))
+	background:SetBackdropColor(module:RGBA((db.ColorMatch) and "Micromenu" or "Background"))
 	background:SetBackdropBorderColor(0, 0, 0, 0)
 	module.background = background
 
@@ -444,8 +444,8 @@ function module:Refresh()
 	module:SetAlertFrameColors("Collections")
 
 	local db = module:GetDB()
-	module.background:SetBackdropColor(module:AlphaColor((db.ColorMatch) and "Micromenu" or "Background"))
-	local r, g, b, a_ = module:AlphaColor("Micromenu")
+	module.background:SetBackdropColor(module:RGBA((db.ColorMatch) and "Micromenu" or "Background"))
+	local r, g, b, a_ = module:RGBA("Micromenu")
 	for i = 1, #microList do
 		local button = microStorage[microList[i]]
 		button.tex:SetVertexColor(r, g, b)

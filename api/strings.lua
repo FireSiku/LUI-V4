@@ -36,7 +36,7 @@ local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE
 -- @section stringfunc
 
 -- Take RGBA values and turn them into hexstrings, usable for color codes and other uses.
-function LUI:ColorToHex(r, g, b, a)
+function LUI:RGBToHex(r, g, b, a)
 	if a then
 		return format("%02x%02x%02x%02x", r*255, g*255, b*255, a*255)
 	else
@@ -55,9 +55,9 @@ function LUI:HexToColor(str)
 end
 
 -- Takes RGB values along with text to be colored.
-function LUI:ColorToString(text, r, g, b)
+function LUI:RGBToString(text, r, g, b)
 	if not text then return "" end
-	local colorString = LUI:ColorToHex(r, g, b)
+	local colorString = LUI:RGBToHex(r, g, b)
 	return format("|cff%s%s|r", colorString, text)
 end
 

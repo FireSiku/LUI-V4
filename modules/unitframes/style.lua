@@ -40,10 +40,10 @@ function module.SetStyle(self, unit, isSingle)
 		insets = { left = 3, right = 3, top = 3, bottom = 3, },
 	}
 	local backdropFrame = CreateFrame("Frame", nil, self)
-	--Need to convert to :Color()
+	--Need to convert to :RGB()
 	backdropFrame:SetBackdrop(backdrop)
-	backdropFrame:SetBackdropColor(self:Color("Background"))
-	backdropFrame:SetBackdropBorderColor(self:Color("Border"))
+	backdropFrame:SetBackdropColor(self:RGB("Background"))
+	backdropFrame:SetBackdropBorderColor(self:RGB("Border"))
 	backdropFrame:SetPoint("TOPLEFT", self.Health, "TOPLEFT", -4, 4)
 	backdropFrame:SetPoint("BOTTOMRIGHT", self.Power, "BOTTOMRIGHT", 4, -4)
 
@@ -57,7 +57,7 @@ function module.SetStyle(self, unit, isSingle)
 	local db = self.db.NameText
 	name:SetFont(Media:Fetch("font", nameFont.Name), nameFont.Size, nameFont.Flag)
 	name:SetPoint(db.Point, self.Overlay, db.RelativePoint, db.X, db.Y)
-	name:SetTextColor(self:Color("NameText"))
+	name:SetTextColor(self:RGB("NameText"))
 	name:SetShadowOffset(1.25, -1.25)
 	name:SetShadowColor(0, 0, 0)
 	name.ColorNameByClass = db.ColorNameByClass

@@ -24,21 +24,21 @@ function module:SetOUFColors()
 	local colors = oUF_LUI.colors
 	colors.reaction = {}
 	for i = 1, #LUI.REACTION_NAMES do
-		colors.reaction[i] = {module:Color(LUI.REACTION_NAMES[i])}
+		colors.reaction[i] = {module:RGB(LUI.REACTION_NAMES[i])}
 	end
 	for class in pairs(RAID_CLASS_COLORS) do
-		colors.class[class] = {module:Color(class)}
+		colors.class[class] = {module:RGB(class)}
 	end
 	for _, powerType in pairs(LUI.PowerTypes) do
-		colors.power[powerType] = {module:Color(powerType)}
+		colors.power[powerType] = {module:RGB(powerType)}
 	end
-	colors.health = {module:Color("HealthBar")}
+	colors.health = {module:RGB("HealthBar")}
 
 	colors.runes = {
-		{module:Color("BLOOD_RUNES")},
-		{module:Color("UNHOLY_RUNES")},
-		{module:Color("FROST_RUNES")},
-		{module:Color("DEATH_RUNES")},
+		{module:RGB("BLOOD_RUNES")},
+		{module:RGB("UNHOLY_RUNES")},
+		{module:RGB("FROST_RUNES")},
+		{module:RGB("DEATH_RUNES")},
 	}
 end
 
@@ -72,7 +72,7 @@ oUF_LUI.Tags.Methods['LUI:Absorb'] = function(unit)
 end
 oUF_LUI.Tags.Methods['ClassColor'] = function(unit)
 	local _, class = UnitClass(unit)
-	local r, g, b = module:Color(class)
+	local r, g, b = module:RGB(class)
 	if not r then r, g, b = LUI:GetReactionColor(unit) end
 
 	return format("|cff%02x%02x%02x", r * 255, g * 255, b * 255)
@@ -84,12 +84,12 @@ end
 -- Every function under SpawnMixin will become available to all spawned unitframes.
 local SpawnMixin = {}
 
--- Version of module:Color tailored for unitframes, with support for additional types (ie: Color Based On Type)
-function SpawnMixin:Color(colorName)
+-- Version of module:RGB tailored for unitframes, with support for additional types (ie: Color Based On Type)
+function SpawnMixin:RGB(colorName)
 	local color
 	if self.db and self.db.Colors[colorName] then
 		if self.db.Colors[colorName].t and self.db.Colors[colorName].t == "Class" then
-			return LUI:Color(LUI.playerClass)
+			return LUI:RGB(LUI.playerClass)
 		else
 			color = self.db.Colors[colorName]
 		end

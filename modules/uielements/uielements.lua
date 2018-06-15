@@ -91,7 +91,7 @@ function module:SetObjectiveFrame()
 	if db.HeaderColor then
 		module:SecureHook("ObjectiveTracker_Initialize", function()
 			for i, v in pairs(ObjectiveTrackerFrame.MODULES) do
-				module:ChangeHeaderColor(v.Header, module:Color(LUI.playerClass))
+				module:ChangeHeaderColor(v.Header, module:RGB(LUI.playerClass))
 			end
 		end)
 	end

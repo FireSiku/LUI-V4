@@ -110,7 +110,7 @@ function module:UpdateBarMode()
 		module.ExpBar.mode = "Experience"
 		module.ExpBar:Hide()
 	end
-	local r, g, b = module:Color(module.ExpBar.mode)
+	local r, g, b = module:RGB(module.ExpBar.mode)
 	module.ExpBar:SetStatusBarColor(r, g, b)
 	module.ExpBar.bg:SetVertexColor(r * mult, g * mult, b * mult)
 
@@ -128,7 +128,7 @@ function module:UpdateBarMode()
 		module.ExpBar2.mode = "Experience"
 		module.ExpBar2:Hide()
 	end
-	r, g, b = module:Color(module.ExpBar2.mode)
+	r, g, b = module:RGB(module.ExpBar2.mode)
 	module.ExpBar2:SetStatusBarColor(r, g, b)
 	module.ExpBar2.bg:SetVertexColor(r * mult, g * mult, b * mult)
 
@@ -303,7 +303,7 @@ function module:CreateBar(name)
 	text:SetShadowColor(0,0,0)
 	text:SetShadowOffset(1.25, -1.25)
 	text:SetPoint("RIGHT", bar, "RIGHT", db.TextX, db.TextY)
-	text:SetTextColor(module:Color("Text"))
+	text:SetTextColor(module:RGB("Text"))
 	bar.text = text
 
 	bar:Show()
@@ -335,11 +335,11 @@ function module:RefreshColors()
 	local db = module:GetDB()
 	local mult = db.BGMultiplier
 	-- Bar 1
-	local r1, g1, b1 = module:Color(module.ExpBar.mode)
+	local r1, g1, b1 = module:RGB(module.ExpBar.mode)
 	module.ExpBar:SetStatusBarColor(r1, g1, b1)
 	module.ExpBar.bg:SetVertexColor(r1 * mult, g1 * mult, b1 * mult)
 	-- Bar 2
-	local r2, g2, b2 = module:Color(module.ExpBar.mode)
+	local r2, g2, b2 = module:RGB(module.ExpBar.mode)
 	module.ExpBar:SetStatusBarColor(r2, g2, b2)
 	module.ExpBar.bg:SetVertexColor(r2 * mult, g2 * mult, b2 * mult)
 end

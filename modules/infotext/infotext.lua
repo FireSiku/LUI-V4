@@ -86,12 +86,12 @@ function InfoMixin:TooltipHeader(headerName, handleGT)
 	if headerName:sub(-1) ~= ":" then
 		headerName = headerName..":"
 	end
-	GameTooltip:AddLine(headerName, module:Color("Title"))
+	GameTooltip:AddLine(headerName, module:RGB("Title"))
 	GameTooltip:AddLine(" ")
 end
 
 function InfoMixin:AddHint(...)
-	local r, g, b = module:Color("Hint")
+	local r, g, b = module:RGB("Hint")
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddLine(L["Info_Hint"], r, g, b)
 	for i=1, select("#", ...) do
@@ -161,7 +161,7 @@ local function SetInfoPanels()
 			edgeSize = 1,
 			insets = {left = 0, right = 0, top = 0, bottom = 0}
 		})
-		topPanelTex:SetBackdropColor(module:AlphaColor("Panels"))
+		topPanelTex:SetBackdropColor(module:RGBA("Panels"))
 		topPanelTex:SetBackdropBorderColor(0, 0, 0, 0)
 		topPanelTex:Show()
 	end

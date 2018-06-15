@@ -62,7 +62,7 @@ function element.OnTooltipShow(GameTooltip)
 
 	-- FPS
 	local fps = floor(GetFramerate())
-	local r, g, b = LUI:ColorGradient(fps / DEFAULT_REFRESH_RATE)
+	local r, g, b = LUI:RGBGradient(fps / DEFAULT_REFRESH_RATE)
 	GameTooltip:AddLine(FRAMERATE_LABEL)
 	GameTooltip:AddDoubleLine(L["InfoFps_Current"], fps, 1,1,1, r, g, b)
 	GameTooltip:AddLine(" ")

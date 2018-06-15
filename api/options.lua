@@ -265,14 +265,14 @@ end
 
 --Color Get/Set are specific to colors and ignore most meta params.
 -- They check for the color directly into db.Colors
-function OptionsMixin:ColorGetter(info)
+function OptionsMixin:RGBGetter(info)
 	local db = self:GetDB("Colors")
 	local c = db[info[#info]]
 	return c.r, c.g, c.b, c.a
 end
 
 local function shortNum(num) return format(tonumber(num) < 1 and "%.2f" or "%d", tonumber(num)) end
-function OptionsMixin:ColorSetter(info, r, g, b, a)
+function OptionsMixin:RGBSetter(info, r, g, b, a)
 	local db = self:GetDB("Colors")
 	local c = db[info[#info]]
 	c.r, c.g, c.b, c.a = shortNum(r), shortNum(g), shortNum(b), shortNum(a)

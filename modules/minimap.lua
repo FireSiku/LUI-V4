@@ -286,7 +286,7 @@ function module:SetMinimapFrames()
 		insets={left=0, right=0, top=0, bottom=0}
 	}
 
-	local r, g, b, a = module:AlphaColor("Minimap")
+	local r, g, b, a = module:RGBA("Minimap")
 	local texOffX = { -7, 7, 7, -7, -10, 10, 10, -10 }
 	local texOffY = { -7, -7, 7, 7, -10, -10, 10, 10 }
 	local texPoint = { "BOTTOMLEFT", "BOTTOMRIGHT", "TOPRIGHT", "TOPLEFT" }
@@ -359,7 +359,7 @@ function module:SetMinimapPosition()
 end
 
 function module:SetColors()
-	local r, g, b, a = module:AlphaColor("Minimap")
+	local r, g, b, a = module:RGBA("Minimap")
 	for i = 1, 4 do
 		_G["LUIMinimapTexture"..i]:SetBackdropBorderColor(r,g,b,a)
 	end

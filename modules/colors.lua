@@ -164,8 +164,8 @@ module.defaults = {
 
 -- Return r, g, b for selected faction, otherwise return white.
 function LUI:GetFactionColor(faction)
-	if LUI:Color(faction) then
-		return LUI:Color(faction)
+	if LUI:RGB(faction) then
+		return LUI:RGB(faction)
 	else
 		return 1, 1, 1
 	end
@@ -175,8 +175,8 @@ end
 -- If a second unit isnt given, assume player.
 function LUI:GetReactionColor(unit, otherUnit)
 	local reaction = UnitReaction(unit, otherUnit or "player")
-	if LUI:Color(LUI.REACTION_NAMES[reaction]) then
-		return LUI:Color(LUI.REACTION_NAMES[reaction])
+	if LUI:RGB(LUI.REACTION_NAMES[reaction]) then
+		return LUI:RGB(LUI.REACTION_NAMES[reaction])
 	else
 		return 1, 1, 1
 	end
@@ -190,15 +190,15 @@ end
 
 --Function wrappers for Good/Bad colors convenience.
 function LUI:PositiveColor()
-	return LUI:Color("Good")
+	return LUI:RGB("Good")
 end
 function LUI:NegativeColor()
-	return LUI:Color("Bad")
+	return LUI:RGB("Bad")
 end
 
 -- Based on Wowpedia's ColorGradient. Use our three gradient colors to make a color based on a percentage
 -- TODO: Possibly rename some variables inside to better names. (such as relperc.)
-function LUI:ColorGradient(perc)
+function LUI:RGBGradient(perc)
 	if perc >= 1 then
 		return LUI:PositiveColor()
 	elseif perc <= 0 then
@@ -208,11 +208,11 @@ function LUI:ColorGradient(perc)
 	local segment, relperc = math.modf(perc * 2)
 	local r1, r2, g1, g2, b1, b2
 	if segment == 0 then
-		r1, g1, b1 = LUI:Color("Bad")
-		r2, g2, b2 = LUI:Color("Medium")
+		r1, g1, b1 = LUI:RGB("Bad")
+		r2, g2, b2 = LUI:RGB("Medium")
 	elseif segment == 1 then
-		r1, g1, b1 = LUI:Color("Medium")
-		r2, g2, b2 = LUI:Color("Good")
+		r1, g1, b1 = LUI:RGB("Medium")
+		r2, g2, b2 = LUI:RGB("Good")
 	end
 
 	local r = r1 + (r2 - r1) * relperc
@@ -223,7 +223,7 @@ end
 
 --Wrapper for ColorGradient's that inverse the percent given.
 function LUI:InverseGradient(perc)
-	return LUI:ColorGradient(1 - perc)
+	return LUI:RGBGradient(1 - perc)
 end
 
 function LUI:GetBGMultiplier()

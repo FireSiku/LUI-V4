@@ -130,7 +130,7 @@ function module.SetClassIcon(self)
 			bar:SetPoint("TOPLEFT", classPower[i-1], "TOPRIGHT", db.Padding, 0)
 		end
 
-		bar:SetColorTexture(module:Color(class))
+		bar:SetColorTexture(module:RGB(class))
 		classPower[i] = bar
 	end
 
@@ -163,12 +163,12 @@ function module.SetClassIcon(self)
 	-- This is apparently requires to get the class ressource to change colors.
 	function classPower.UpdateTexture(self)
 		local r, g, b
-		if class == "MONK" then r, g, b = module:Color("CHI")
-		elseif class == "MAGE" then r, g, b = module:Color("ARCANE_CHARGES")
-		elseif class == "PALADIN" then r, g, b = module:Color("HOLY_POWER")
-		elseif class == "WARLOCK" then r, g, b = module:Color("SOUL_SHARDS")
-		elseif class == "ROGUE" then r, g, b = module:Color("COMBO_POINTS")
-		elseif class == "DRUID" then r, g, b = module:Color("COMBO_POINTS")
+		if class == "MONK" then r, g, b = module:RGB("CHI")
+		elseif class == "MAGE" then r, g, b = module:RGB("ARCANE_CHARGES")
+		elseif class == "PALADIN" then r, g, b = module:RGB("HOLY_POWER")
+		elseif class == "WARLOCK" then r, g, b = module:RGB("SOUL_SHARDS")
+		elseif class == "ROGUE" then r, g, b = module:RGB("COMBO_POINTS")
+		elseif class == "DRUID" then r, g, b = module:RGB("COMBO_POINTS")
 		end
 		for i = 1, #self do
 			local icon = self[i]

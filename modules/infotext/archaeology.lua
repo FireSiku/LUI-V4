@@ -114,11 +114,11 @@ function element:CreateArchHeader()
 	if infotip.header then return infotip.header end
 	local header = infotip:NewLine()
 	header:SetPoint("TOPLEFT", GAP, -GAP)
-	header.name = header:AddFontString("CENTER", element:Color("Header"))
+	header.name = header:AddFontString("CENTER", element:RGB("Header"))
 	header.name:SetPoint("LEFT", header, "LEFT")
-	header.fragments = header:AddFontString("CENTER", header.name, nil, element:Color("Header"))
-	header.missing = header:AddFontString("CENTER", header.fragments, nil, element:Color("Header"))
-	header.progress = header:AddFontString("CENTER", header.missing, nil, element:Color("Header"))
+	header.fragments = header:AddFontString("CENTER", header.name, nil, element:RGB("Header"))
+	header.missing = header:AddFontString("CENTER", header.fragments, nil, element:RGB("Header"))
+	header.progress = header:AddFontString("CENTER", header.missing, nil, element:RGB("Header"))
 
 	infotip.header = header
 	return header

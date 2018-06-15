@@ -225,7 +225,7 @@ function ContainerMixin:SetItemSlotProperties(itemSlot)
 
 	--Update backdrop
 	itemSlot:SetBackdrop(module.itemBackdrop)
-	itemSlot:SetBackdropColor(module:AlphaColor("ItemBackground"))
+	itemSlot:SetBackdropColor(module:RGBA("ItemBackground"))
 end
 
 -- ####################################################################################################################
@@ -238,10 +238,10 @@ function ContainerMixin:SlotUpdate(itemSlot)
 
 	-- Default Border when items are locked.
 	if not itemSlot.lock then
-		itemSlot:SetBackdropBorderColor(module:AlphaColor("Border"))
+		itemSlot:SetBackdropBorderColor(module:RGBA("Border"))
 		-- Check for Profession Bag
 		if module:IsProfessionBag(id) then
-			itemSlot:SetBackdropBorderColor(module:AlphaColor("Professions"))
+			itemSlot:SetBackdropBorderColor(module:RGBA("Professions"))
 		end
 	end
 
@@ -332,7 +332,7 @@ function ContainerMixin:SetItemSlotBorderColor(itemSlot)
 	if self:GetOption("ItemQuality") and itemSlot.quality and itemSlot.quality > 1 and not itemSlot.lock then
 		itemSlot:SetBackdropBorderColor(GetItemQualityColor(itemSlot.quality))
 	else
-		itemSlot:SetBackdropBorderColor(module:AlphaColor("Border"))
+		itemSlot:SetBackdropBorderColor(module:RGBA("Border"))
 	end
 end
 
@@ -565,8 +565,8 @@ function ContainerMixin:CreateToolBar(name)
 	bgFrame:SetClampedToScreen(true)
 
 	bgFrame:SetBackdrop(module.bagBackdrop)
-	bgFrame:SetBackdropColor(module:AlphaColor("Background"))
-	bgFrame:SetBackdropBorderColor(module:AlphaColor("Border"))
+	bgFrame:SetBackdropColor(module:RGBA("Background"))
+	bgFrame:SetBackdropBorderColor(module:RGBA("Border"))
 
 	toolBar.slotList = {}
 	toolBar.nextIndex = 1
@@ -712,7 +712,7 @@ function module:CreateSearchEditBox(parent)
 	search:SetPoint("TOPLEFT", parent, self.db.Padding, -10)
 	search:SetPoint("TOPRIGHT", -40, 0)
 	search:SetJustifyH("LEFT")
-	search:SetText(LUI:ColorToString(SEARCH, module:Color("Search")))
+	search:SetText(LUI:RGBToString(SEARCH, module:RGB("Search")))
 end
 
 function module:IsProfessionBag(id)
@@ -788,16 +788,16 @@ end
 
 function module:RefreshColors()
 	for _, container in pairs(containerStorage) do
-		local r, g, b, a = module:AlphaColor("Background")
+		local r, g, b, a = module:RGBA("Background")
 		local mult = BACKGROUND_MULTIPLIER
 		container.background:SetBackdropColor(r * mult, g * mult, b * mult, a)
-		container.background:SetBackdropBorderColor(module:AlphaColor("Border"))
+		container.background:SetBackdropBorderColor(module:RGBA("Border"))
 
 		for i = 1, container.NUM_BAG_IDS do
 			local id = container.BAG_ID_LIST[i]
 			for j = 1, #container.itemList[id] do
 				local itemSlot = container.itemList[id][j]
-				itemSlot:SetBackdropColor(module:AlphaColor("ItemBackground"))
+				itemSlot:SetBackdropColor(module:RGBA("ItemBackground"))
 				container:SetItemSlotBorderColor(itemSlot)
 			end
 		end
@@ -805,11 +805,11 @@ function module:RefreshColors()
 		-- Refresh Toolbars
 		for _, toolbar in pairs(container.toolbars) do
 			toolbar.background:SetBackdropColor(r * mult, g * mult, b * mult, a)
-			toolbar.background:SetBackdropBorderColor(module:AlphaColor("Border"))
+			toolbar.background:SetBackdropBorderColor(module:RGBA("Border"))
 			for i = 1, #toolbar.slotList do
 				local slot = toolbar.slotList[i]
-				slot:SetBackdropColor(module:AlphaColor("Background"))
-				slot:SetBackdropBorderColor(module:AlphaColor("Border"))
+				slot:SetBackdropColor(module:RGBA("Background"))
+				slot:SetBackdropBorderColor(module:RGBA("Border"))
 			end
 		end
 

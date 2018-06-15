@@ -197,7 +197,7 @@ end
 function module:GetUnitColor(unit)
 	if UnitIsPlayer(unit) and not UnitHasVehicleUI(unit) then
 		local _, class = UnitClass(unit)
-		return module:Color(class)
+		return module:RGB(class)
 	else
 		return LUI:GetReactionColor(unit)
 	end
@@ -259,14 +259,14 @@ function module:SetBorderColor(frame)
 	local unit = GetTooltipUnit(frame)
 	local health = GameTooltipStatusBar
 
-	frame:SetBackdropColor(module:Color("Background"))
-	frame:SetBackdropBorderColor(module:Color("Border"))
-	health:SetStatusBarColor(module:Color("Border"))
+	frame:SetBackdropColor(module:RGB("Background"))
+	frame:SetBackdropBorderColor(module:RGB("Border"))
+	health:SetStatusBarColor(module:RGB("Border"))
 
 	-- Tooltip is a player unit
 	if unit and UnitIsPlayer(unit) then
 		local _, class = UnitClass(unit)
-		local r, g, b = module:Color(class)
+		local r, g, b = module:RGB(class)
 		frame:SetBackdropBorderColor(r, g, b)
 		health:SetStatusBarColor(r, g, b)
 
@@ -289,9 +289,9 @@ function module:SetBorderColor(frame)
 end
 
 function module:UpdateBackdropColors()
-	GameTooltip:SetBackdropColor(module:Color("Background"))
-	GameTooltip:SetBackdropBorderColor(module:Color("Border"))
-	GameTooltipStatusBar:SetStatusBarColor(module:Color("Border"))
+	GameTooltip:SetBackdropColor(module:RGB("Background"))
+	GameTooltip:SetBackdropBorderColor(module:RGB("Border"))
+	GameTooltipStatusBar:SetStatusBarColor(module:RGB("Border"))
 end
 
 -- ####################################################################################################################
@@ -364,7 +364,7 @@ function module:OnGameTooltipSetUnit(frame)
 	local localizedClass, class_ = UnitClass(unit)
 	local classification = UnitClassification(unit)
 	local r, g, b = LUI:GetDifficultyColor(level)
-	local colorString = "|cff"..LUI:ColorToHex(module:GetUnitColor(unit))
+	local colorString = "|cff"..LUI:RGBToHex(module:GetUnitColor(unit))
 	GameTooltipTextLeft1:SetFormattedText("%s%s%s|r", colorString, title or name, (realm) and " - "..realm or "")
 
 	local offset = 2
@@ -379,7 +379,7 @@ function module:OnGameTooltipSetUnit(frame)
 			local guildColor = "Guild"
 			-- Color guild name differently if it's your guild
 			if IsInGuild() and GetGuildInfo("player") == guild then guildColor = "MyGuild" end
-			GameTooltipTextLeft2:SetText(LUI:ColorToString(guild, module:Color(guildColor)))
+			GameTooltipTextLeft2:SetText(LUI:RGBToString(guild, module:RGB(guildColor)))
 			offset = offset + 1
 		end
 	end
@@ -390,7 +390,7 @@ function module:OnGameTooltipSetUnit(frame)
 		if line:GetText() then
 			-- Level line for players
 			if line:GetText():find("^"..LEVEL) and race then
-				local levelString = LUI:ColorToString((level > 0) and level or "??", r, g, b)
+				local levelString = LUI:RGBToString((level > 0) and level or "??", r, g, b)
 				local sexString = (db.showSex) and LUI.GENDERS[sex].." " or ""
 				line:SetFormattedText("%s %s%s%s %s",levelString, sexString, race, colorString, localizedClass.."|r")
 			-- Level line for creatures
@@ -399,10 +399,10 @@ function module:OnGameTooltipSetUnit(frame)
 				--if level == -1 and classification == "elite" then classification = "worldboss" end
 				if classification == "worldboss" then
 					-- Always color world bosses as skulls.
-					r, g, b = LUI:Color("DiffSkull")
+					r, g, b = LUI:RGB("DiffSkull")
 				end
-				local levelString = (level > 0) and LUI:ColorToString(level, r, g, b) or ""
-				local classifString = LUI:ColorToString(MOB_CLASSIFICATION[classification], r, g, b)
+				local levelString = (level > 0) and LUI:RGBToString(level, r, g, b) or ""
+				local classifString = LUI:RGBToString(MOB_CLASSIFICATION[classification], r, g, b)
 				line:SetFormattedText("%s%s %s", levelString, classifString, creatureType or "")
 			-- Remove the PVP line if the option is set
 			elseif line:GetText() == PVP_ENABLED and db.hidePVP then

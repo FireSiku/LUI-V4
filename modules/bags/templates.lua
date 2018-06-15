@@ -60,7 +60,7 @@ function module:BagBarSlotButtonTemplate(index, id, name, parent)
 		button:SetScript("OnEvent", function(self, event, ...)
 			if event == "BAG_UPDATE_DELAYED" then
 				PaperDollItemSlotButton_Update(self)
-				self:SetBackdropBorderColor(module:AlphaColor("Border"))
+				self:SetBackdropBorderColor(module:RGBA("Border"))
 			else
 				PaperDollItemSlotButton_OnEvent(self, event, ...)
 			end
@@ -116,7 +116,7 @@ function module:BankBagButtonUpdate(button)
 		texture:SetTexture(slotTextureName)
 	end
 
-	button:SetBackdropBorderColor(module:AlphaColor("Border"))
+	button:SetBackdropBorderColor(module:RGBA("Border"))
 
 	texture:Show()
 end
@@ -165,7 +165,7 @@ function module:CreateSearchBar(container)
 	search:SetPoint("TOPLEFT", container, db.Padding, -10)
 	search:SetPoint("TOPRIGHT", -40, 0)
 	search:SetJustifyH("LEFT")
-	search:SetText(LUI:ColorToString(SEARCH, module:Color("Search")))
+	search:SetText(LUI:RGBToString(SEARCH, module:RGB("Search")))
 	container.searchText = search
 
 	-- Search Editbox

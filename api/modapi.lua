@@ -38,7 +38,7 @@ end
 -- @treturn number g Green
 -- @treturn number b Blue
 -- @treturn ?number a Alpha
-function ModuleMixin:Color(colorName)
+function ModuleMixin:RGB(colorName)
 	--TODO: Fix the issue with RGB colors as RGBA colors in the options
 	--TODO: Add Better Element/Module support, order to check should be the element,then parent module, then Colors.
 	local color
@@ -46,7 +46,7 @@ function ModuleMixin:Color(colorName)
 	if db and db[colorName] then
 		-- TODO: Check for all planned types (.t)
 		if db[colorName].t and db[colorName].t == "Class" then
-			return LUI:Color(LUI.playerClass)
+			return LUI:RGB(LUI.playerClass)
 		else
 			color = db[colorName]
 		end
@@ -57,7 +57,7 @@ function ModuleMixin:Color(colorName)
 end
 
 -- altAlpha: If the color.a is not found, altAlpha will be used.
-function ModuleMixin:AlphaColor(colorName, altAlpha)
+function ModuleMixin:RGBA(colorName, altAlpha)
 	if not altAlpha then altAlpha = 1 end
 
 	local color
@@ -65,7 +65,7 @@ function ModuleMixin:AlphaColor(colorName, altAlpha)
 	if db and db[colorName] then
 		-- TODO: Check for all planned types (.t)
 		if db[colorName].t and db[colorName].t == "Class" then
-			return LUI:AlphaColor(LUI.playerClass, db[colorName].a)
+			return LUI:RGBA(LUI.playerClass, db[colorName].a)
 		else
 			color = db[colorName]
 		end
@@ -135,8 +135,8 @@ function ModuleMixin:UpdateFrameBackdrop(name, frame, ...)
 	local backdrop = self:FetchBackdrop(name, ...)
 
 	frame:SetBackdrop(backdrop)
-	frame:SetBackdropColor(self:Color(name.."BG"))
-	frame:SetBackDropBorderColor(self:Color(name.."Border"))
+	frame:SetBackdropColor(self:RGB(name.."BG"))
+	frame:SetBackDropBorderColor(self:RGB(name.."Border"))
 end
 
 --- Quickly Setup a FontString widget
@@ -160,7 +160,7 @@ function ModuleMixin:RefreshFontString(fs, mFont)
 	local db = self:GetDB("Fonts")
 	local font = db[mFont]
 	fs:SetFont(Media:Fetch("font", font.Name), font.Size, font.Flag)
-	fs:SetTextColor(self:Color(mFont))
+	fs:SetTextColor(self:RGB(mFont))
 end
 
 --- Returns the profile database table.

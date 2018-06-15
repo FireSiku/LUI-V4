@@ -198,7 +198,7 @@ end
 function PanelMixin:Refresh()
 	local db = self.db
 	local parent = _G[db.Parent]
-	local r, g, b, a = module:AlphaColor(self.name)
+	local r, g, b, a = module:RGBA(self.name)
 
 	self:SetPoint(db.Point, parent, db.RelativePoint, db.X, db.Y)
 	self:SetSize(db.Width, db.Height)

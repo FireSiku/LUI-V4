@@ -84,7 +84,7 @@ function element.OnTooltipShow(GameTooltip)
 	element:TooltipHeader(ARMOR)
 	for i = 1, #sortedItems do
 		local value = itemDurability[sortedItems[i]]
-		local r, g, b = LUI:ColorGradient(value)
+		local r, g, b = LUI:RGBGradient(value)
 		GameTooltip:AddDoubleLine(sortedItems[i], floor(value * 100).."%", 1, 1, 1, r, g, b)
 	end
 

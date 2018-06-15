@@ -98,9 +98,9 @@ end
 function module:GetDebuffColor(debuffType)
 	local db = module:GetDB("Colors")
 	if db[debuffType] then
-		return module:Color(debuffType)
+		return module:RGB(debuffType)
 	else
-		return module:Color("None")
+		return module:RGB("None")
 	end
 end
 
@@ -268,7 +268,7 @@ function Aura:Update(...)
 
 	self.icon:SetTexture(icon)
 	if not self.helpful then
-		self.border:SetVertexColor(module:Color(dispelType))
+		self.border:SetVertexColor(module:RGB(dispelType))
 	end
 
 	if count and count > 1 then
