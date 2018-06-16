@@ -42,11 +42,11 @@ api\oUF\oUF.xml
 api\utils.lua
 api\modapi.lua
 api\options.lua
+api\colors.lua
 api\strings.lua
 api\cpanel.lua
 
 ## Load Core Modules
-modules\colors.lua
 modules\layout.lua
 modules\artwork.lua
 
