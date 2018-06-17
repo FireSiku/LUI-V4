@@ -35,14 +35,14 @@ function element.ColorPickerFrameShow(self)
 end
 
 --See if those are truly needed)
-function element:RGBPickerFrameColorSelect()
+function element:ColorPickerFrameColorSelect()
 	if not editingText then element:UpdateColorTexts() end
 end
 function element:OpacitySliderFrameValueChanged()
 	if not editingText then element:UpdateColorTexts() end
 end
 
-function element:RGBPickerCopyClick(btn_)
+function element:ColorPickerCopyClick(btn_)
 	colorBuffer.r,  colorBuffer.g, colorBuffer.b = ColorPickerFrame:GetColorRGB()
 
 	ColorPickerPaste:Enable()
@@ -53,7 +53,7 @@ function element:RGBPickerCopyClick(btn_)
 	colorBuffer.a = ColorPickerFrame.hasOpacity and OpacitySliderFrame:GetValue() or nil
 end
 
-function element:RGBPickerPasteClick(btn_)
+function element:ColorPickerPasteClick(btn_)
 	ColorPickerFrame:SetColorRGB(colorBuffer.r, colorBuffer.g, colorBuffer.b)
 	ColorSwatch:SetColorTexture(colorBuffer.r, colorBuffer.g, colorBuffer.b)
 
