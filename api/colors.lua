@@ -341,7 +341,7 @@ function module:LoadOptions()
 				--      but havent converted all of them to it yet.
 				PrimaryHeader = module:NewHeader(L["Color_Primary"], 21),
 				MANA = module:NewColor(POWER_TYPE_MANA, nil, 22),
-				RAGE = module:NewColor(RAGE, nil, 23),
+				RAGE = module:NewColor(POWER_TYPE_RED_POWER, nil, 23),
 				FOCUS = module:NewColor(POWER_TYPE_FOCUS, nil, 24),
 				ENERGY = module:NewColor(POWER_TYPE_ENERGY, nil, 25),
 				RUNIC_POWER = module:NewColor(RUNIC_POWER, nil, 26),

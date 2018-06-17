@@ -30,49 +30,45 @@ end
 --- Module API
 -- @section moduleapi
 
---- Fetch a color.
+--- Fetch a colo and return the r, g, b values
 -- @string color Name of the color to fetch as named in the database.
 -- This will check the specific module's database and then check the generic Color module.
 -- This function will be really helpful later on when we add choice to use a class or theme color instead of individual.
 -- @treturn number r Red
 -- @treturn number g Green
 -- @treturn number b Blue
--- @treturn ?number a Alpha
 function ModuleMixin:RGB(colorName)
 	--TODO: Fix the issue with RGB colors as RGBA colors in the options
 	--TODO: Add Better Element/Module support, order to check should be the element,then parent module, then Colors.
-	local color
 	local db = self:GetDB("Colors")
 	if db and db[colorName] then
 		-- TODO: Check for all planned types (.t)
 		if db[colorName].t and db[colorName].t == "Class" then
 			return LUI:GetClassColor(LUI.playerClass)
 		else
-			color = db[colorName]
+			local color = db[colorName]
+			return color.r, color.g, color.b
 		end
-	else
-		color = LUI:GetFallbackRGB(colorName)
 	end
-	if color then return color.r, color.g, color.b end
+	return LUI:GetFallbackRGB(colorName)
 end
 
 -- altAlpha: If the color.a is not found, altAlpha will be used.
-function ModuleMixin:RGBA(colorName, altAlpha)
-	if not altAlpha then altAlpha = 1 end
-
-	local color
+function ModuleMixin:RGBA(colorName)
 	local db = self:GetDB("Colors")
+
 	if db and db[colorName] then
 		-- TODO: Check for all planned types (.t)
 		if db[colorName].t and db[colorName].t == "Class" then
-			return LUI:RGBA(LUI.playerClass, db[colorName].a)
+			local r, g, b = LUI:GetClassColor(LUI.playerClass)
+			return r, g, b, 1
 		else
-			color = db[colorName]
+			local color = db[colorName]
+			return color.r, color.g, color.b, color.a or 1
 		end
-	else
-		color = LUI:GetFallbackRGB(colorName)
 	end
-	if color then return color.r, color.g, color.b, color.a or altAlpha end
+	local r, g, b = LUI:GetFallbackRGB(colorName)
+	return r, g, b, 1
 end
 
 -- Wrapper around SharedMedia fetch features.
