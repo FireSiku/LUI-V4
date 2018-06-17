@@ -1,6 +1,5 @@
--- This module handles the colors section and themes
--- This module hosts most of the Color-related API.
--- Also, possibly the CUSTOM_CLASS_COLOR implementation
+--- Colors api contains all the generic api related to colors, that modules can use to easily access or do stuff.
+-- This also includes the Colors section of the LUI Options.
 
 -- ####################################################################################################################
 -- ##### Setup and Locals #############################################################################################
@@ -34,7 +33,7 @@ local STANDING_EXALTED    = FACTION_STANDING_LABEL8
 module.defaults = {
 	profile = {
 		Advanced = {
-			BGMult = 0.4,
+			BackgroundMultiplier = 0.4,
 		},
 		Colors = {
 			-- Class Colors
@@ -52,19 +51,20 @@ module.defaults = {
 			DEMONHUNTER = { r = 0.65, g = 0.2,  b = 0.8   },
 
 			-- Faction Colors
-			Alliance =  { r = 0, g = 0.6, b = 1,   },
-			Horde =     { r = 1, g = 0.3, b = 0.3, },
-			Sanctuary = { r = 0, g = 1,   b = 1,   },
+			Alliance  = { r = 0,   g = 0.6, b = 1,   },
+			Horde     = { r = 1,   g = 0.3, b = 0.3, },
+			Neutral   = { r = 0.9, g = 0.7, b = 0,   },
+			Sanctuary = { r = 0,   g = 1,   b = 1,   },
 
 			-- Reaction Colors
-			Hated =      { r = 1,   g = 0.3, b = 0.3, },
-			Hostile =    { r = 1,   g = 0.3, b = 0.3, },
-			Unfriendly = { r = 0.9, g = 0.2, b = 0,   },
-			Neutral =    { r = 0.9, g = 0.7, b = 0,   },
-			Friendly =   { r = 0,   g = 0.6, b = 0.1, },
-			Honored =    { r = 0,   g = 0.6, b = 0.1, },
-			Revered =    { r = 0,   g = 0.6, b = 0.1, },
-			Exalted =    { r = 0,   g = 0.6, b = 0.1, },
+			Standing1 = { r = 1,   g = 0.3, b = 0.3, }, -- Hated
+			Standing2 = { r = 0.9, g = 0.2, b = 0,   }, -- Hostile
+			Standing3 = { r = 1,   g = 0.3, b = 0.3, }, -- Unfriendly
+			Standing4 = { r = 0.9, g = 0.7, b = 0,   }, -- Neutral
+			Standing5 = { r = 0,   g = 0.6, b = 0.1, }, -- Friendly
+			Standing6 = { r = 0,   g = 0.6, b = 0.1, }, -- Honored
+			Standing7 = { r = 0,   g = 0.6, b = 0.1, }, -- Revered
+			Standing8 = { r = 0,   g = 0.6, b = 0.1, }, -- Exalted
 
 			-- Resources
 			MANA           = { r = 0.12, g = 0.58, b = 0.89, },
@@ -114,7 +114,7 @@ module.defaults = {
 	SHAMAN = 		{0.04, 0.39, 0.98},		{0.04, 0.39, 0.98},
 	WARLOCK = 		{0.57, 0.22, 1   },		{0.57, 0.22, 1   },
 	WARRIOR = 		{1,   0.78,  0.55},		{1,    0.78, 0.55},
-	DEMONHUNTER =   N\A						TBA
+	DEMONHUNTER =   N\A						{0.65, 0.2,  0.8 },
 
 	-- LEVEL DIFFS FUNCTIONS
 	oUF:
@@ -157,15 +157,60 @@ module.defaults = {
 		end
 	end
 --]]
+-- ####################################################################################################################
+-- ##### Local Functions ##############################################################################################
+-- ####################################################################################################################
+
+-- Return r, g, b for any color stored by the color api.
+-- If the color doesn't exists, return nil.
+local function GetColorRGB(colorName)
+	local color = module:GetDB("Colors")[colorName]
+	if color then
+		return color.r, color.g, color.b
+	end
+end
 
 -- ####################################################################################################################
--- ##### Color API ####################################################################################################
+-- ##### Simple API ###################################################################################################
 -- ####################################################################################################################
 
--- Return r, g, b for selected faction, otherwise return white.
+function LUI:GetBGMultiplier()
+	return module:GetDB("Advanced").BackgroundMultiplier
+end
+
+-- Utility function for other modules to fetch a color stored here.
+function LUI:GetFallbackRGB(colorName)
+	return GetColorRGB(colorName)
+end
+
+--Function wrappers for Good/Bad colors convenience.
+function LUI:PositiveColor()
+	return GetColorRGB("Good")
+end
+function LUI:NegativeColor()
+	return GetColorRGB("Bad")
+end
+
+-- ####################################################################################################################
+-- ##### Specialized API ##############################################################################################
+-- ####################################################################################################################
+-- Most of these functions will return a r, g, b value for a specific purpose, and fallback to white as needed.
+
+-- Return r, g, b for given class.
+function LUI:GetClassColor(class)
+	local r, g, b = GetColorRGB(class)
+	if r and g and b then
+		return r, g, b
+	else
+		return 1, 1, 1
+	end
+end
+
+-- Return r, g, b for given faction
 function LUI:GetFactionColor(faction)
-	if LUI:RGB(faction) then
-		return LUI:RGB(faction)
+	local r, g, b = GetColorRGB(faction)
+	if r and g and b then
+		return r, g, b
 	else
 		return 1, 1, 1
 	end
@@ -175,8 +220,11 @@ end
 -- If a second unit isnt given, assume player.
 function LUI:GetReactionColor(unit, otherUnit)
 	local reaction = UnitReaction(unit, otherUnit or "player")
-	if LUI:RGB(LUI.REACTION_NAMES[reaction]) then
-		return LUI:RGB(LUI.REACTION_NAMES[reaction])
+	local colorName = format("Standing%d", reaction)
+
+	local r, g, b = GetColorRGB(colorName)
+	if r and g and b then
+		return r, g, b
 	else
 		return 1, 1, 1
 	end
@@ -188,13 +236,14 @@ function LUI:GetDifficultyColor(level)
 	return color.r, color.g, color.b
 end
 
---Function wrappers for Good/Bad colors convenience.
-function LUI:PositiveColor()
-	return LUI:RGB("Good")
-end
-function LUI:NegativeColor()
-	return LUI:RGB("Bad")
-end
+-- ####################################################################################################################
+-- ##### Gradient Color API ###########################################################################################
+-- ####################################################################################################################
+
+-- TODO: More defined gradient system that starts off with the two basic colors (Positive / Negative)
+--       Then lets you add in-between gradient colors on your own.
+--       Also, make a frame appear in the gradient tab options that shows the whole range of the gradient.
+--       Debating between having the color evaluated every 2% for more granulity or every 5% for more impact.
 
 -- Based on Wowpedia's ColorGradient. Use our three gradient colors to make a color based on a percentage
 -- TODO: Possibly rename some variables inside to better names. (such as relperc.)
@@ -226,9 +275,10 @@ function LUI:InverseGradient(perc)
 	return LUI:RGBGradient(1 - perc)
 end
 
-function LUI:GetBGMultiplier()
-	return module:GetDB("Advanced").BGMult
-end
+-- ####################################################################################################################
+-- ##### Color Callback API ###########################################################################################
+-- ####################################################################################################################
+-- Provide callbacks for modules to use when colors are changed.
 
 --TODO: Possibly have a full callback system for API, otherwise we will just have more copies of this function.
 --Register a function that will be called back by the Options API when someone change BG Multiplier.
@@ -252,10 +302,8 @@ end
 function module:RefreshClassColors()
 	--Nothing happens currently, as we don't alter class colors.
 
-	--Callback functions that needs to know
-	for id_, func in pairs(colorCallback) do
-		func()
-	end
+	--Call back functions that needs to know
+	for id_, func in pairs(colorCallback) do func() end
 end
 
 -- ####################################################################################################################
@@ -303,7 +351,7 @@ function module:LoadOptions()
 				PAIN = module:NewColor(POWER_TYPE_PAIN, nil, 30),
 				LUNAR_POWER = module:NewColor(POWER_TYPE_LUNAR_POWER, nil, 31),
 				SecondaryHeader = module:NewHeader(L["Color_Secondary"], 40),
-				COMBO_POINTS = module:NewColor(TUTORIAL_TITLE61_ROGUE, nil, 41),
+				COMBO_POINTS = module:NewColor(COMBAT_TEXT_SHOW_COMBO_POINTS_TEXT, nil, 41),
 				ARCANE_CHARGES = module:NewColor(POWER_TYPE_ARCANE_CHARGES, nil, 42),
 				HOLY_POWER = module:NewColor(HOLY_POWER, nil, 43),
 				SOUL_SHARDS = module:NewColor(SOUL_SHARDS_POWER, nil, 44),

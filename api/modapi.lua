@@ -1,4 +1,4 @@
---- Modules api conta ins all the generic embeddable api that modules can use to easily acess or do stuff.
+--- Modules api contains all the generic embeddable api that modules can use to easily acess or do stuff.
 -- @classmod ModuleMixin
 
 -- ####################################################################################################################
@@ -46,12 +46,12 @@ function ModuleMixin:RGB(colorName)
 	if db and db[colorName] then
 		-- TODO: Check for all planned types (.t)
 		if db[colorName].t and db[colorName].t == "Class" then
-			return LUI:RGB(LUI.playerClass)
+			return LUI:GetClassColor(LUI.playerClass)
 		else
 			color = db[colorName]
 		end
 	else
-		color = LUI:GetModule("Colors"):GetDB("Colors")[colorName]
+		color = LUI:GetFallbackRGB(colorName)
 	end
 	if color then return color.r, color.g, color.b end
 end
@@ -70,7 +70,7 @@ function ModuleMixin:RGBA(colorName, altAlpha)
 			color = db[colorName]
 		end
 	else
-		color = LUI:GetModule("Colors"):GetDB("Colors")[colorName]
+		color = LUI:GetFallbackRGB(colorName)
 	end
 	if color then return color.r, color.g, color.b, color.a or altAlpha end
 end
