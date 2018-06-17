@@ -39,7 +39,6 @@ end
 -- @treturn number b Blue
 function ModuleMixin:RGB(colorName)
 	--TODO: Fix the issue with RGB colors as RGBA colors in the options
-	--TODO: Add Better Element/Module support, order to check should be the element,then parent module, then Colors.
 	local db = self:GetDB("Colors")
 	if db and db[colorName] then
 		-- TODO: Check for all planned types (.t)
@@ -53,7 +52,6 @@ function ModuleMixin:RGB(colorName)
 	return LUI:GetFallbackRGB(colorName)
 end
 
--- altAlpha: If the color.a is not found, altAlpha will be used.
 function ModuleMixin:RGBA(colorName)
 	local db = self:GetDB("Colors")
 
@@ -67,8 +65,22 @@ function ModuleMixin:RGBA(colorName)
 			return color.r, color.g, color.b, color.a or 1
 		end
 	end
+
 	local r, g, b = LUI:GetFallbackRGB(colorName)
-	return r, g, b, 1
+	if r and g and b then
+		return r, g, b, 1
+	end
+end
+
+--- Fetch a color from LUI database and creates a Blizzard Color with it.
+-- @string color Name of the color to fetch as named in the database.
+-- @treturn ColorMixin color
+-- TODO: Cache this information?
+function ModuleMixin:Color(colorName)
+	local r, g, b, a = self:RGBA(colorName)
+	if r and g and b then
+		return CreateColor(r, g, b, a)
+	end
 end
 
 -- Wrapper around SharedMedia fetch features.
