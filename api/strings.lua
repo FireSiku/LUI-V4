@@ -26,68 +26,6 @@ local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE
 -- local UNIT_NAME_FONT_CYRILLIC = UNIT_NAME_FONT_CYRILLIC  -- Russian Font
 
 -- ####################################################################################################################
--- ##### StringUtils: Colors ##########################################################################################
--- ####################################################################################################################
-
--- Should most of these functions be moved to the colors file?
--- Should most of these be deleted and use Blizzard's ColorMixin instead?
-
---- String Functions
--- @section stringfunc
-
--- Take RGBA values and turn them into hexstrings, usable for color codes and other uses.
-function LUI:RGBToHex(r, g, b, a)
-	if a then
-		return format("%02x%02x%02x%02x", r*255, g*255, b*255, a*255)
-	else
-		return format("%02x%02x%02x", r*255, g*255, b*255)
-	end
-end
-
-function LUI:HexToColor(str)
-	local rhex, ghex, bhex, ahex = strsub(str, 1, 2), strsub(str, 3, 4), strsub(str, 5, 6)
-	if strlen(str) > 6 then ahex = strsub(str, 7, 8) end
-	local r = format("%.2f",tonumber(rhex, 16)/255)
-	local g = format("%.2f",tonumber(ghex, 16)/255)
-	local b = format("%.2f",tonumber(bhex, 16)/255)
-	local a = format("%.2f",tonumber(ahex or 0, 16)/255)
-	return r, g, b, (ahex) and a
-end
-
--- Takes RGB values along with text to be colored.
-function LUI:RGBToString(text, r, g, b)
-	if not text then return "" end
-	local colorString = LUI:RGBToHex(r, g, b)
-	return format("|cff%s%s|r", colorString, text)
-end
-
--- Takes a LUI Color Table and return a hex string, and vice versa.
-local TypeStrings = { Individual = "I", Class = "C", Spec = "S", Theme1 = "A", Theme2 = "B" }
-local ReverseTypes = { I = "Individual", C = "Class", S = "Spec", A = "Theme1", B = "Theme2" }
-function LUI:LUIColorToString(color)
-	-- TODO: Add Asserts to more API functions, possibly have custom assert function.
-	assert(type(color) == "table", format("LUIColorToString, bad argument #1. expected table, got %s", type(color)))
-	local hext = TypeStrings[color.t] or "X"
-	if color.a then
-		return format("%s%02x%02x%02x%02x", hext, color.r*255, color.g*255, color.b*255, color.a*255)
-	else
-		return format("%s%02x%02x%02x", hext, color.r*255, color.g*255, color.b*255)
-	end
-end
-
-function LUI:StringToLUIColor(s)
-	local rhex, ghex, bhex, ahex = strsub(s, 2, 3), strsub(s, 4, 5), strsub(s, 6, 7), strsub(s, 8, 9)
-	local type_hex = strsub(s, 1, 1)
-	local color = {}
-	color.r = format("%.2f",tonumber(rhex, 16)/255)
-	color.g = format("%.2f",tonumber(ghex, 16)/255)
-	color.b = format("%.2f",tonumber(bhex, 16)/255)
-	if ahex and tonumber(ahex, 16) then color.a = format("%.2f",tonumber(ahex, 16)/255) end
-	color.t = ReverseTypes[type_hex]
-	return color
-end
-
--- ####################################################################################################################
 -- ##### StringUtils: Classes #########################################################################################
 -- ####################################################################################################################
 
@@ -162,6 +100,19 @@ LUI.PowerTypes = {
 	"FUEL",
 }
 
+LUI.Opposites = {
+	-- Sides
+	TOP = "BOTTOM",
+	BOTTOM = "TOP",
+	LEFT = "RIGHT",
+	RIGHT = "LEFT",
+	-- Corners
+	TOPLEFT = "BOTTOMRIGHT",
+	TOPRIGHT = "BOTTOMLEFT",
+	BOTTOMLEFT = "TOPRIGHT",
+	BOTTOMRIGHT = "TOPLEFT",
+}
+
 -- ####################################################################################################################
 -- ##### StringUtils: Localized Tables ################################################################################
 -- ####################################################################################################################
@@ -196,19 +147,6 @@ LUI.Sides = {
 	BOTTOM = L["Point_Bottom"],
 	LEFT = L["Point_Left"],
 	RIGHT = L["Point_Right"],
-}
-
-LUI.Opposites = {
-	-- Sides
-	TOP = "BOTTOM",
-	BOTTOM = "TOP",
-	LEFT = "RIGHT",
-	RIGHT = "LEFT",
-	-- Corners
-	TOPLEFT = "BOTTOMRIGHT",
-	TOPRIGHT = "BOTTOMLEFT",
-	BOTTOMLEFT = "TOPRIGHT",
-	BOTTOMRIGHT = "TOPLEFT",
 }
 
 LUI.ColorTypes = {
