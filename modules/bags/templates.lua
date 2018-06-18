@@ -162,46 +162,44 @@ function module:CreateSearchBar(container)
 
 	-- Search Text
 	local search = container:CreateFontString(nil, "OVERLAY", "GameFonthighlightLarge")
+	local searchText = LUI:ColorText(SEARCH, "Search")
 	search:SetPoint("TOPLEFT", container, db.Padding, -10)
 	search:SetPoint("TOPRIGHT", -40, 0)
 	search:SetJustifyH("LEFT")
-	search:SetText(LUI:RGBToString(SEARCH, module:RGB("Search")))
-	container.searchText = search
+	search:SetText(searchText)
 
 	-- Search Editbox
 	local editbox = CreateFrame("EditBox", nil, container)
 	module:RefreshFontString(editbox, "Bags")
-	editbox:Hide()
-	editbox:SetAutoFocus(false)
+	
 	editbox:SetHeight(32)
+	editbox:SetAutoFocus(false)
 	editbox:SetMaxLetters(db.RowSize * 5)
 	editbox:SetTextInsets(24, 0, 0, 0)
+	editbox:SetAllPoints(search)
+	editbox:Hide()
 
-	local function UpdateSearch(self, text)
-		if text then
-			container:SearchUpdate(self:GetText())
-		end
-	end
-
+	-- Editbox scripts
 	editbox:SetScript("OnEscapePressed", editbox.ClearFocus)
 	editbox:SetScript("OnEnterPressed", editbox.ClearFocus)
 	--editbox:SetScript("OnEditFocusLost", editbox.Hide)
 	--editbox:SetScript("OnEditFocusGained", editbox.HighlightText)
-	editbox:SetScript("OnTextChanged", UpdateSearch)
-
-	editbox:SetAllPoints(search)
-	container.editbox = editbox
+	editbox:SetScript("OnTextChanged", function(self, text)
+		if text then
+			container:SearchUpdate(self:GetText())
+		end
+	end)
 
 	-- Editbox ClearButton
 	local clear = CreateFrame("Button", nil, editbox)
 	clear:SetPoint("LEFT", search, "LEFT", 0, 0)
 	clear:SetSize(24, 24)
+	clear:Hide()
+
 	local texture = clear:CreateTexture(nil, "ARTWORK")
 	texture:SetTexture("Interface\\FriendsFrame\\ClearBroadcastIcon")
 	texture:SetAllPoints(clear)
-	container.clear = clear
-	clear:Hide()
-
+	
 	-- Search Button, not visible but to show the editbox
 	local button = CreateFrame("Button", nil, container)
 	button:EnableMouse(1)
@@ -226,4 +224,8 @@ function module:CreateSearchBar(container)
 		container:ShowTitleBar()
 		container:SearchReset()
 	end)
+
+	container.searchText = search
+	container.editbox = editbox
+	container.clear = clear
 end

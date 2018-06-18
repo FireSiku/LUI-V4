@@ -109,10 +109,10 @@ element.defaults = {
 		showTotal = false,
 		hideApp = true,
 		Colors = {
-			Broadcast =       { r = 1,    g = 0.8,  b = 0,    },
-			Note =            { r = 0.14, g = 0.76, b = 0.15, },
-			Zone =            { r = 1,    g = 1,    b = 0,    },
-			GameText =        { r = 1,    g = 0.77, b = 0,    },
+			Broadcast       = { r = 1,    g = 0.8,  b = 0,    },
+			Note            = { r = 0.14, g = 0.76, b = 0.15, },
+			Zone            = { r = 1,    g = 1,    b = 0,    },
+			GameText        = { r = 1,    g = 0.77, b = 0,    },
 			FriendBroadcast = { r = 0.8,  g = 0.3,  b = 0.2,  },
 		},
 	},
@@ -185,13 +185,16 @@ end
 function element:CreateFriendBroadcast(index)
 	if infotip.FriendsBC[index] then
 		infotip.FriendsBC[index]:ResetHeight()
-		return infotip.FriendsBC[index] end
+		return infotip.FriendsBC[index]
+	end
 	local bc = infotip:NewLine()
 	bc.index = index
+
 	--Broadcast Icon
 	bc.icon = bc:AddTexture(nil, BC_OFFSET)
 	bc.icon:SetTexture([[Interface\FriendsFrame\BroadcastIcon]])
 	bc.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+
 	--Broadcast Text
 	bc.text = bc:AddFontString("LEFT", bc.icon, TEXT_OFFSET, element:RGB("FriendBroadcast"))
 
@@ -202,9 +205,9 @@ end
 function element:GetBNFriendStatusString(isAFK, isDND)
 	local statusString = ""
 	if isDND then
-		statusString = LUI:RGBToString(CHAT_FLAG_DND, 0.7, 0.7, 0.7)
+		statusString = module:ColorText(CHAT_FLAG_DND, "Status")
 	elseif isAFK then
-		statusString = LUI:RGBToString(CHAT_FLAG_AFK, 0.7, 0.7, 0.7)
+		statusString = module:ColorText(CHAT_FLAG_AFK, "Status")
 	end
 	return statusString
 end
@@ -259,6 +262,7 @@ function element:DisplayBNFriends()
 	local levelColumnWidth, factionIconWidth, zoneColumnWidth = 0, 0, 0
 	infotip.bnIndex = 0 -- BNFriends
 	infotip.bcIndex = 0 -- Friend Broadcasts
+
 	for i = 1, onlineBNFriends do
 		local accountID, accountName, _, _, _, _, _, _, _, isAFK, isDND, broadcast, note = BNGetFriendInfo(i)
 		local btagString = format("%s%s|r", FRIENDS_BNET_NAME_COLOR_CODE, accountName)
@@ -283,7 +287,7 @@ function element:DisplayBNFriends()
 					-- Name Column
 					class = LUI:GetTokenFromClassName(class)
 					bnfriend:SetClassIcon(bnfriend.class, class)
-					local nameString =  LUI:RGBToString(charName, element:RGB(class))
+					local nameString = element:ColorText(charName, class)
 					bnfriend.name:SetText(format("%s%s - %s",statusString, btagString, nameString))
 
 					-- Level/Faction Column - Only displayed for WoW toons.
@@ -294,14 +298,14 @@ function element:DisplayBNFriends()
 					-- Zone Column - Also display Realm if they are on a different one.
 					local realmString = ""
 					if realmName ~= LUI.playerRealm then
-						realmString = LUI:RGBToString(" - "..realmName, element:RGB("GameText"))
+						realmString = element:ColorText(" - "..realmName, "GameText")
 					end
 					bnfriend.zone:SetText(zone..realmString)
 
 					--Hide GameText, only used for other clients.
 					bnfriend.gameText:Hide()
-					bnfriend.level:Show()
 					bnfriend.faction:Show()
+					bnfriend.level:Show()
 					bnfriend.zone:Show()
 				else
 					bnfriend.class:SetTexture(BNet_GetClientTexture(client))
@@ -309,9 +313,9 @@ function element:DisplayBNFriends()
 					-- if no character name is given, it will be an empty string instead of nil.
 					if charName and not charName == "" then
 						local nameString = FRIENDS_OTHER_NAME_COLOR_CODE..charName
-						bnfriend.name:SetText(format("%s%s - %s",statusString, btagString, nameString))
+						bnfriend.name:SetText(format("%s%s - %s", statusString, btagString, nameString))
 					else
-						bnfriend.name:SetText(format("%s%s",statusString, btagString))
+						bnfriend.name:SetText(format("%s%s", statusString, btagString))
 					end
 					bnfriend.gameText:SetText(gameText)
 					-- Hide wow-centric fontstrings
@@ -321,12 +325,12 @@ function element:DisplayBNFriends()
 					bnfriend.gameText:Show()
 				end
 
-				nameColumnWidth = max(nameColumnWidth, bnfriend.name:GetStringWidth())
+				nameColumnWidth  = max(nameColumnWidth,  bnfriend.name:GetStringWidth())
 				levelColumnWidth = max(levelColumnWidth, bnfriend.level:GetStringWidth())
-				zoneColumnWidth = max(zoneColumnWidth, bnfriend.zone:GetStringWidth())
-				noteColumnWidth = max(noteColumnWidth, bnfriend.note:GetStringWidth())
-				classIconWidth = max(classIconWidth, bnfriend.class:GetWidth())
-				gameColumnWidth = max(gameColumnWidth, bnfriend.gameText:GetStringWidth())
+				zoneColumnWidth  = max(zoneColumnWidth,  bnfriend.zone:GetStringWidth())
+				noteColumnWidth  = max(noteColumnWidth,  bnfriend.note:GetStringWidth())
+				classIconWidth   = max(classIconWidth,   bnfriend.class:GetWidth())
+				gameColumnWidth  = max(gameColumnWidth,  bnfriend.gameText:GetStringWidth())
 			end
 		end
 
@@ -424,7 +428,7 @@ function element:CreateFriend(index)
 end
 
 function element:GetFriendStatusString(status)
-	return LUI:RGBToString(status, 0.7, 0.7, 0.7)
+	return module:ColorText(status, "Status")
 end
 
 function element:UpdateFriendAnchorPoints(i)
@@ -461,11 +465,11 @@ function element:DisplayFriends()
 		friend.zone:SetText(zone)
 		friend.note:SetText(note or "-")
 
-		nameColumnWidth = max(nameColumnWidth, friend.name:GetStringWidth())
+		nameColumnWidth  = max(nameColumnWidth,  friend.name:GetStringWidth())
 		levelColumnWidth = max(levelColumnWidth, friend.level:GetStringWidth())
-		zoneColumnWidth = max(zoneColumnWidth, friend.zone:GetStringWidth())
-		noteColumnWidth = max(noteColumnWidth, friend.note:GetStringWidth())
-		classIconWidth = max(classIconWidth, friend.class:GetWidth())
+		zoneColumnWidth  = max(zoneColumnWidth,  friend.zone:GetStringWidth())
+		noteColumnWidth  = max(noteColumnWidth,  friend.note:GetStringWidth())
+		classIconWidth   = max(classIconWidth,   friend.class:GetWidth())
 	end
 
 	for i = 1, #infotip.Friends do
@@ -557,7 +561,9 @@ function element.OnEnter(frame_)
 
 			-- Show Broadcast
 			local broadcast = element:CreateBroadcast()
-			broadcast.name:SetText(format("%s %s", LUI:RGBToString(BATTLENET_BROADCAST..":",1,1,1), select(4, BNGetInfo())))
+			local _, _, _, currentBroadcast = BNGetInfo()
+			local broadcastPrefix = CreateColor(1, 1, 1):WrapTextInColorCode(BATTLENET_BROADCAST..":")
+			broadcast.name:SetText( format("%s %s", broadcastPrefix, currentBroadcast) )
 			infotip.sep:SetPoint("TOPLEFT", broadcast, "BOTTOMLEFT")
 			infotip.maxWidth = broadcast.name:GetStringWidth() + GAP * 2
 			infotip.maxHeight = broadcast:GetHeight() + infotip.sep:GetHeight() + GAP * 2

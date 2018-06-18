@@ -154,9 +154,9 @@ function element:GetStatusString(status, isMobile)
 	--Status Color: 0.7, 0.7, 0.7 to change when tooltip setup.
 	local statusString = ""
 	if status == STATUS_DND then
-		statusString = LUI:RGBToString(CHAT_FLAG_DND..MOBILE_BUSY_ICON, 0.7, 0.7, 0.7)
+		statusString = module:ColorText(CHAT_FLAG_DND..MOBILE_BUSY_ICON, "Status")
 	elseif status == STATUS_AFK then
-		statusString = LUI:RGBToString(CHAT_FLAG_AFK..MOBILE_AWAY_ICON, 0.7, 0.7, 0.7)
+		statusString = module:ColorText(CHAT_FLAG_AFK..MOBILE_AWAY_ICON, "Status")
 	elseif isMobile then
 		statusString = ChatFrame_GetMobileEmbeddedTexture(73/255, 177/255, 73/255)
 	end
@@ -227,8 +227,8 @@ end
 --Right-Click to display Guild Information.
 --Button4 to toggle notes.
 function element.OnClick(frame_, button)
+	-- If you arent in a guild, toggle the guild finder.
 	if not IsInGuild() then
-		-- If you arent in a guild, toggle the guild finder.
 		ToggleGuildFrame()
 	elseif button == "RightButton" then
 		element:ToggleGuildTab(GUILD_TAB_INFO)
@@ -244,6 +244,7 @@ function element:OnSliderUpdate()
 	local offset = infotip:GetSliderOffset()
 	for i = 1, #infotip.Members do
 		local member = infotip.Members[i]
+
 		-- Set the anchor points, 1 always need to be anchored to the separator.
 		element:UpdateGuildAnchorPoints(i)
 
@@ -272,7 +273,8 @@ function element.OnEnter(frame_)
 
 		-- Show MOTD
 		local motd = element:CreateMOTD()
-		motd.name:SetText(format("%s %s", LUI:RGBToString(MOTD_COLON, 1, 1, 1), GetGuildRosterMOTD()))
+		local motdPrefix = CreateColor(1, 1, 1):WrapTextInColorCode(MOTD_COLON)
+		motd.name:SetText(format("%s %s", motdPrefix, GetGuildRosterMOTD()))
 		maxWidth = motd.name:GetStringWidth() + GAP * 2
 		maxHeight = motd:GetHeight() + infotip.sep:GetHeight() + GAP * 2
 

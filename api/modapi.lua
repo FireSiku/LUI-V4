@@ -83,6 +83,14 @@ function ModuleMixin:Color(colorName)
 	end
 end
 
+function ModuleMixin:ColorText(text, colorName)
+	local color = self:Color(colorName)
+	if color then
+		return color:WrapTextInColorCode(text)
+	end
+	return text
+end
+
 -- Wrapper around SharedMedia fetch features.
 function ModuleMixin:FetchStatusBar(name)
 	local db = self:GetDB("StatusBars")

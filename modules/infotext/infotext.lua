@@ -53,8 +53,10 @@ module.defaults = {
 			AllowY = false,
 		},
 		Colors = {
-			Title =  { r = 0.4,  g = 0.8,   b = 1,            },
-			Hint =   { r = 0,    g = 1,     b = 0,            },
+			Title  = { r = 0.4, g = 0.8, b = 1  , },
+			Hint   = { r = 0  , g = 1  , b = 0  , },
+			Status = { r = 0.7, g = 0.7, b = 0.7, },
+			
 			Panels = { r = 0.12, g = 0.58,  b = 0.89, a = 0.5, t = "Class", },
 		},
 		Fonts = {

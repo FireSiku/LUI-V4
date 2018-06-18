@@ -78,6 +78,7 @@ local MOB_CLASSIFICATION = {
 	elite = "+",
 	rare = L["Tooltip_Rare"],
 	minus = "-",  -- Does not give experience or reputation.
+	normal = "",
 }
 
 -- local variables
@@ -363,9 +364,13 @@ function module:OnGameTooltipSetUnit(frame)
 	local creatureType = UnitCreatureType(unit)
 	local localizedClass, class_ = UnitClass(unit)
 	local classification = UnitClassification(unit)
-	local r, g, b = LUI:GetDifficultyColor(level)
-	local colorString = "|cff"..LUI:RGBToHex(module:GetUnitColor(unit))
-	GameTooltipTextLeft1:SetFormattedText("%s%s%s|r", colorString, title or name, (realm) and " - "..realm or "")
+	local realmSuffix = (realm and " - "..realm) or ""
+
+	local diffColor = CreateColor(LUI:GetDifficultyColor(level))
+	local unitColor = CreateColor(module:GetUnitColor(unit))
+
+	local tooltipText = unitColor:WrapTextInColorCode((title or name)..realmSuffix)
+	GameTooltipTextLeft1:SetText(tooltipText)
 
 	local offset = 2
 	if UnitIsPlayer(unit) then
@@ -376,10 +381,12 @@ function module:OnGameTooltipSetUnit(frame)
 			frame:AppendText(" "..CHAT_FLAG_AFK)
 		end
 		if guild then
-			local guildColor = "Guild"
+			local guildColorName = "Guild"
 			-- Color guild name differently if it's your guild
-			if IsInGuild() and GetGuildInfo("player") == guild then guildColor = "MyGuild" end
-			GameTooltipTextLeft2:SetText(LUI:RGBToString(guild, module:RGB(guildColor)))
+			if IsInGuild() and GetGuildInfo("player") == guild then
+				guildColorName = "MyGuild"
+			end
+			GameTooltipTextLeft2:SetText(module:ColorText(guild, guildColorName))
 			offset = offset + 1
 		end
 	end
@@ -390,20 +397,25 @@ function module:OnGameTooltipSetUnit(frame)
 		if line:GetText() then
 			-- Level line for players
 			if line:GetText():find("^"..LEVEL) and race then
-				local levelString = LUI:RGBToString((level > 0) and level or "??", r, g, b)
+				local levelString = (level > 0 and level) or "??"
+				local levelText = diffColor:WrapTextInColorCode(levelString)
+				local classText = unitColor:WrapTextInColorCode(localizedClass)
 				local sexString = (db.showSex) and LUI.GENDERS[sex].." " or ""
-				line:SetFormattedText("%s %s%s%s %s",levelString, sexString, race, colorString, localizedClass.."|r")
+				line:SetFormattedText("%s %s%s %s", levelText, sexString, race, classText)
+
 			-- Level line for creatures
 			elseif line:GetText():find("^"..LEVEL) or (creatureType and line:GetText():find("^"..creatureType)) then
 				--HACK: Not sure if needed anymore.
 				--if level == -1 and classification == "elite" then classification = "worldboss" end
 				if classification == "worldboss" then
 					-- Always color world bosses as skulls.
-					r, g, b = LUI:RGB("DiffSkull")
+					diffColor:SetRGB(module:RGB("DiffSkull"))
 				end
-				local levelString = (level > 0) and LUI:RGBToString(level, r, g, b) or ""
-				local classifString = LUI:RGBToString(MOB_CLASSIFICATION[classification], r, g, b)
-				line:SetFormattedText("%s%s %s", levelString, classifString, creatureType or "")
+
+				local levelString = (level > 0 and level) or ""
+				local levelText = diffColor:WrapTextInColorCode(levelString)
+				local classificationString = diffColor:WrapTextInColorCode(MOB_CLASSIFICATION[classification])
+				line:SetFormattedText("%s%s %s", levelText, classificationString, creatureType or "")
 			-- Remove the PVP line if the option is set
 			elseif line:GetText() == PVP_ENABLED and db.hidePVP then
 				line:SetText()

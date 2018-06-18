@@ -704,15 +704,15 @@ function module:CreateNewContainer(name, obj)
 	frame:Hide()
 end
 
--- This is a placeholder function until we get search.lua up
--- It only makes the text appear, no actual functionality.
+-- Placeholder function, only makes the text appear, no actual functionality.
 function module:CreateSearchEditBox(parent)
-	--Search Text
 	local search = parent:CreateFontString(nil, "OVERLAY", "GameFonthighlightLarge")
+	local searchText = LUI:ColorText(SEARCH, "Search")
+
 	search:SetPoint("TOPLEFT", parent, self.db.Padding, -10)
 	search:SetPoint("TOPRIGHT", -40, 0)
 	search:SetJustifyH("LEFT")
-	search:SetText(LUI:RGBToString(SEARCH, module:RGB("Search")))
+	search:SetText(searchText)
 end
 
 function module:IsProfessionBag(id)

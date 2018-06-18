@@ -11,9 +11,6 @@
 local _, LUI = ...
 local L = LUI.L
 
---local copies
-local strsub, format, tonumber = strsub, format, tonumber
-
 --constants
 local LOCALIZED_CLASS_NAMES_FEMALE = LOCALIZED_CLASS_NAMES_FEMALE
 local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE
