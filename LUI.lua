@@ -366,7 +366,7 @@ function LUI:OnInitialize()
 	LibStub("AceConfig-3.0"):RegisterOptionsTable(addonName, self.LoadOptions)
 	ACD:SetDefaultSize(addonName, OPTION_PANEL_WIDTH, OPTION_PANEL_HEIGHT)
 
-	self:RegisterChatCommand(addonName, "ChatCommand")
+	self:RegisterChatCommand("lui", "ChatCommand")
 end
 
 function LUI:OnEnable()
