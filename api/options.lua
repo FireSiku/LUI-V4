@@ -81,7 +81,7 @@ end
 -- @param info Ace3 info table
 -- @number num
 -- @return true if num is a number, nil otherwise
-local function IsNumber(info_, num)
+local function IsNumber(info_, num) -- luacheck: ignore
 	if not num or not tonumber(num) then
 		return L["API_InputNumber"]
 	end
@@ -205,6 +205,15 @@ function OptionsMixin:getter(info)
 	local db = (scope and self:GetDBScope(scope)) or self:GetDB()
 	if not root then db = db[parent] end
 
+	if not db then
+		local mod_db = self:GetDB()
+		if mod_db then
+			LUI:Print("Showing DB for "..self:GetName().." with erronous query:", parent)
+			LUI:PrintTable(mod_db)
+		end
+		LUI:Print("No DB found for self: "..self:GetName() or "nil", self or "nil_self")
+	end
+
 	local value = db[info[#info]]
 	--HACK: Inputs cannot display numbers. Have to convert to string.
 	if info.option.type == "input" then return tostring(value) end
@@ -265,14 +274,17 @@ end
 
 --Color Get/Set are specific to colors and ignore most meta params.
 -- They check for the color directly into db.Colors
-function OptionsMixin:RGBGetter(info)
+function OptionsMixin:ColorGetter(info)
 	local db = self:GetDB("Colors")
 	local c = db[info[#info]]
+	if not c then
+		LUI:Printf("Couldn't find color [%s] in module [%s/%s]", info[#info], self:GetName(), tostring(self))
+	end
 	return c.r, c.g, c.b, c.a
 end
 
 local function shortNum(num) return format(tonumber(num) < 1 and "%.2f" or "%d", tonumber(num)) end
-function OptionsMixin:RGBSetter(info, r, g, b, a)
+function OptionsMixin:ColorSetter(info, r, g, b, a)
 	local db = self:GetDB("Colors")
 	local c = db[info[#info]]
 	c.r, c.g, c.b, c.a = shortNum(r), shortNum(g), shortNum(b), shortNum(a)
@@ -582,6 +594,18 @@ function OptionsMixin:NewPosition(name, order, isXY, meta, width, disabled, hidd
 		parent[YTable] = self:NewInputNumber(L["API_YValue_Name"], YDesc, order+0.2, meta, width, disabled, hidden)
 		parent[info[#info].."Break"] = self:NewLineBreak(order+0.3, hidden)
 		t = nil
+	end)
+	return t
+end
+--function OptionsMixin:NewToggle(name, desc, order, meta, width, disabled, hidden)
+function OptionsMixin:NewUnitframeSize(name_, order, hasRelative, meta, width, disabled, hidden)
+	local t = ShadowOption()
+	OptionHook(t, function(info, parent)
+		parent["Width"] = self:NewInputNumber("Width", nil, order+0.1, meta, width, disabled, hidden)
+		parent["Height"] = self:NewInputNumber("Height", nil, order+0.2, meta, width, disabled, hidden)
+		parent[info[#info].."Break"] = self:NewLineBreak(order+0.3, hidden)
+		parent["IsWidthRelative"] = self:NewToggle("Relative", "Make Relative to parent frame", order+0.3, meta, width, disabled, hidden)
+		parent["IsHeightRelative"] = self:NewToggle("Relative", "Make Relative to parent frame", order+0.4, meta, width, disabled, hidden)
 	end)
 	return t
 end

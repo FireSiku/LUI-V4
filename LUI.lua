@@ -231,6 +231,8 @@ function LUI:LoadOptions()
 					childGroups = module.childGroups or "tab",
 					disabled = function() return not module:IsEnabled() end,
 					args = module:LoadOptions(),
+					get = "RootGetter",
+					set = "RootSetter",
 				}
 			end
 		end

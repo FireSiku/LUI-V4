@@ -365,7 +365,7 @@ function module:LoadOptions()
 
 	local options = {
 		Header = module:NewHeader(L["ExpBar_Name"], 1),
-		Settings = module:NewGroup(L["Settings"], 2, nil, nil, {
+		Settings = module:NewRootGroup(L["Settings"], 2, nil, nil, {
 			--ShowRested = module:NewToggle("Show Rested XP", nil, 2, showRestedMeta, nil, function() return true end),
 			ShowText = module:NewToggle(L["ExpBar_Options_ShowText"] , nil, 3, "Refresh", "normal"),
 			Precision = module:NewSlider(L["Precision"], nil, 4, 0, 3, 1, false, "Refresh"),
@@ -381,7 +381,7 @@ function module:LoadOptions()
 			TextPositionHeader = module:NewHeader(L["ExpBar_Options_TextPosition"], 14),
 			Text = module:NewPosition(L["ExpBar_Options_Text"], 15, nil, "Refresh"),
 		}),
-		Textures = module:NewGroup(L["Textures"], 3, nil, nil, {
+		Textures = module:NewRootGroup(L["Textures"], 3, nil, nil, {
 			ColorHeader = module:NewHeader(L["Colors"], 20),
 			BGMultiplier = module:NewSlider(L["API_BGMultiplier"], L["API_BGMultiplier_Desc"],
 			                                    21, 0, 1, 0.05, true, "RefreshColors"),
