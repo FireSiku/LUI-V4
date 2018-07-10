@@ -200,6 +200,9 @@ end
 -- Drop most of the useless bullshit of getter/setter
 function OptionsMixin:GenericGetter(info)
 	local db = self:GetDB(info[#info-1])
+	-- LUI:Printf("Info: %s, Parent: %s, DB: %s, DBParent: %s", info[#info], info[#info-1],
+	-- 								  tostring(self:GetDB()), tostring(self:GetDB(info[#info-1])))
+	-- if not db then LUI:PrintTable(self:GetDB()) end
 	local value = db[info[#info]]
 	--Inputs cannot display numbers. Have to convert to string.
 	if info.option.type == "input" then return tostring(value) end
@@ -308,11 +311,13 @@ function OptionsMixin:NewGroup(name, order, childGroups, inline, get, set, args,
 	t.inline = inline
 	-- if get is a table, skip to args and move other params two spaces
 	if type(get) == "table" then
+		t.get = "GenericGetter"
+		t.set = "GenericSetter"
 		t.args = get
 		SetState(t, nil, set, args)
 	else
-		t.get = get
-		t.set = set
+		t.get = get or "GenericGetter"
+		t.set = set or "GenericSetter"
 		t.args = args
 		SetState(t, nil, disabled, hidden)
 	end

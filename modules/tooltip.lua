@@ -464,7 +464,7 @@ function module:LoadOptions()
 			showSex = module:NewToggle(L["Tooltip_ShowSex_Name"], L["Tooltip_ShowSex_Desc"], 5),
 			Scale = module:NewScale(L["Tooltip_Scale_Name"], L["Tooltip_Scale_Desc"], 6),
 		}),
-		Position = module:NewGroup(L["Position"], 3, nil, nil, {
+		Position = module:NewRootGroup(L["Position"], 3, nil, nil, {
 			Cursor = module:NewToggle(L["Tooltip_Cursor_Name"], L["Tooltip_Cursor_Desc"], 1),
 			PosDesc = module:NewDesc(L["Tooltip_PosDesc"], 2),
 			Positions = module:NewPosition(L["Tooltip_Positions"], 3, true, true),

@@ -228,6 +228,7 @@ end
 
 function module:OnInitialize()
 	LUI:RegisterModule(module)
+	module:Disable()
 end
 
 function module:OnEnable()

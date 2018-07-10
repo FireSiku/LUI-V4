@@ -367,6 +367,8 @@ function module:NewInfotextOptionGroup(name, order, childGroups_)
 			name = "Module-Specific Options",
 			order = 20,
 			args = element:LoadOptions(),
+			get = "RootGetter",
+			set = "RootSetter",
 		}
 	end
 
