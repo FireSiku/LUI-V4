@@ -597,15 +597,18 @@ function OptionsMixin:NewPosition(name, order, isXY, meta, width, disabled, hidd
 	end)
 	return t
 end
---function OptionsMixin:NewToggle(name, desc, order, meta, width, disabled, hidden)
+
 function OptionsMixin:NewUnitframeSize(name_, order, hasRelative, meta, width, disabled, hidden)
 	local t = ShadowOption()
+
 	OptionHook(t, function(info, parent)
 		parent["Width"] = self:NewInputNumber("Width", nil, order+0.1, meta, width, disabled, hidden)
 		parent["Height"] = self:NewInputNumber("Height", nil, order+0.2, meta, width, disabled, hidden)
 		parent[info[#info].."Break"] = self:NewLineBreak(order+0.3, hidden)
-		parent["IsWidthRelative"] = self:NewToggle("Relative", "Make Relative to parent frame", order+0.3, meta, width, disabled, hidden)
-		parent["IsHeightRelative"] = self:NewToggle("Relative", "Make Relative to parent frame", order+0.4, meta, width, disabled, hidden)
+		parent["IsWidthRelative"] = self:NewToggle("Relative", "Make Relative to parent frame", order+0.3, meta,
+		                                           width, not hasRelative or disabled, not hasRelative or hidden)
+		parent["IsHeightRelative"] = self:NewToggle("Relative", "Make Relative to parent frame", order+0.4, meta,
+		                                            width, not hasRelative or disabled, not hasRelative or hidden)
 	end)
 	return t
 end
