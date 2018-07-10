@@ -197,44 +197,6 @@ end
 ------------------------------------------------------
 --@local here
 
-function OptionsMixin:getter(info)
-	local parent = CheckMeta(info, "parent", "string") or info[#info-1]
-	local scope = CheckMeta(info, "scope", "string")
-	local root = CheckMeta(info, "root", "boolean")
-
-	local db = (scope and self:GetDBScope(scope)) or self:GetDB()
-	if not root then db = db[parent] end
-
-	if not db then
-		local mod_db = self:GetDB()
-		if mod_db then
-			LUI:Print("Showing DB for "..self:GetName().." with erronous query:", parent)
-			LUI:PrintTable(mod_db)
-		end
-		LUI:Print("No DB found for self: "..self:GetName() or "nil", self or "nil_self")
-	end
-
-	local value = db[info[#info]]
-	--HACK: Inputs cannot display numbers. Have to convert to string.
-	if info.option.type == "input" then return tostring(value) end
-	return value
-end
-
-function OptionsMixin:setter(info, value, ...)
-	local parent = CheckMeta(info, "parent", "string") or info[#info-1]
-	local scope = CheckMeta(info, "scope", "string")
-	local root = CheckMeta(info, "root", "boolean")
-
-	local db = (scope and self:GetDBScope(scope)) or self:GetDB()
-	if not root then db = db[parent] end
-
-	--HACK: Inputs always return value as a string.
-	if CheckMeta(info, "isNumber") then value = tonumber(value) end
-
-	db[info[#info]] = value
-	SetFunc(self, info, value, ...)
-end
-
 -- Drop most of the useless bullshit of getter/setter
 function OptionsMixin:GenericGetter(info)
 	local db = self:GetDB(info[#info-1])
@@ -349,19 +311,8 @@ function OptionsMixin:NewGroup(name, order, childGroups, inline, get, set, args,
 		t.args = get
 		SetState(t, nil, set, args)
 	else
-		-- TODO: Once all modules are updated to using NewGroup, get rid of getter/setter
-		--       Also clean up the whole meta thing since rootMeta will be obsolete.
-		if type(get) == "function" or type(get) == "string" then
-			t.get = get
-		else
-			t.get = "getter"
-		end
-		if type(set) == "function" or type(set) == "string" then
-			t.set = set
-		else
-			t.set = "setter"
-		end
-
+		t.get = get
+		t.set = set
 		t.args = args
 		SetState(t, nil, disabled, hidden)
 	end
