@@ -21,8 +21,8 @@ local editingText
 -- ####################################################################################################################
 
  -- self: ColorPickerFrame
-function element.ColorPickerFrameShow(self)
-	OldColorSwatch:SetColorTexture(self:GetColorRGB())
+function element:ColorPickerFrameShow()
+	OldColorSwatch:SetColorTexture(ColorPickerFrame:GetColorRGB())
 	element:UpdateColorTexts()
 
 	if ColorPickerFrame.hasOpacity then
