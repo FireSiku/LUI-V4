@@ -626,9 +626,29 @@ end
 -- @param ...
 -- @bool hasAlpha Wether the color supports an alpha channel or not.
 -- @param ...
-function OptionsMixin:NewColor(name, desc, order, hasAlpha, meta, width, disabled, hidden)
+function OptionsMixin:NewColor(name, desc, order, meta, width, disabled, hidden)
+	-- if desc is a number (order) shift everything to the right
+	if type(desc) == "number" then
+		desc, order, meta, width, disabled, hidden = nil, desc, order, meta, width, disabled
+	end
+
 	local t = SetVals("color", name, desc, order)
-	t.hasAlpha = hasAlpha
+	t.get, t.set = "ColorGetter", "ColorSetter"
+
+	SetupMeta(t, meta)
+	SetState(t, width, disabled, hidden)
+	return t
+end
+
+-- Note: This is rather ugly code duplication. Wait until new system to fix it.
+function OptionsMixin:NewAlphaColor(name, desc, order, meta, width, disabled, hidden)
+	-- if desc is a number (order) shift everything to the right
+	if type(desc) == "number" then
+		desc, order, meta, width, disabled, hidden = nil, desc, order, meta, width, disabled
+	end
+	
+	local t = SetVals("color", name, desc, order)
+	t.hasAlpha = true
 	t.get, t.set = "ColorGetter", "ColorSetter"
 
 	SetupMeta(t, meta)
@@ -645,7 +665,11 @@ function OptionsMixin:NewColorMenu(name, order, hasAlpha, meta, width_, disabled
 		local opt = info[#info]
 		local optMenu = opt.."Menu"
 		local db = self:GetDB("Colors")
-		parent[opt] = self:NewColor(name, nil, order+0.2, hasAlpha, meta, nil, disabled, hidden)
+		if hasAlpha then
+			parent[opt] = self:NewAlphaColor(name, order+0.2, meta, nil, disabled, hidden)
+		else
+			parent[opt] = self:NewColor(name, order+0.2, meta, nil, disabled, hidden)
+		end
 		parent[optMenu] = self:NewSelect(name, nil, order+0.1, LUI.ColorTypes, nil, meta, nil, disabled, hidden)
 		--Custom get/set for the dropdown menu
 		parent[optMenu].get = function()

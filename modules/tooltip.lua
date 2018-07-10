@@ -482,13 +482,13 @@ function module:LoadOptions()
 			                              L["Tooltip_BorderSize_Desc"], 7, 1, 30, 1, nil, "UpdateTooltipBackdrop", "double"),
 		}),
 		Colors = module:NewGroup(L["Colors"], 3, nil, nil, {
-			Guild = module:NewColor(GUILD, nil, 1),
-			MyGuild = module:NewColor(L["Tooltip_MyGuild"], nil, 2),
-			Tapped = module:NewColor(L["Tapped"], nil, 3),
+			Guild = module:NewColor(GUILD, 1),
+			MyGuild = module:NewColor(L["Tooltip_MyGuild"], 2),
+			--Tapped = module:NewColor(L["Tapped"], 3),
 			Blank = module:NewLineBreak(4),
 			-- Those two are supposed to be LUI Colors.
-			Background = module:NewColor(L["Background"], nil, 5, nil, "UpdateBackdropColors"),
-			Border = module:NewColor(L["Border"], nil, 6, "UpdateBackdropColors"),
+			Background = module:NewColor(L["Background"], 5, "UpdateBackdropColors"),
+			Border = module:NewColor(L["Border"], 6, "UpdateBackdropColors"),
 		}),
 	}
 	return options
