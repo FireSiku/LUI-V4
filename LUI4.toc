@@ -1,4 +1,4 @@
-## Interface: 70300
+## Interface: 80000
 ## Version: 4.0
 ## Title: LUI4
 ## Author: Siku, Mule
@@ -26,7 +26,7 @@ libs\AceTimer-3.0\AceTimer-3.0.xml
 libs\AceBucket-3.0\AceBucket-3.0.xml
 libs\LibSharedMedia-3.0\lib.xml
 libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
-libs\LibDataBroker-1-1\LibDataBroker-1.1.lua
+libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 libs\LibWindow-1.1\LibWindow-1.1.lua
 libs\LibCompress\LibCompress.lua
 
@@ -45,6 +45,7 @@ api\options.lua
 api\colors.lua
 api\strings.lua
 api\cpanel.lua
+api\compat.lua
 
 ## Load Core Modules
 modules\layout.lua
@@ -70,7 +71,7 @@ modules\bags\templates.lua
 modules\bags\bags.lua
 modules\bags\bank.lua
 modules\bags\reagents.lua
-	
+
 ## Load Infotext
 modules\infotext\infotext.lua
 modules\infotext\infotip.lua
@@ -89,7 +90,7 @@ modules\infotext\archaeology.lua
 ## Load UI Elements
 modules\uielements\uielements.lua
 modules\uielements\colorpicker.lua
-	
+
 ## Load Addon Support Files
 api\addons.lua
 addons\bartender4.lua
