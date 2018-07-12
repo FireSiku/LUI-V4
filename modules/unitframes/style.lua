@@ -14,50 +14,50 @@ local L = LUI.L
 
 -- SetStyle is called as soon as a unit is spawned.
 -- This is where the basic, non-specific parts of the unitframes are made.
--- Self is the spawned object, as returned by SpawnUnit.
+-- Frame is the spawned object, as returned by SpawnUnit.
 -- Unit is the actual unit token as per Blizzard API (ex: "player", "target", ...)
 
-function module.SetStyle(self, unit, isSingle)
+function module.SetStyle(frame, unit, isSingle)
 
 	--Fetch settings for the unit
-	self.db = module:GetUnitDB(unit)
+	frame.db = module:GetUnitDB(unit)
 
 	if(isSingle) then
-		self:SetSize(self.db.Width, self.db.Height)
+		frame:SetSize(frame.db.Width, frame.db.Height)
 	end
 
 	-- // Health Bar
-	module.SetHealth(self)
+	module.SetHealth(frame)
 
 	-- // Power Bar
-	module.SetPower(self)
+	module.SetPower(frame)
 
 	-- // Frame Backdrop
 	local backdrop = {
-		bgFile = Media:Fetch("background", self.db.Backdrop.Texture),
-		edgeFile = Media:Fetch("border", self.db.Backdrop.EdgeFile),
-		edgeSize = self.db.Backdrop.EdgeSize,
+		bgFile = Media:Fetch("background", frame.db.Backdrop.Texture),
+		edgeFile = Media:Fetch("border", frame.db.Backdrop.EdgeFile),
+		edgeSize = frame.db.Backdrop.EdgeSize,
 		insets = { left = 3, right = 3, top = 3, bottom = 3, },
 	}
-	local backdropFrame = CreateFrame("Frame", nil, self)
+	local backdropFrame = CreateFrame("Frame", nil, frame)
 	--Need to convert to :RGB()
 	backdropFrame:SetBackdrop(backdrop)
-	backdropFrame:SetBackdropColor(self:RGB("Background"))
-	backdropFrame:SetBackdropBorderColor(self:RGB("Border"))
-	backdropFrame:SetPoint("TOPLEFT", self.Health, "TOPLEFT", -4, 4)
-	backdropFrame:SetPoint("BOTTOMRIGHT", self.Power, "BOTTOMRIGHT", 4, -4)
+	backdropFrame:SetBackdropColor(frame:RGB("Background"))
+	backdropFrame:SetBackdropBorderColor(frame:RGB("Border"))
+	backdropFrame:SetPoint("TOPLEFT", frame.Health, "TOPLEFT", -4, 4)
+	backdropFrame:SetPoint("BOTTOMRIGHT", frame.Power, "BOTTOMRIGHT", 4, -4)
 
 	-- creating a frame as anchor for icons, other texts etc
-	self.Overlay = CreateFrame("Frame", nil, self)
-	self.Overlay:SetAllPoints(self.Health)
+	frame.Overlay = CreateFrame("Frame", nil, frame)
+	frame.Overlay:SetAllPoints(frame.Health)
 
 	-- // Name
-	local name = self.Overlay:CreateFontString()
-	local nameFont = self.db.Fonts.NameText
-	local db = self.db.NameText
+	local name = frame.Overlay:CreateFontString()
+	local nameFont = frame.db.Fonts.NameText
+	local db = frame.db.NameText
 	name:SetFont(Media:Fetch("font", nameFont.Name), nameFont.Size, nameFont.Flag)
-	name:SetPoint(db.Point, self.Overlay, db.RelativePoint, db.X, db.Y)
-	name:SetTextColor(self:RGB("NameText"))
+	name:SetPoint(db.Point, frame.Overlay, db.RelativePoint, db.X, db.Y)
+	name:SetTextColor(frame:RGB("NameText"))
 	name:SetShadowOffset(1.25, -1.25)
 	name:SetShadowColor(0, 0, 0)
 	name.ColorNameByClass = db.ColorNameByClass
@@ -68,8 +68,8 @@ function module.SetStyle(self, unit, isSingle)
 	name.Format = db.Format
 	name:Show()
 
-	self.Name = name
-	self:FormatName()
+	frame.Name = name
+	frame:FormatName()
 
 	-- // Dropdown
 	-- Credit for this bit of code goes to Zork.
@@ -97,7 +97,8 @@ function module.SetStyle(self, unit, isSingle)
 			UnitPopup_ShowMenu(self, menu, unit, name, id)
 		end
 	end, "MENU")
-	self.menu = function(self)
+
+	frame.menu = function(self)
 		dropdown:SetParent(self)
 		ToggleDropDownMenu(1, nil, dropdown, "cursor", 0, 0)
 	end
@@ -123,14 +124,14 @@ end
 -- ##### Unitframes: Health ###########################################################################################
 -- ####################################################################################################################
 
-function module.SetHealth(self)
-	local health = CreateFrame("StatusBar", nil, self)
+function module.SetHealth(frame)
+	local health = CreateFrame("StatusBar", nil, frame)
 
 	-- Position and Size
-	local db = self.db.HealthBar
+	local db = frame.db.HealthBar
 	health:SetSize(db.Width, db.Height)
 	health:SetStatusBarTexture(Media:Fetch("statusbar", db.Texture))
-	health:SetPoint("TOPLEFT", self, "TOPLEFT")
+	health:SetPoint("TOPLEFT", frame, "TOPLEFT")
 
 	--oUF Options
 	health.frequentUpdates = true
@@ -162,20 +163,20 @@ function module.SetHealth(self)
 	overAbsorbBar:SetAlpha(.6)
 
 	-- Health Text
-	local db = self.db.HealthText
-	local fdb = self.db.Fonts.HealthText
+	local db = frame.db.HealthText
+	local fdb = frame.db.Fonts.HealthText
 	local healthText = health:CreateFontString(nil, "OVERLAY")
 	healthText:SetFont(Media:Fetch("font", fdb.Name), fdb.Size, fdb.Flag)
-	healthText:SetPoint(db.Point, self, db.RelativePoint, db.X, db.Y)
+	healthText:SetPoint(db.Point, frame, db.RelativePoint, db.X, db.Y)
 	healthText:SetJustifyH("CENTER")
 	healthText:SetTextColor(1,1,1)
 	healthText:Show()
 
-	local db = self.db.HealthPercent
-	local fdb = self.db.Fonts.HealthPercent
+	local db = frame.db.HealthPercent
+	local fdb = frame.db.Fonts.HealthPercent
 	local healthPercText = health:CreateFontString(nil, "OVERLAY")
 	healthPercText:SetFont(Media:Fetch("font", fdb.Name), fdb.Size, fdb.Flag)
-	healthPercText:SetPoint(db.Point, self, db.RelativePoint, db.X, db.Y)
+	healthPercText:SetPoint(db.Point, frame, db.RelativePoint, db.X, db.Y)
 	healthPercText:SetJustifyH("CENTER")
 	healthPercText:SetTextColor(1,1,1)
 	healthPercText:Show()
@@ -188,29 +189,29 @@ function module.SetHealth(self)
 		end
 	end
 
-	self:RegisterEvent('UNIT_ABSORB_AMOUNT_CHANGED', self.UpdateAllElements)
+	frame:RegisterEvent('UNIT_ABSORB_AMOUNT_CHANGED', frame.UpdateAllElements)
 
 	--Register those with oUF
-	self.Health = health
-	self.Health.bg = healthBG
-	self:Tag(healthText, '[dead][offline][LUI:health] [LUI:Absorb]')
-	self.Health.value = healthText
+	frame.Health = health
+	frame.Health.bg = healthBG
+	frame:Tag(healthText, '[dead][offline][LUI:health] [LUI:Absorb]')
+	frame.Health.value = healthText
 
-	self.HealthPrediction = {
+	frame.HealthPrediction = {
         absorbBar = absorbBar,
         overAbsorb = overAbsorbBar,
         frequentUpdates = true,
 	}
 
-	function self.HealthPrediction:PostUpdate(unit, myIncomingHeal_, otherIncomingHeal_, absorb,
+	function frame.HealthPrediction:PostUpdate(unit, myIncomingHeal_, otherIncomingHeal_, absorb,
 		                                      healAbsorb_, hasOverAbsorb, hasOverHealAbsorb_)
 		if hasOverAbsorb then
 			local health_, maxHealth = UnitHealth(unit), UnitHealthMax(unit)
 			local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0
 			local overAbsorb = totalAbsorb - absorb
-			self.overAbsorb:SetMinMaxValues(0, maxHealth)
-			self.overAbsorb:SetValue(overAbsorb)
-			self.overAbsorb:Show()
+			frame.overAbsorb:SetMinMaxValues(0, maxHealth)
+			frame.overAbsorb:SetValue(overAbsorb)
+			frame.overAbsorb:Show()
 		end
 	end
 
@@ -220,13 +221,13 @@ end
 -- ##### Unitframes: Power ############################################################################################
 -- ####################################################################################################################
 
-function module.SetPower(self)
-	local power = CreateFrame("StatusBar", nil, self)
+function module.SetPower(frame)
+	local power = CreateFrame("StatusBar", nil, frame)
 
-	local db = self.db.PowerBar
+	local db = frame.db.PowerBar
 	power:SetSize(db.Width, db.Height)
 	power:SetStatusBarTexture(Media:Fetch("statusbar", db.Texture))
-	power:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", db.X, db.Y)
+	power:SetPoint("TOPLEFT", frame.Health, "BOTTOMLEFT", db.X, db.Y)
 	--power.colorPower = true
 	power.colorClass = true
 	power.colorClassNPC = true
@@ -239,8 +240,8 @@ function module.SetPower(self)
 	powerBG.multiplier = 0.4
 
 	-- Power Text
-	local db = self.db.PowerText
-	local fdb = self.db.Fonts.PowerText
+	local db = frame.db.PowerText
+	local fdb = frame.db.Fonts.PowerText
 	local powerText = power:CreateFontString(nil, "OVERLAY")
 	powerText:SetFont(Media:Fetch("font", fdb.Name), fdb.Size, fdb.Flag)
 	powerText:SetPoint(db.Point, power, db.RelativePoint, db.X, db.Y)
@@ -248,8 +249,8 @@ function module.SetPower(self)
 	powerText:SetTextColor(1,1,1)
 	powerText:Show()
 
-	local db = self.db.PowerPercent
-	local fdb = self.db.Fonts.PowerPercent
+	local db = frame.db.PowerPercent
+	local fdb = frame.db.Fonts.PowerPercent
 	local powerPercText = power:CreateFontString(nil, "OVERLAY")
 	powerPercText:SetFont(Media:Fetch("font", fdb.Name), fdb.Size, fdb.Flag)
 	powerPercText:SetPoint(db.Point, power, db.RelativePoint, db.X, db.Y)
@@ -264,8 +265,8 @@ function module.SetPower(self)
 		powerPercText:SetFormattedText("%.1f%%", percent)
 	end
 
-	self.Power = power
-	self.Power.bg = powerBG
-	self.Power.value = powerText
+	frame.Power = power
+	frame.Power.bg = powerBG
+	frame.Power.value = powerText
 
 end
