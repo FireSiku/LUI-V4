@@ -26,7 +26,7 @@ std = "+LUI+Libs+WoW"
 stds["LUI"] = {
 	globals = {
 		"LUI", "PrintTooltips", "GFind", "GFindValue", "GFindCTables",
- 		"GetMinimapShape", "oUF_LUI", "LUIBank", "LUIReagents", "LUIBags",
+ 		"GetMinimapShape", "LUIBank", "LUIReagents", "LUIBags",
     }
 }
 

@@ -5,6 +5,7 @@
 local _, LUI = ...
 local module = LUI:NewModule("Unitframes", "AceHook-3.0")
 local L = LUI.L
+local oUF = LUI.oUF
 
 local unitSpawns = { "player", "target", }
 
@@ -20,7 +21,7 @@ end
 
 --TODO: Fix color system so we don't have to create new tables every call.
 function module:SetOUFColors()
-	local colors = oUF_LUI.colors
+	local colors = oUF.colors
 	colors.reaction = {}
 	for i = 1, #LUI.REACTION_NAMES do
 		colors.reaction[i] = {module:RGB(LUI.REACTION_NAMES[i])}
@@ -58,18 +59,18 @@ end
 -- ##### Unitframes: Tags Methods #####################################################################################
 -- ####################################################################################################################
 
-oUF_LUI.Tags.Methods['LUI:health'] = function(unit)
+oUF.Tags.Methods['LUI:health'] = function(unit)
 	if(not UnitIsConnected(unit) or UnitIsDead(unit) or UnitIsGhost(unit)) then return end
 	--return siValue(UnitHealth(unit)) .. '/' .. siValue(UnitHealthMax(unit))
 	return ShortValue(UnitHealth(unit))
 end
-oUF_LUI.Tags.Methods['LUI:Absorb'] = function(unit)
+oUF.Tags.Methods['LUI:Absorb'] = function(unit)
 	if(not UnitIsConnected(unit) or UnitIsDead(unit) or UnitIsGhost(unit)) then return end
 	local totalAbsorb = UnitGetTotalAbsorbs(unit)
 	if totalAbsorb < 1 then return end
 	return format("(+%s)",ShortValue(totalAbsorb))
 end
-oUF_LUI.Tags.Methods['ClassColor'] = function(unit)
+oUF.Tags.Methods['ClassColor'] = function(unit)
 	local _, class = UnitClass(unit)
 	local r, g, b = module:RGB(class)
 	if not r then r, g, b = LUI:GetReactionColor(unit) end
@@ -85,19 +86,13 @@ local SpawnMixin = {}
 
 -- Version of module:RGB tailored for unitframes, with support for additional types (ie: Color Based On Type)
 function SpawnMixin:RGB(colorName)
-	local color
-	if self.db and self.db.Colors[colorName] then
-		if self.db.Colors[colorName].t and self.db.Colors[colorName].t == "Class" then
-			return LUI:RGB(LUI.playerClass)
-		else
-			color = self.db.Colors[colorName]
-		end
-	else
-		color = LUI:GetModule("Colors"):GetDB("Colors")[colorName]
+	local colorDB = self.db.Colors[colorName]
+	if colorDB and colorDB.t == "Type" then
+		-- Use module coloring logic here
+	elseif colorDB and colorDB.t == "Class" then
+		return LUI:RGB(LUI.playerClass)
 	end
-	if color then
-		return color.r, color.g, color.b
-	end
+	return module:RGB(colorName)
 end
 
 function SpawnMixin:FormatName()
@@ -331,10 +326,10 @@ module.enableButton = true
 
 function module:OnInitialize()
 	LUI:RegisterModule(module)
-	oUF_LUI:RegisterStyle("LUI4", module.SetStyle)
+	oUF:RegisterStyle("LUI4", module.SetStyle)
 
 	for k, v in pairs(SpawnMixin) do
-		oUF_LUI:RegisterMetaFunction(k, v)
+		oUF:RegisterMetaFunction(k, v)
 	end
 end
 
@@ -343,7 +338,7 @@ function module:OnEnable()
 	for i = 1, #unitSpawns do
 		local unit = unitSpawns[i]
 		local db = module:GetUnitDB(unit)
-		local spawn_ = SpawnUnit(oUF_LUI, unit, db.Point, db.X, db.Y)
+		local spawn_ = SpawnUnit(oUF, unit, db.Point, db.X, db.Y)
 	end
 end
 

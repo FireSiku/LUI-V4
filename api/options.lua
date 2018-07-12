@@ -558,13 +558,22 @@ function OptionsMixin:NewUnitframeSize(name_, order, hasRelative, meta, width, d
 	local t = ShadowOption()
 
 	OptionHook(t, function(info, parent)
-		parent["Width"] = self:NewInputNumber("Width", "Width Description goes here", order+0.1, meta, width, disabled, hidden)
+		parent["Width"] = self:NewInputNumber("Width", "Width Description goes here", order+0.1, meta,
+		                                                                              width, disabled, hidden)
 		parent["Height"] = self:NewInputNumber("Height", nil, order+0.2, meta, width, disabled, hidden)
 		parent[info[#info].."Break"] = self:NewLineBreak(order+0.3, hidden)
-		parent["IsWidthRelative"] = self:NewToggle("Relative", "Make Relative to parent frame", order+0.3, meta,
-		                                           width or "normal", not hasRelative or disabled, not hasRelative or hidden)
-		parent["IsHeightRelative"] = self:NewToggle("Relative", "Make Relative to parent frame", order+0.4, meta,
-		                                           width or "normal", not hasRelative or disabled, not hasRelative or hidden)
+		parent["IsWidthRelative"] = self:NewToggle("Relative", "Make Relative to parent frame",
+		                                            order+0.3, meta,
+											        width or "normal",
+											        not hasRelative or disabled,
+												    not hasRelative or hidden
+												)
+		parent["IsHeightRelative"] = self:NewToggle("Relative", "Make Relative to parent frame",
+		                                            order+0.4, meta,
+													width or "normal",
+													not hasRelative or disabled,
+													not hasRelative or hidden
+												)
 	end)
 	return t
 end

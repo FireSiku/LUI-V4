@@ -73,7 +73,7 @@ function module.SetStyle(self, unit, isSingle)
 
 	-- // Dropdown
 	-- Credit for this bit of code goes to Zork.
-	local dropdown = CreateFrame("Frame", "oUF_LUI_Dropdown", UIParent, "UIDropDownMenuTemplate")
+	local dropdown = CreateFrame("Frame", "oUF_LUIDropdown", UIParent, "UIDropDownMenuTemplate")
 	UIDropDownMenu_Initialize(dropdown, function(self)
 		local unit = self:GetParent().unit
 		if not unit then return end
