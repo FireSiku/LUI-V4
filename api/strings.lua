@@ -145,6 +145,12 @@ LUI.Sides = {
 	LEFT = L["Point_Left"],
 	RIGHT = L["Point_Right"],
 }
+LUI.Directions = {
+	UP = L["Point_Up"],
+	DOWN = L["Point_Down"],
+	LEFT = L["Point_Left"],
+	RIGHT = L["Point_Right"],
+}
 
 LUI.ColorTypes = {
 	Individual = L["Color_Individual"],

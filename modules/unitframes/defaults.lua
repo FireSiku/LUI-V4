@@ -390,6 +390,7 @@ module.defaults = {
                     Height = 8,
                     Width = 250,
                     Texture = "LUI_Gradient",
+                    TextureBG = "LUI_Minimalist",
                     Padding = 1,
                     Lock = true,
                 },

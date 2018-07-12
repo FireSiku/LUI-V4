@@ -140,26 +140,56 @@ function module:NewUnitOptionGroup(unit, order)
 	LUI:EmbedOptions(opt)
 
 	-- Boolean shortcut, since many options are player-specific.
-	local isPlayer = (unit == "player")
+	local isPlayer = (unit == "player") or nil
 
 	local unitOptions = opt:NewGroup(unit, order, "tab", nil, {
-		General = opt:NewGroup("General", 1, "tab", nil, {
-			sillyDesc = opt:NewDesc("General Settings will go here", 1),
-		}),
+		-- General = opt:NewGroup("General", 1, "tab", nil, {
+		-- 	sillyDesc = opt:NewDesc("General Settings will go here", 1),
+		-- }),
 
 		Bars = opt:NewGroup("Bars", 2, "tab", nil, {
 			HealthBar = opt:NewGroup("Health", 1, "tab", nil, {
-				sillyDesc = opt:NewDesc("Health Bar Settings will go here", 1),
+				Size = opt:NewUnitframeSize(nil, 1),
+				Position = opt:NewPosition("Position", 2, true),
+				Point = opt:NewSelect(L["Anchor"], nil, 3, LUI.Points),
+				Scale = opt:NewScale("Scale", nil, 4),
+				Texture = opt:NewTexStatusBar("Texture", nil, 5),
+				TextureBG = opt:NewTexStatusBar("Background Texture", nil, 6),
+				-- Options unsure about currently:
+				-- BGAlpha = 1,
+				-- BGInvert Toggle,
+				-- Smooth toggle,
+				-- Tapping toggle,
 			}),
 			PowerBar = opt:NewGroup("Power", 2, "tab", nil, {
-				sillyDesc = opt:NewDesc("Power Bar Settings will go here", 1),
+				Size = opt:NewUnitframeSize(nil, 1, true),
+				Position = opt:NewPosition("Position", 2, true),
+				Point = opt:NewSelect(L["Anchor"], nil, 3, LUI.Points),
+				Scale = opt:NewScale("Scale", nil, 4),
+				Texture = opt:NewTexStatusBar("Texture", nil, 5),
+				TextureBG = opt:NewTexStatusBar("Background Texture", nil, 6),
+				-- Options unsure about currently:
+				-- BGAlpha = 1,
+				-- BGInvert Toggle,
+				-- Smooth toggle,
 			}),
 			AbsorbBar = opt:NewGroup("Absorb", 2, "tab", nil, {
 				sillyDesc = opt:NewDesc("Absorb Bar Settings will go here. Coming Soon.", 1),
 			}),
-			ClassPower = isPlayer and opt:NewGroup("Class Powers", 3, "tab", nil, {
-				sillyDesc = opt:NewDesc("Class Power Settings will go here. Coming Soon.", 1),
-			}) or nil,
+			ClassPowerBar = isPlayer and opt:NewGroup("Class Powers", 3, "tab", nil, {
+				Size = opt:NewUnitframeSize(nil, 1, true),
+				Position = opt:NewPosition("Position", 2, true),
+				Point = opt:NewSelect(L["Anchor"], nil, 3, LUI.Points),
+				Scale = opt:NewScale("Scale", nil, 4),
+				Texture = opt:NewTexStatusBar("Texture", nil, 5),
+				TextureBG = opt:NewTexStatusBar("Background Texture", nil, 6),
+				-- Pending
+				-- AlwaysShow / Only show when used (ie: ComboPoints)
+				-- Options unsure about currently:
+				-- BGAlpha = 1,
+				-- BGInvert Toggle,
+				-- Smooth toggle,
+			}),
 		}),
 
 		Texts = opt:NewGroup("Texts", 3, "tab", nil, {
@@ -190,38 +220,81 @@ function module:NewUnitOptionGroup(unit, order)
 		}),
 
 		Portrait = opt:NewGroup("Portrait", 4, "tab", nil, {
-			sillyDesc = opt:NewDesc("Portrait Settings will go here", 1),
+			Size = opt:NewUnitframeSize(nil, 1, true),
+			Position = opt:NewPosition("Position", 2, true),
+			Point = opt:NewSelect(L["Anchor"], nil, 3, LUI.Points),
+			Alpha = opt:NewSlider("Alpha", nil, 4, 0, 1, 0.05, true),
 		}),
 
 		Buffs = opt:NewGroup("Buffs", 5, "tab", nil, {
-			sillyDesc = opt:NewDesc("Buffs Settings will go here", 1),
+			NYI = opt:NewDesc("Auras Not Yet Implemented", 0.9),
+			ColorByType = opt:NewToggle("Color By Type", nil, 1),
+			PlayerOnly = opt:NewToggle("Player Only", nil, 2),
+			IncludePet = opt:NewToggle("Include Pet", nil, 3),
+			AuraTimer = opt:NewToggle("Aura Timer", nil, 4),
+			DisableCooldown = opt:NewToggle("Disable Cooldown", nil, 5),
+			CooldownReverse = opt:NewToggle("Cooldown Reverse", nil, 6),
+			Position = opt:NewPosition("Position", 7, true),
+			InitialAnchor = opt:NewSelect(L["Anchor"], nil, 8, LUI.Points),
+			GrowthX = opt:NewSelect("Horizontal Growth", nil, 9, LUI.Directions),
+			GrowthY = opt:NewSelect("Vertical Growth", nil, 10, LUI.Directions),
+			Size = opt:NewSlider("Size", nil, 11, 8, 64, 1),
+			Spacing = opt:NewSlider("Spacing", nil, 12, -10, 10, 1),
+			Num = opt:NewSlider("Amount of Buffs", nil, 13, 1, 48, 1),
 		}),
 
 		Debuffs = opt:NewGroup("Debuffs", 6, "tab", nil, {
-			sillyDesc = opt:NewDesc("Debuffs Settings will go here", 1),
+			NYI = opt:NewDesc("Auras Not Yet Implemented", 0.9),
+			ColorByType = opt:NewToggle("Color By Type", nil, 1),
+			PlayerOnly = opt:NewToggle("Player Only", nil, 2),
+			IncludePet = opt:NewToggle("Include Pet", nil, 3),
+			AuraTimer = opt:NewToggle("Aura Timer", nil, 4),
+			DisableCooldown = opt:NewToggle("Disable Cooldown", nil, 5),
+			CooldownReverse = opt:NewToggle("Cooldown Reverse", nil, 6),
+			Position = opt:NewPosition("Position", 7, true),
+			InitialAnchor = opt:NewSelect(L["Anchor"], nil, 8, LUI.Points),
+			GrowthX = opt:NewSelect("Horizontal Growth", nil, 9, LUI.Directions),
+			GrowthY = opt:NewSelect("Vertical Growth", nil, 10, LUI.Directions),
+			Size = opt:NewSlider("Size", nil, 11, 8, 64, 1),
+			Spacing = opt:NewSlider("Spacing", nil, 12, -10, 10, 1),
+			Num = opt:NewSlider("Amount of Buffs", nil, 13, 1, 48, 1),
 		}),
 
 		Icons = opt:NewGroup("Icons", 7, "tab", nil, {
 			LootmasterIcon = opt:NewGroup("LootmasterIcon", 1, "tab", nil, {
-				sillyDesc = opt:NewDesc("LootmasterIcon Settings will go here", 1),
+				Position = opt:NewPosition("Position", 1, true),
+				Size = opt:NewSlider("Size", nil, 2, 8, 64, 1),
+				Point = opt:NewSelect(L["Anchor"], nil, 3, LUI.Points),
 			}),
 			LeaderIcon = opt:NewGroup("LeaderIcon", 2, "tab", nil, {
-				sillyDesc = opt:NewDesc("LeaderIcon Settings will go here", 1),
+				Position = opt:NewPosition("Position", 1, true),
+				Size = opt:NewSlider("Size", nil, 2, 8, 64, 1),
+				Point = opt:NewSelect(L["Anchor"], nil, 3, LUI.Points),
 			}),
 			RoleIcon = opt:NewGroup("RoleIcon", 3, "tab", nil, {
-				sillyDesc = opt:NewDesc("RoleIcon Settings will go here", 1),
+				Position = opt:NewPosition("Position", 1, true),
+				Size = opt:NewSlider("Size", nil, 2, 8, 64, 1),
+				Point = opt:NewSelect(L["Anchor"], nil, 3, LUI.Points),
 			}),
 			RaidIcon = opt:NewGroup("RaidIcon", 4, "tab", nil, {
-				sillyDesc = opt:NewDesc("RaidIcon Settings will go here", 1),
+				Position = opt:NewPosition("Position", 1, true),
+				Size = opt:NewSlider("Size", nil, 2, 8, 64, 1),
+				Point = opt:NewSelect(L["Anchor"], nil, 3, LUI.Points),
 			}),
 			PvPIcon = opt:NewGroup("PvPIcon", 5, "tab", nil, {
-				sillyDesc = opt:NewDesc("PvPIcon Settings will go here", 1),
+				Position = opt:NewPosition("Position", 1, true),
+				Size = opt:NewSlider("Size", nil, 2, 8, 64, 1),
+				Point = opt:NewSelect(L["Anchor"], nil, 3, LUI.Points),
 			}),
 		}),
 	})
 
+	
+	unitOptions.handler = opt
 	return unitOptions
 end
+
+module.childGroups = "tab" -- Placeholder
 
 function module:LoadOptions()
 	local options = {
