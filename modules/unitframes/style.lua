@@ -27,10 +27,10 @@ function module.SetStyle(frame, unit, isSingle)
 	end
 
 	-- // Health Bar
-	module.SetHealth(frame)
+	module:SetHealth(frame)
 
 	-- // Power Bar
-	module.SetPower(frame)
+	module:SetPower(frame)
 
 	-- // Frame Backdrop
 	local backdrop = {
@@ -91,10 +91,10 @@ function module.SetStyle(frame, unit, isSingle)
 			end
 		else
 			menu = "TARGET"
-			name = RAID_TARGET_ICON
-		end
-		if menu then
-			UnitPopup_ShowMenu(self, menu, unit, name, id)
+	t		name = RAID_TARGET_ICON
+	t	end
+	t	if menu then
+	t		UnitPopup_ShowMenu(self, menu, unit, name, id)
 		end
 	end, "MENU")
 
@@ -120,11 +120,24 @@ function module.SetStyle(frame, unit, isSingle)
 
 end
 
+function module:SetTextElement(frame, name, parent)
+	local db = frame.db[name]
+	local font = frame.db.Fonts[name]
+	local text = parent:CreateFontString(nil, "OVERLAY")
+	text:SetFont(Media:Fetch("font", font.Name), font.Size, font.Flag)
+	text:SetPoint(db.Point, parent, db.RelativePoint, db.X, db.Y)
+	text:SetJustifyH("CENTER")
+	text:SetTextColor(1,1,1)
+	text:Show()
+
+	return text
+end
+
 -- ####################################################################################################################
 -- ##### Unitframes: Health ###########################################################################################
 -- ####################################################################################################################
 
-function module.SetHealth(frame)
+function module:SetHealth(frame)
 	local health = CreateFrame("StatusBar", nil, frame)
 
 	-- Position and Size
@@ -163,23 +176,8 @@ function module.SetHealth(frame)
 	overAbsorbBar:SetAlpha(.6)
 
 	-- Health Text
-	local db = frame.db.HealthText
-	local fdb = frame.db.Fonts.HealthText
-	local healthText = health:CreateFontString(nil, "OVERLAY")
-	healthText:SetFont(Media:Fetch("font", fdb.Name), fdb.Size, fdb.Flag)
-	healthText:SetPoint(db.Point, frame, db.RelativePoint, db.X, db.Y)
-	healthText:SetJustifyH("CENTER")
-	healthText:SetTextColor(1,1,1)
-	healthText:Show()
-
-	local db = frame.db.HealthPercent
-	local fdb = frame.db.Fonts.HealthPercent
-	local healthPercText = health:CreateFontString(nil, "OVERLAY")
-	healthPercText:SetFont(Media:Fetch("font", fdb.Name), fdb.Size, fdb.Flag)
-	healthPercText:SetPoint(db.Point, frame, db.RelativePoint, db.X, db.Y)
-	healthPercText:SetJustifyH("CENTER")
-	healthPercText:SetTextColor(1,1,1)
-	healthPercText:Show()
+	local healthText = module:SetTextElement(frame, "HealthText", health)
+	local healthPercent = module:SetTextElement(frame, "HealthPercent", health)
 
 	health.PostUpdate = function(health_, unit_, min, max)
 		local percent = (max == 0 and 0) or 100 * (min/max)
@@ -221,7 +219,7 @@ end
 -- ##### Unitframes: Power ############################################################################################
 -- ####################################################################################################################
 
-function module.SetPower(frame)
+function module:SetPower(frame)
 	local power = CreateFrame("StatusBar", nil, frame)
 
 	local db = frame.db.PowerBar
@@ -240,23 +238,8 @@ function module.SetPower(frame)
 	powerBG.multiplier = 0.4
 
 	-- Power Text
-	local db = frame.db.PowerText
-	local fdb = frame.db.Fonts.PowerText
-	local powerText = power:CreateFontString(nil, "OVERLAY")
-	powerText:SetFont(Media:Fetch("font", fdb.Name), fdb.Size, fdb.Flag)
-	powerText:SetPoint(db.Point, power, db.RelativePoint, db.X, db.Y)
-	powerText:SetJustifyH("CENTER")
-	powerText:SetTextColor(1,1,1)
-	powerText:Show()
-
-	local db = frame.db.PowerPercent
-	local fdb = frame.db.Fonts.PowerPercent
-	local powerPercText = power:CreateFontString(nil, "OVERLAY")
-	powerPercText:SetFont(Media:Fetch("font", fdb.Name), fdb.Size, fdb.Flag)
-	powerPercText:SetPoint(db.Point, power, db.RelativePoint, db.X, db.Y)
-	powerPercText:SetJustifyH("CENTER")
-	powerPercText:SetTextColor(1,1,1)
-	powerPercText:Show()
+	local powerText = module:SetTextElement(frame, "PowerText", health)
+	local powerPercent = module:SetTextElement(frame, "PowerPercent", health)
 
 	power.PostUpdate = function(self, unit_, cur_, min, max)
 		min = min or 0
