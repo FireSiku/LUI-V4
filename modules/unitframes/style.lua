@@ -187,22 +187,15 @@ function module:SetHealth(frame)
 		end
 	end
 
-	frame:RegisterEvent('UNIT_ABSORB_AMOUNT_CHANGED', frame.UpdateAllElements)
-
-	--Register those with oUF
-	frame.Health = health
-	frame.Health.bg = healthBG
-	frame:Tag(healthText, '[dead][offline][LUI:health] [LUI:Absorb]')
-	frame.Health.value = healthText
-
-	frame.HealthPrediction = {
-        absorbBar = absorbBar,
-        overAbsorb = overAbsorbBar,
-        frequentUpdates = true,
+	-- Health Prediction
+	local predictionGroup = {
+		absorbBar = absorbBar,
+		overAbsorb = overAbsorbBar,
+		frequentUpdates = true,
 	}
-
-	function frame.HealthPrediction:PostUpdate(unit, myIncomingHeal_, otherIncomingHeal_, absorb,
-		                                      healAbsorb_, hasOverAbsorb, hasOverHealAbsorb_)
+	function predictionGroup:PostUpdate(unit, myIncomingHeal_, otherIncomingHeal_, absorb,
+										healAbsorb_, hasOverAbsorb, hasOverHealAbsorb_)
+		-- By default, oUF overAbsorb is a texture, so we have to handle statusbar ourselves.
 		if hasOverAbsorb then
 			local health_, maxHealth = UnitHealth(unit), UnitHealthMax(unit)
 			local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0
@@ -213,6 +206,15 @@ function module:SetHealth(frame)
 		end
 	end
 
+	frame:RegisterEvent('UNIT_ABSORB_AMOUNT_CHANGED', frame.UpdateAllElements)
+
+	--Register those with oUF
+	frame.Health = health
+	frame.Health.bg = healthBG
+	frame:Tag(healthText, '[dead][offline][LUI:health] [LUI:Absorb]')
+	frame.Health.value = healthText
+
+	frame.HealthPrediction = predictionGroup
 end
 
 -- ####################################################################################################################
