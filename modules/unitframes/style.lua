@@ -91,10 +91,10 @@ function module.SetStyle(frame, unit, isSingle)
 			end
 		else
 			menu = "TARGET"
-	t		name = RAID_TARGET_ICON
-	t	end
-	t	if menu then
-	t		UnitPopup_ShowMenu(self, menu, unit, name, id)
+			name = RAID_TARGET_ICON
+		end
+		if menu then
+			UnitPopup_ShowMenu(self, menu, unit, name, id)
 		end
 	end, "MENU")
 
@@ -181,9 +181,9 @@ function module:SetHealth(frame)
 
 	health.PostUpdate = function(health_, unit_, min, max)
 		local percent = (max == 0 and 0) or 100 * (min/max)
-		healthPercText:SetFormattedText("%.1f%%", percent)
-		if min == max then healthPercText:Hide()
-		else healthPercText:Show()
+		healthPercent:SetFormattedText("%.1f%%", percent)
+		if min == max then healthPercent:Hide()
+		else healthPercent:Show()
 		end
 	end
 
@@ -207,9 +207,9 @@ function module:SetHealth(frame)
 			local health_, maxHealth = UnitHealth(unit), UnitHealthMax(unit)
 			local totalAbsorb = UnitGetTotalAbsorbs(unit) or 0
 			local overAbsorb = totalAbsorb - absorb
-			frame.overAbsorb:SetMinMaxValues(0, maxHealth)
-			frame.overAbsorb:SetValue(overAbsorb)
-			frame.overAbsorb:Show()
+			self.overAbsorb:SetMinMaxValues(0, maxHealth)
+			self.overAbsorb:SetValue(overAbsorb)
+			self.overAbsorb:Show()
 		end
 	end
 
@@ -238,14 +238,14 @@ function module:SetPower(frame)
 	powerBG.multiplier = 0.4
 
 	-- Power Text
-	local powerText = module:SetTextElement(frame, "PowerText", health)
-	local powerPercent = module:SetTextElement(frame, "PowerPercent", health)
+	local powerText = module:SetTextElement(frame, "PowerText", power)
+	local powerPercent = module:SetTextElement(frame, "PowerPercent", power)
 
 	power.PostUpdate = function(self, unit_, cur_, min, max)
 		min = min or 0
 		local percent = (max == 0) and 0 or 100 * (min/max)
 		powerText:SetFormattedText("%d", min)
-		powerPercText:SetFormattedText("%.1f%%", percent)
+		powerPercent:SetFormattedText("%.1f%%", percent)
 	end
 
 	frame.Power = power
