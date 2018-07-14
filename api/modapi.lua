@@ -59,7 +59,7 @@ function ModuleMixin:RGBA(colorName)
 		-- TODO: Check for all planned types (.t)
 		if db[colorName].t and db[colorName].t == "Class" then
 			local r, g, b = LUI:GetClassColor(LUI.playerClass)
-			return r, g, b, 1
+			return r, g, b, db[colorName].a or 1
 		else
 			local color = db[colorName]
 			return color.r, color.g, color.b, color.a or 1
