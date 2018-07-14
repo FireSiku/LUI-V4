@@ -557,23 +557,63 @@ end
 function OptionsMixin:NewUnitframeSize(name_, order, hasRelative, meta, width, disabled, hidden)
 	local t = ShadowOption()
 
+	-- Will enable relative Width/Height when relative size is enabled
+	local function isRelativeSliderHidden(info)
+		local db = self:GetDB(info[#info-1])
+		local optName = info[#info]
+		local opt
+		if optName == "RelativeWidth" then
+			opt = "IsWidthRelative"
+		elseif optName == "RelativeHeight" then
+			opt = "IsHeightRelative"
+		end
+
+		return not db[opt]
+	end
+	-- Will disabled absolute Width/Height when relative size is enabled
+	local function isAbsoluteSizeDisabled(info)
+		local db = self:GetDB(info[#info-1])
+		local optName = info[#info]
+		local opt
+		if optName == "Width" then
+			opt = "IsWidthRelative"
+		elseif optName == "RelativeHeight" then
+			opt = "Relative"
+		end
+
+		return db[opt]
+	end
+
+	local function adjustSizeRelatively(info, value)
+		local db = self:GetDB(info[#info-1])
+		local healthDB = self:GetDB("HealthBar")
+		local optName = info[#info]
+		local opt
+		if optName == "RelativeWidth" then
+			opt = "Width"
+		elseif optName == "RelativeHeight" then
+			opt = "Height"
+		end
+		--LUI:PrintTable(healthDB)
+		db[opt] = healthDB[opt] * value
+	end
+
 	OptionHook(t, function(info, parent)
-		parent["Width"] = self:NewInputNumber("Width", "Width Description goes here", order+0.1, meta,
-		                                                                              width, disabled, hidden)
-		parent["Height"] = self:NewInputNumber("Height", nil, order+0.2, meta, width, disabled, hidden)
-		parent[info[#info].."Break"] = self:NewLineBreak(order+0.3, hidden)
-		parent["IsWidthRelative"] = self:NewToggle("Relative", "Make Relative to parent frame",
-		                                            order+0.3, meta,
-											        width or "normal",
-											        not hasRelative or disabled,
-												    not hasRelative or hidden
-												)
-		parent["IsHeightRelative"] = self:NewToggle("Relative", "Make Relative to parent frame",
-		                                            order+0.4, meta,
-													width or "normal",
-													not hasRelative or disabled,
-													not hasRelative or hidden
-												)
+		parent["Width"] = self:NewInputNumber("Width", nil, order+0.1, meta, width,isAbsoluteSizeDisabled or disabled, hidden)
+		parent["Height"] = self:NewInputNumber("Height", nil, order+0.2, meta, width, isAbsoluteSizeDisabled or disabled, hidden)
+		parent[info[#info].."Break1"] = self:NewLineBreak(order+0.3, hidden)
+		if hasRelative then
+			parent["IsWidthRelative"] = self:NewToggle("Use Relative Width", "Make width relative to Health bar.",
+															order+0.3, meta, "normal", disabled, hidden)
+			parent["RelativeWidth"] = self:NewSlider("Width", nil, order+0.4, 0.25, 2, 0.05, true, adjustSizeRelatively,
+													    width, disabled, isRelativeSliderHidden)
+			parent[info[#info].."Break2"] = self:NewLineBreak(order+0.5, hidden)
+			parent["IsHeightRelative"] = self:NewToggle("Use Relative Height", "Make Relative to Health bar.",
+															order+0.6, meta, "normal", disabled, hidden)
+			parent["RelativeHeight"] = self:NewSlider("Width", nil, order+0.7, 0.25, 2, 0.05, true, adjustSizeRelatively,
+			                                            width, disabled, isRelativeSliderHidden)
+			parent[info[#info].."Break3"] = self:NewLineBreak(order+0.8, hidden)
+		end
 	end)
 	return t
 end
