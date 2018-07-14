@@ -546,8 +546,8 @@ function OptionsMixin:NewPosition(name, order, isXY, meta, width, disabled, hidd
 		local YTable = (isXY) and "Y" or info[#info].."Y"
 		local XDesc = format(L["API_XValue_Desc"], name)..L["API_XValue_Note"]
 		local YDesc = format(L["API_YValue_Desc"], name)..L["API_YValue_Note"]
-		parent[XTable] = self:NewInputNumber(L["API_XValue_Name"], XDesc, order+0.1, meta, width, disabled, hidden)
-		parent[YTable] = self:NewInputNumber(L["API_YValue_Name"], YDesc, order+0.2, meta, width, disabled, hidden)
+		parent[XTable] = self:NewSlider(L["API_XValue_Name"], XDesc, order+0.1, -1000, 1000, 1, false, meta, width, disabled, hidden)
+		parent[YTable] = self:NewSlider(L["API_YValue_Name"], YDesc, order+0.2, -1000, 1000, 1, false, meta, width, disabled, hidden)
 		parent[info[#info].."Break"] = self:NewLineBreak(order+0.3, hidden)
 		t = nil
 	end)
