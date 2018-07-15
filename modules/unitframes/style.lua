@@ -23,7 +23,7 @@ function module.SetStyle(frame, unit, isSingle)
 	frame.db = module:GetUnitDB(unit)
 
 	if(isSingle) then
-		frame:SetSize(frame.db.Width, frame.db.Height)
+		frame:SetSize(frame.db.HealthBar.Width, frame.db.HealthBar.Height)
 	end
 
 	-- // Health Bar
@@ -45,7 +45,7 @@ function module.SetStyle(frame, unit, isSingle)
 	backdropFrame:SetBackdropColor(frame:RGB("Background"))
 	backdropFrame:SetBackdropBorderColor(frame:RGB("Border"))
 	backdropFrame:SetPoint("TOPLEFT", frame.Health, "TOPLEFT", -4, 4)
-	backdropFrame:SetPoint("BOTTOMRIGHT", frame.Power, "BOTTOMRIGHT", 4, -4)
+	backdropFrame:SetPoint("BOTTOMRIGHT", frame.Power, "BOTTOMRIGHT", 4, -5)
 
 	-- creating a frame as anchor for icons, other texts etc
 	frame.Overlay = CreateFrame("Frame", nil, frame)
@@ -222,7 +222,7 @@ end
 -- ####################################################################################################################
 
 function module:SetPower(frame)
-	local power = CreateFrame("StatusBar", nil, frame)
+	local power = CreateFrame("StatusBar", nil, frame.Health)
 
 	local db = frame.db.PowerBar
 	power:SetSize(db.Width, db.Height)

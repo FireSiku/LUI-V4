@@ -150,8 +150,6 @@ module.defaults = {
         Units = {
             ["**"] = {
                 Enable = true,
-                Height = 40,
-                Width = 250,
                 X = 0,
                 Y = 0,
                 Point = "CENTER",
@@ -198,10 +196,8 @@ module.defaults = {
                     Alpha = 1,
                 },
                 HealthBar = {
-                    Height = 30,
-                    Width = 250,
-                    X = 0,
-                    Y = 0,
+                    Height = 24,
+                    Width = 130,
                     Texture = "LUI_Gradient",
                     TextureBG = "LUI_Gradient",
                     BGAlpha = 1,
@@ -350,8 +346,6 @@ module.defaults = {
 -- ####################################################################################################################
             player = {
                 Enable = true,
-                Height = 40,
-                Width = 250,
                 X = -200,
                 Y = -200,
                 Point = "CENTER",
@@ -365,6 +359,10 @@ module.defaults = {
                 },
                 CombatIcon     = { Enable = false,    Size = 27,    X = -15,    Y = -30,    Point = "BOTTOMLEFT",  },
                 RestingIcon    = { Enable = false,    Size = 27,    X = -12,    Y = 13,     Point = "TOPLEFT",     },
+                HealthBar = {
+                    Height = 30,
+                    Width = 250,
+                },
                 AltManaBar = {
                     Enable = true,
                     OverPower = true,
@@ -439,10 +437,12 @@ module.defaults = {
 -- ##### Settings: Target #############################################################################################
 -- ####################################################################################################################
             target = {
-                Height = 40,
-                Width = 250,
                 X = 200,
                 Y = -200,
+                HealthBar = {
+                    Height = 30,
+                    Width = 250,
+                },
                 NameText = {
                     X = 5,
                     Point = "BOTTOMLEFT",
@@ -474,18 +474,20 @@ module.defaults = {
 
             targettarget = {
                 Enable = true,
-                Height = 24,
-                Width = 200,
                 X = 435,
                 Y = -250,
+                HealthBar = {
+                    Width = 200,
+                },
             },
             
             targettargettarget = {
                 Enable = false,
-                Height = 24,
-                Width = 200,
                 X = 465,
                 Y = -285,
+                HealthBar = {
+                    Width = 200,
+                },
             },
 
 -- ####################################################################################################################
@@ -494,18 +496,20 @@ module.defaults = {
             
             focus = {
                 Enable = true,
-                Height = 24,
-                Width = 200,
                 X = -435,
                 Y = -250,
+                HealthBar = {
+                    Width = 200,
+                },
             },
 
             focustarget = {
                 Enable = false,
-                Height = 24,
-                Width = 200,
                 X = -465,
                 Y = -285,
+                HealthBar = {
+                    Width = 200,
+                },
             },
 
 -- ####################################################################################################################
@@ -514,16 +518,12 @@ module.defaults = {
 
             pet = {
                 Enable = true,
-                Height = 43,
-                Width = 130,
                 X = 0,
                 Y = -200,
             },
 
             pettarget = {
                 Enable = true,
-                Height = 24,
-                Width = 130,
                 X = 0,
                 Y = -160,
             },
@@ -535,23 +535,22 @@ module.defaults = {
             raid = {
                 Enable = true,
                 UseBlizzard = false,
-                Height = 33,
-                Width = 77.5,
-                X = -28.5,
-                Y = 40.5,
+                X = -28,
+                Y = 41,
                 Point = "BOTTOMRIGHT",
                 Padding = 4,
                 GroupPadding = 4,
+                HealthBar = {
+                    Height = 33,
+                    Width = 78,
+                },
             },
 
             party = {
                 Enable = true,
                 UseBlizzard = false,
-                Height = 43,
-                Width = 170,
                 X = 150,
                 Y = 100,
-                Scale = 1,
                 Point = "LEFT",
                 GrowDirection = "BOTTOM",
                 Padding = 50,
@@ -559,20 +558,20 @@ module.defaults = {
                 ShowInRaid = false,
                 ShowInRealParty = false,
                 RangeFade = true,
+                HealthBar = {
+                    Height = 30,
+                    Width = 200,
+                },
             },
 
             partypet = {
                 Enable = true,
-                Height = 24,
-                Width = 130,
                 X = -15,
                 Y = -10,
             },
 
             partytarget = {
                 Enable = true,
-                Height = 24,
-                Width = 130,
                 X = 8,
                 Y = -8,
             },
@@ -582,11 +581,8 @@ module.defaults = {
 -- ####################################################################################################################
             maintank = {
                 Enable = false,
-                Height = 24,
-                Width = 130,
                 X = -10,
                 Y = 350,
-                Scale = 1,
                 Point = "BOTTOMRIGHT",
                 GrowDirection = "BOTTOM",
                 Padding = 6,
@@ -594,16 +590,12 @@ module.defaults = {
 
             maintanktarget = {
                 Enable = true,
-                Height = 24,
-                Width = 130,
                 X = -8,
                 Y = 0,
             },
 
             maintanktargettarget = {
                 Enable = false,
-                Height = 24,
-                Width = 130,
                 X = -146,
                 Y = 0,
             },
@@ -615,8 +607,6 @@ module.defaults = {
             boss = {
                 Enable = true,
                 UseBlizzard = false,
-                Height = 24,
-                Width = 130,
                 X = -25,
                 Y = -250,
                 Point = "TOPRIGHT",
@@ -626,8 +616,6 @@ module.defaults = {
 
             bosstarget = {
                 Enable = false,
-                Height = 24,
-                Width = 130,
                 X = -8,
                 Y = -8,
             },
@@ -638,8 +626,6 @@ module.defaults = {
             arena = {
                 Enable = true,
                 UseBlizzard = false,
-                Height = 43,
-                Width = 170,
                 X = -150,
                 Y = 100,
                 GrowDirection = "BOTTOM",
@@ -648,16 +634,12 @@ module.defaults = {
 
             arenapet = {
                 Enable = true,
-                Height = 24,
-                Width = 130,
                 X = 15,
                 Y = -10,
             },
 
             arenatarget = {
                 Enable = true,
-                Height = 24,
-                Width = 130,
                 X = -8,
                 Y = -8,
             },

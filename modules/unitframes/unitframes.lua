@@ -138,16 +138,16 @@ function module:NewUnitOptionGroup(unit, order)
 	local isPlayer = (unit == "player") or nil
 
 	local unitOptions = opt:NewGroup(unit, order, "tab", nil, {
-		-- General = opt:NewGroup("General", 1, "tab", nil, {
-		-- 	sillyDesc = opt:NewDesc("General Settings will go here", 1),
-		-- }),
+		General = opt:NewRootGroup("General", 1, "tab", nil, {
+			PosHeader = opt:NewHeader("Position", 1),
+			Position = opt:NewPosition("Position", 2, true),
+			Point = opt:NewSelect(L["Anchor"], nil, 3, LUI.Points),
+			Scale = opt:NewScale("Scale", nil, 4),
+		}),
 
 		Bars = opt:NewGroup("Bars", 2, "tab", nil, {
 			HealthBar = opt:NewGroup("Health", 1, "tab", nil, {
 				Size = opt:NewUnitframeSize(nil, 1),
-				Position = opt:NewPosition("Position", 2, true),
-				Point = opt:NewSelect(L["Anchor"], nil, 3, LUI.Points),
-				Scale = opt:NewScale("Scale", nil, 4),
 				Texture = opt:NewTexStatusBar("Texture", nil, 5),
 				TextureBG = opt:NewTexStatusBar("Background Texture", nil, 6),
 				-- Options unsure about currently:
@@ -310,9 +310,9 @@ end
 -- ##### Framework Events #############################################################################################
 -- ####################################################################################################################
 
-local function SpawnUnit(self, unit, ...)
-	self:SetActiveStyle("LUI4")
-	local spawn = self:Spawn(unit)
+local function SpawnUnit(unit, ...)
+	oUF:SetActiveStyle("LUI4")
+	local spawn = oUF:Spawn(unit)
 	spawn:SetPoint(...)
 	spawn:RegisterForClicks("AnyUp")
     spawn:SetAttribute("*type2", "menu")
@@ -338,7 +338,7 @@ function module:OnEnable()
 	for i = 1, #unitSpawns do
 		local unit = unitSpawns[i]
 		local db = module:GetUnitDB(unit)
-		local spawn_ = SpawnUnit(oUF, unit, db.Point, db.X, db.Y)
+		local spawn_ = SpawnUnit(unit, db.Point, db.X, db.Y)
 	end
 end
 
