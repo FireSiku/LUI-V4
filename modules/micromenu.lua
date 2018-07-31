@@ -192,7 +192,7 @@ local microDefinitions = {
 	},
 
 	{ -- [9]
-		name = "Quest",
+		name = "Quests",
 		title = L["MicroQuest_Name"],
 		any = L["MicroQuest_Any"],
 		OnClick = function(self, btn_)
