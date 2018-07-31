@@ -181,7 +181,7 @@ local microDefinitions = {
 			else
 				--Those panels may not be loaded before we call them, so deal with that.
 				if IsInGuild() then
-					GuildFrame_LoadUI()
+					ToggleGuildFrame()
 					module:TogglePanel(GuildFrame)
 				else
 					LookingForGuildFrame_LoadUI()
