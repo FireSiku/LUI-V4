@@ -342,7 +342,7 @@ function element.OnEnter(frame_)
 			member.zone:SetWidth(zoneColumnWidth)
 			member.note:SetWidth(noteColumnWidth)
 			member.rank:SetWidth(rankColumnWidth)
-			element:UpdateGuildAnchorPoints(i)
+			element:UpdateGuildAnchorPoints(j)
 
 			-- Show/Hide the needed members.
 			if j < offset then member:Hide()                          -- Do not show if below the offset
