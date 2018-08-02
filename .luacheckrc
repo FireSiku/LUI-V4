@@ -1,4 +1,4 @@
-max_line_length = 120
+max_line_length = 140
 
 exclude_files = {
 	"libs",
