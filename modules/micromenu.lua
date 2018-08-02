@@ -93,24 +93,24 @@ local microDefinitions = {
 		right = L["MicroSettings_Right"],
 		OnClick = function(self, btn)
 			if btn == "RightButton" then
-				--WoW Option Panel
-				module:TogglePanel(GameMenuFrame)
-			else
 				--LUI Option Panel
 				LUI:Open()
+			else
+				--WoW Option Panel
+				module:TogglePanel(GameMenuFrame)
 			end
 		end,
 		--TODO: Lets not use hungry OnUpdate handlers for the Clicker's alpha.
 		--      Make a function to easily hook frames OnShow/OnHide
 		--Due to LUI Options having no name, we cant use a simple hook, to remove when we find elegant fix.
-		OnUpdate = function(self)
-			if self.Hover then return end
-			if GameMenuFrame:IsShown() or LibStub("AceConfigDialog-3.0").OpenFrames.LUI then
-				self:SetAlpha(1)
-			else
-				self:SetAlpha(0)
-			end
-		end
+		-- OnUpdate = function(self)
+		-- 	if self.Hover then return end
+		-- 	if GameMenuFrame:IsShown() or LibStub("AceConfigDialog-3.0").OpenFrames.LUI then
+		-- 		self:SetAlpha(1)
+		-- 	else
+		-- 		self:SetAlpha(0)
+		-- 	end
+		-- end
 	},
 
 	{ -- [3]
