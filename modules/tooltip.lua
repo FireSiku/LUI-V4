@@ -156,7 +156,7 @@ local function GetTooltipUnit(frame)
 	local _, unit = frame:GetUnit()
 	-- If GetUnit fails, look for a mouseover target.
 	if not unit and UnitExists("mouseover") then
-		unit = "mouseover"
+		return "mouseover"
 	end
 	return unit
 end
@@ -351,10 +351,7 @@ function module:OnGameTooltipSetUnit(frame)
 	end
 
 	local unit = GetTooltipUnit(frame)
-	-- If that fails, report it so we can investigate.
-	if not unit then
-		return
-	end
+	if not unit then return frame:Hide() end
 
 	-- Hide tooltip on unitframes if that option is enabled
 	if frame:GetOwner() ~= UIParent and db.hideUF then
@@ -450,6 +447,7 @@ end
 
 module.enableButton = true
 
+-- luacheck: push ignore
 function module:LoadOptions()
 
 	local function disableIfTooltipsHidden(info_)
@@ -461,10 +459,8 @@ function module:LoadOptions()
 		Header = module:NewHeader(L["Tooltip_Name"], 1),
 		General = module:NewRootGroup(L["Settings"], 2, nil, nil, {
 			hideCombat = module:NewToggle(L["Tooltip_HideCombat_Name"], L["Tooltip_HideCombat_Desc"], 1),
-			hideCombatSkills = module:NewToggle(L["Tooltip_HideCombatSkills_Name"],
-			                                    L["Tooltip_HideCombatSkills_Desc"], 2, nil, nil, disableIfTooltipsHidden),
-			hideCombatUnit = module:NewToggle(L["Tooltip_HideCombatUnit_Name"],
-			                                  L["Tooltip_HideCombatUnit_Desc"], 2, nil, nil, disableIfTooltipsHidden),
+			hideCombatSkills = module:NewToggle(L["Tooltip_HideCombatSkills_Name"], L["Tooltip_HideCombatSkills_Desc"], 2, nil, nil, disableIfTooltipsHidden),
+			hideCombatUnit = module:NewToggle(L["Tooltip_HideCombatUnit_Name"], L["Tooltip_HideCombatUnit_Desc"], 2, nil, nil, disableIfTooltipsHidden),
 			hideUF = module:NewToggle(L["Tooltip_HideUF_Name"], L["Tooltip_HideUF_Desc"], 3),
 			hidePVP = module:NewToggle(L["Tooltip_HidePVP_Name"], L["Tooltip_HidePVP_Desc"], 4),
 			showSex = module:NewToggle(L["Tooltip_ShowSex_Name"], L["Tooltip_ShowSex_Desc"], 5),
@@ -477,15 +473,12 @@ function module:LoadOptions()
 		}),
 		Textures = module:NewGroup(L["Textures"], 3, nil, nil, {
 			Background = module:NewHeader(L["Background"], 1),
-			backgroundTex = module:NewTexBackground(L["Tooltip_BackgroundTex_Name"],
-			                                        L["BackgroundDesc"], 2, "UpdateTooltipBackdrop", "double"),
+			backgroundTex = module:NewTexBackground(L["Tooltip_BackgroundTex_Name"], L["BackgroundDesc"], 2, "UpdateTooltipBackdrop", "double"),
 			Health = module:NewHeader(L["Health Bar"], 3),
-			healthBar = module:NewTexStatusBar(L["Tooltip_HealthBar_Name"],
-			                                   L["Tooltip_HealthBar_Desc"], 4, "SetStatusHealthBar", "double"),
+			healthBar = module:NewTexStatusBar(L["Tooltip_HealthBar_Name"], L["Tooltip_HealthBar_Desc"], 4, "SetStatusHealthBar", "double"),
 			Border = module:NewHeader(L["Border"], 5),
 			borderTex = module:NewTexBorder(L["Tooltip_BorderTex_Name"], L["BorderDesc"], 6, "UpdateTooltipBackdrop", "double"),
-			borderSize = module:NewSlider(L["Tooltip_BorderSize_Name"],
-			                              L["Tooltip_BorderSize_Desc"], 7, 1, 30, 1, nil, "UpdateTooltipBackdrop", "double"),
+			borderSize = module:NewSlider(L["Tooltip_BorderSize_Name"], L["Tooltip_BorderSize_Desc"], 7, 1, 30, 1, nil, "UpdateTooltipBackdrop", "double"),
 		}),
 		Colors = module:NewGroup(L["Colors"], 3, nil, nil, {
 			Guild = module:NewColor(GUILD, 1),
@@ -499,6 +492,7 @@ function module:LoadOptions()
 	}
 	return options
 end
+-- luacheck: pop
 
 -- ####################################################################################################################
 -- ##### Framework Events #############################################################################################
