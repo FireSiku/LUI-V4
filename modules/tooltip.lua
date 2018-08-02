@@ -124,6 +124,8 @@ module.defaults = {
 -- ##### Revert Functions #############################################################################################
 -- ####################################################################################################################
 
+-- luacheck: globals GameTooltipStatusBar
+
 function module:RevertTooltipBackdrop()
 	for i = 1, #TOOLTIPS_LIST do
 		local tooltipName = TOOLTIPS_LIST[i]
@@ -259,6 +261,7 @@ end
 function module:SetBorderColor(frame)
 	local unit = GetTooltipUnit(frame)
 	local health = GameTooltipStatusBar
+	local itemLink = (not unit and frame.GetItem) and select(2, frame:GetItem())
 
 	frame:SetBackdropColor(module:RGB("Background"))
 	frame:SetBackdropBorderColor(module:RGB("Border"))
@@ -278,8 +281,7 @@ function module:SetBorderColor(frame)
 		health:SetStatusBarColor(r, g, b)
 
 	-- Tooltip is an item
-	elseif not unit and frame.GetItem and frame:GetItem() then
-		local _, itemLink = frame:GetItem()
+	elseif itemLink then
 		local _, _, quality = GetItemInfo(itemLink)
 		-- Only need to change border color for Uncommon and above.
 		if quality and quality >= 2 then
@@ -327,20 +329,22 @@ end
 function module:OnTooltipShow(frame)
 	local db = module:GetDB()
 	if db.hideCombat and InCombatLockdown() then
-		frame:Hide()
-		return
+		return frame:Hide()
 	end
 
-	--If a frame as a smaller scale than normal for any reasons, make sure that's respected.
+	--If a frame has a smaller scale than normal for any reasons, make sure that's respected.
 	frame:SetScale(initialScale[frame:GetName()] * db.Scale)
 	module:SetBorderColor(frame)
 end
+module:SecureHook("GameTooltip_UpdateStyle", function(frame)
+	module:SetBorderColor(frame)
+end)
 
+-- luacheck: globals GameTooltipTextLeft1 GameTooltipTextLeft2
 function module:OnGameTooltipSetUnit(frame)
 	local db = module:GetDB()
 	if db.hideCombatUnit and InCombatLockdown() then
-		frame:Hide()
-		return
+		return frame:Hide()
 	end
 
 	local unit = GetTooltipUnit(frame)
@@ -351,8 +355,7 @@ function module:OnGameTooltipSetUnit(frame)
 
 	-- Hide tooltip on unitframes if that option is enabled
 	if frame:GetOwner() ~= UIParent and db.hideUF then
-		frame:Hide()
-		return
+		return frame:Hide()
 	end
 
 	local sex = UnitSex(unit)
