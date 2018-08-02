@@ -161,16 +161,15 @@ local function GetTooltipUnit(frame)
 	return unit
 end
 
--- Debug function, this will call UpdateTooltipBackdrop, optionally add a tooltip before doing so.
-function LUI:ForceTooltipUpdate(ttip)
-	if ttip then
-		tinsert(TOOLTIPS_LIST, ttip)
-	end
-	module:UpdateTooltipBackdrop()
-end
-
 function module:UpdateTooltipBackdrop()
 	local db = module:GetDB("Textures")
+	module.tooltipBackdrop = {
+		bgFile = Media:Fetch("background", db.backgroundTex),
+		edgeFile = Media:Fetch("border", db.borderTex),
+		edgeSize = db.borderSize, tile = false,
+		insets = {left = 0, right = 0, top = 0, bottom = 0, }
+	}
+
 	for i = 1, #TOOLTIPS_LIST do
 		local tooltipName = TOOLTIPS_LIST[i]
 		local tooltip = _G[tooltipName]
@@ -182,12 +181,7 @@ function module:UpdateTooltipBackdrop()
 				oldDefault[tooltipName] = tooltip:GetBackdrop()
 				initialScale[tooltipName] = tooltip:GetScale()
 			end
-			tooltip:SetBackdrop({
-				bgFile = Media:Fetch("background", db.backgroundTex),
-				edgeFile = Media:Fetch("border", db.borderTex),
-				edgeSize = db.borderSize, tile = false,
-				insets = {left = 0, right = 0, top = 0, bottom = 0, }
-			})
+			tooltip:SetBackdrop(module.tooltipBackdrop)
 			if not module:IsHooked(tooltip, "OnShow") then
 				module:HookScript(tooltip, "OnShow", "OnTooltipShow")
 			end
@@ -195,6 +189,14 @@ function module:UpdateTooltipBackdrop()
 			--module:Mod(tooltipName.." Not Found")
 		end
 	end
+end
+
+-- Debug function, this will call UpdateTooltipBackdrop, optionally add a tooltip before doing so.
+function LUI:ForceTooltipUpdate(ttip)
+	if ttip then
+		tinsert(TOOLTIPS_LIST, ttip)
+	end
+	module:UpdateTooltipBackdrop()
 end
 
 function module:GetUnitColor(unit)
@@ -334,10 +336,11 @@ function module:OnTooltipShow(frame)
 
 	--If a frame has a smaller scale than normal for any reasons, make sure that's respected.
 	frame:SetScale(initialScale[frame:GetName()] * db.Scale)
+	frame:SetBackdrop(module.tooltipBackdrop)
 	module:SetBorderColor(frame)
 end
 module:SecureHook("GameTooltip_UpdateStyle", function(frame)
-	module:SetBorderColor(frame)
+	module:OnTooltipShow(frame)
 end)
 
 -- luacheck: globals GameTooltipTextLeft1 GameTooltipTextLeft2
