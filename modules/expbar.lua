@@ -10,12 +10,10 @@ local L = LUI.L
 
 -- Localize Systems
 local C_Reputation = C_Reputation
-local C_ArtifactUI = C_ArtifactUI
 -- Localize Global Functions
 local GetMaxPlayerHonorLevel = GetMaxPlayerHonorLevel
 local GetWatchedFactionInfo = GetWatchedFactionInfo
 local IsWatchingHonorAsXP = IsWatchingHonorAsXP
-local HasArtifactEquipped = HasArtifactEquipped
 local IsXPUserDisabled = IsXPUserDisabled
 local UnitHonorLevel = UnitHonorLevel
 local UnitHonorMax = UnitHonorMax
@@ -116,11 +114,11 @@ function module:UpdateBarMode()
 
 	-- Bar2
 	-- Artifact Power if an artifact is equipped, Rep if tracked under level cap.
-	if HasArtifactEquipped() then
-		-- Artifact Mode
-		module.ExpBar2.mode = "Artifact"
-		module:UpdateAPBar(module.ExpBar2)
-	elseif level < MAX_LEVEL and GetWatchedFactionInfo() then
+	-- if HasArtifactEquipped() then
+	-- 	-- Artifact Mode
+	-- 	module.ExpBar2.mode = "Artifact"
+	-- 	module:UpdateAPBar(module.ExpBar2)
+	if level < MAX_LEVEL and GetWatchedFactionInfo() then
 		module.ExpBar2.mode = "Reputation"
 		module:UpdateRepBar(module.ExpBar2)
 	else
@@ -238,24 +236,24 @@ function module:GetParagonValues(factionID)
 	end
 end
 
-function module:UpdateAPBar(bar)
-	local _, _, _, _, totalXP, pointsSpent, _, _, _, _, _, _, tier = C_ArtifactUI.GetEquippedArtifactInfo()
-    local numPoints, xp, xpNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(pointsSpent, totalXP, tier)
+-- function module:UpdateAPBar(bar)
+-- 	local _, _, _, _, totalXP, pointsSpent, _, _, _, _, _, _, tier = C_ArtifactUI.GetEquippedArtifactInfo()
+--     local numPoints, xp, xpNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(pointsSpent, totalXP, tier)
 
-	local percentBar = xp * 100 / xpNextPoint
-	bar:SetMinMaxValues(0, xpNextPoint)
-	bar:SetValue(xp)
-	local db = module:GetDB()
-	if db.ShowText then
-		if numPoints > 0 then
-			bar.text:SetFormattedText("%."..db.Precision.."f%%"..L["ExpBar_Format_AP_Level"] , percentBar, numPoints)
-		else
-			bar.text:SetFormattedText("%."..db.Precision.."f%% "..L["ExpBar_Format_AP"] , percentBar)
-		end
-	else
-		bar.text:SetText("")
-	end
-end
+-- 	local percentBar = xp * 100 / xpNextPoint
+-- 	bar:SetMinMaxValues(0, xpNextPoint)
+-- 	bar:SetValue(xp)
+-- 	local db = module:GetDB()
+-- 	if db.ShowText then
+-- 		if numPoints > 0 then
+-- 			bar.text:SetFormattedText("%."..db.Precision.."f%%"..L["ExpBar_Format_AP_Level"] , percentBar, numPoints)
+-- 		else
+-- 			bar.text:SetFormattedText("%."..db.Precision.."f%% "..L["ExpBar_Format_AP"] , percentBar)
+-- 		end
+-- 	else
+-- 		bar.text:SetText("")
+-- 	end
+-- end
 
 function module:UpdateHonorBar(bar)
 	local honorCurrent = UnitHonor("player")
