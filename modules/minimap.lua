@@ -213,12 +213,14 @@ function module:SetMinimap()
 
 	minimapCoord:SetScript("OnUpdate", function(self)
 		local uiMap = C_Map.GetBestMapForUnit("player")
-		local position = C_Map.GetPlayerMapPosition(uiMap, "player")
-		-- Inside dungeons, the call can fail and x and y will be nil
-		if position then
-			local x, y = position:GetXY()
-			if x and y then
-				return minimapCoordText:SetFormattedText(COORD_FORMAT_LIST[db.General.coordPrecision], x * 100, y * 100)
+		if uiMap then
+			local position = C_Map.GetPlayerMapPosition(uiMap, "player")
+			-- Inside dungeons, the call can fail and x and y will be nil
+			if position then
+				local x, y = position:GetXY()
+				if x and y then
+					return minimapCoordText:SetFormattedText(COORD_FORMAT_LIST[db.General.coordPrecision], x * 100, y * 100)
+				end
 			end
 		end
 		-- Fallback if values aren't found.
