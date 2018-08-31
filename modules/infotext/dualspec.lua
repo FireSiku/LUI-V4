@@ -27,7 +27,6 @@ local IsShiftKeyDown = IsShiftKeyDown
 local GetTalentInfo = GetTalentInfo
 local ShowUIPanel = ShowUIPanel
 local HideUIPanel = HideUIPanel
-local CacheSize = getn
 
 -- constants
 local LOOT_SPECIALIZATION_DEFAULT = strsplit("(", LOOT_SPECIALIZATION_DEFAULT):trim()
@@ -141,7 +140,7 @@ function element:UpdateSpec()
     inactiveCache = {} -- reset inactive cache for rebuild
     for i = 1, MAX_SPECS do -- loop through all specs
         if i ~= currentSpecID then -- not the active spec, put in inactive
-            inactiveCache[ CacheSize( inactiveCache ) + 1 ] = i -- add to inactive cache
+            inactiveCache[ #inactiveCache + 1 ] = i -- add to inactive cache
         end
     end
 
