@@ -311,6 +311,12 @@ L["InfoDualspec_NoSpec"] = "No Specialization"
 L["InfoDualspec_Hint_Any"] = "Click to switch talent group."
 L["InfoDualspec_Hint_Right"] = "Right-Click to open Talent Frame."
 L["InfoDualspec_Hint_Shift"] = "Shift-Click to open Glyph Frame."
+-- Dualspec hints added by inSpired, open-ended to append spec names
+L["InfoDualspec_Hint_Left-2"] = "Left-Click to switch to %s"
+L["InfoDualspec_Hint_Right-2"] = "Right-Click to switch to %s"
+L["InfoDualspec_Hint_Middle-2"] = "Middle-Click to switch to %s"
+L["InfoDualspec_Hint_Shift-2"] = "Shift-Click to toggle Talent Frame"
+----------------
 L["InfoDualspec_LootSpec_Name"] = "Show Loot Specialization"
 L["InfoDualspec_LootSpec_Desc"] = "Display your current loot specialization in the infotext if you are using a specific one.\n\nNote: Your loot specialization will be displayed in the tooltip regardless of this option."
 L["InfoCurrency_Hint_Any"] = "Click to open Currency frame."
