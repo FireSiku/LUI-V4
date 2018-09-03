@@ -198,17 +198,22 @@ function element.OnTooltipShow(GameTooltip)
     local dualspecHint -- text string with hint to be displayed
 
     for i = 1, MAX_SPECS do -- loop through all specs
-        local specNum = ((( i == activeSpec ) and colorY  or "" ) .. "Spec " .. i .. ":" .. colorW ) -- numerate specs, coloring active
-        local specName = ((( i == activeSpec ) and colorY  or "" ) .. ( specCache[ i ].name or "None" ) .. colorW ) -- list spec names, coloring active
+        local specNum = ((( i == activeSpec ) and colorY  or "" ) .. "Spec " .. i .. ":" ) -- numerate specs, coloring active
+        local specName = ((( i == activeSpec ) and colorY  or "" ) .. ( specCache[ i ].name or "None" )) -- list spec names, coloring active
         GameTooltip:AddDoubleLine( specNum, specName, 1,1,1, 1,1,1)
     end
 
+    -- loot spec text from original code
+    GameTooltip:AddLine(" ")
+	local lootSpec = select(2, GetSpecializationInfoByID(GetLootSpecialization())) or LOOT_SPECIALIZATION_DEFAULT
+	GameTooltip:AddDoubleLine(format("%s:", SELECT_LOOT_SPECIALIZATION), lootSpec, 1,1,1, 1,1,1)
+
     if MAX_SPECS >= 2 then -- has 2 specs ( demon hunter )
-        dualspecHint = L[ "InfoDualspec_Hint_Left-2" ] .. ( specCache[ inactiveCache[ 1 ]].name or "Error" ) .. ".\n"
+        dualspecHint = format( L[ "InfoDualspec_Hint_Left-2" ], specCache[ inactiveCache[ 1 ]].name ) .. ".\n"
         if MAX_SPECS >= 3 then -- has 3 specs ( most )
-            dualspecHint = dualspecHint .. L[ "InfoDualspec_Hint_Right-2" ] .. ( specCache[ inactiveCache[ 2 ]].name or "Error" ) .. ".\n"
+            dualspecHint = dualspecHint .. format( L[ "InfoDualspec_Hint_Right-2" ], specCache[ inactiveCache[ 2 ]].name ) .. ".\n"
             if MAX_SPECS >= 4 then -- has 4 specs ( druid )
-                dualspecHint = dualspecHint .. L[ "InfoDualspec_Hint_Middle-2" ] .. ( specCache[ inactiveCache[ 3 ]].name or "Error" ) .. ".\n"
+                dualspecHint = dualspecHint .. format( L[ "InfoDualspec_Hint_Middle-2" ], specCache[ inactiveCache[ 3 ]].name ) .. ".\n"
             end
         end
     end
