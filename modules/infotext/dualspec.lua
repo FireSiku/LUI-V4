@@ -170,29 +170,6 @@ end
 function element.OnTooltipShow(GameTooltip)
 	element:TooltipHeader(LEVEL_UP_DUALSPEC)
 
-    --[[ original code
-    local activeSpecGroup = GetActiveSpecGroup()
-
-	for i = 1, GetNumSpecGroups() do
-		local currentSpec = GetSpecialization(nil, nil, i)
-		local talentSpec
-		if i == activeSpecGroup then
-			talentSpec = (i == 1) and TALENT_SPEC_PRIMARY_ACTIVE or TALENT_SPEC_SECONDARY_ACTIVE
-		else
-			talentSpec = (i == 1) and TALENT_SPEC_PRIMARY or TALENT_SPEC_SECONDARY
-		end
-		local specName = (currentSpec) and specCache[currentSpec].name or NONE
-		local talentString = element:GetTalentString(i)
-		GameTooltip:AddDoubleLine(format("%s:", talentSpec), format("%s (%s)", specName, talentString), 1,1,1, 1,1,1)
-	end
-
-    GameTooltip:AddLine(" ")
-	local lootSpec = select(2, GetSpecializationInfoByID(GetLootSpecialization())) or LOOT_SPECIALIZATION_DEFAULT
-	GameTooltip:AddDoubleLine(format("%s:", SELECT_LOOT_SPECIALIZATION), lootSpec, 1,1,1, 1,1,1)
-
-	element:AddHint(L["InfoDualspec_Hint_Any"], L["InfoDualspec_Hint_Right"], L["InfoDualspec_Hint_Shift"])
-    ]]--
-
     local activeSpec = GetSpecialization() -- get current spec ID
     local colorY, colorW = "|cFFFFFF00", "|r" -- text color flags
     local dualspecHint -- text string with hint to be displayed
