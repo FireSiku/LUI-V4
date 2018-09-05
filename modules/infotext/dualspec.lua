@@ -77,7 +77,7 @@ function element:CacheSpecInfo()
 			specCache[i].icon = icon
 		end
 	end
-    -- TODO inactiveCache initial setup here ?
+	-- TODO inactiveCache initial setup here ?
 end
 
 function element:ToggleTalentTab(tabID)
@@ -124,8 +124,8 @@ end
 
 function element:UpdateSpec()
 	local db = module:GetDB()
-    local currentSpecID = GetSpecialization()
-	local currentSpec = specCache[ currentSpecID ]
+	local currentSpecID = GetSpecialization()
+	local currentSpec = specCache[currentSpecID]
 	local specName = (currentSpec) and currentSpec.name or L["InfoDualspec_NoSpec"]
 	if db.lootSpec and GetLootSpecialization() > 0 then
 		local _, lootSpec = GetSpecializationInfoByID(GetLootSpecialization())
@@ -137,12 +137,12 @@ function element:UpdateSpec()
 	--TODO: Add Icon Support
 	--element.icon = currentCache.icon
 
-    inactiveCache = {} -- reset inactive cache for rebuild
-    for i = 1, MAX_SPECS do -- loop through all specs
-        if i ~= currentSpecID then -- not the active spec, put in inactive
-            inactiveCache[ #inactiveCache + 1 ] = i -- add to inactive cache
-        end
-    end
+	inactiveCache = {} -- reset inactive cache for rebuild
+	for i = 1, MAX_SPECS do -- loop through all specs
+		if i ~= currentSpecID then -- not the active spec, put in inactive
+			inactiveCache[#inactiveCache + 1] = i -- add to inactive cache
+		end
+	end
 
 	element:UpdateTooltip()
 end
@@ -150,16 +150,16 @@ end
 -- Left-Click: Switch to inactive spec 1
 -- Right-Click: Switch to inactive spec 2
 -- Middle-Click: Switch to inactive spec 3 ( druid only )
--- Shift-Click: Toggle Talent Frame
+-- Shift-Click: Toggle Talent Frame -- TODO causes tooltip background to turn white temporarily ??
 function element.OnClick(frame_, button)
-	if IsShiftKeyDown() then
-		element:ToggleTalentTab(TALENT_TAB_TALENTS) -- taken from original code's right click function
-    elseif button == "LeftButton" and inactiveCache[ 1 ] then -- switch to inactive spec 1 if valid
-        SetSpecialization( inactiveCache[ 1 ])
-	elseif button == "RightButton" and inactiveCache[ 2 ] then -- spec 2
-		SetSpecialization( inactiveCache[ 2 ])
-	elseif button == "MiddleButton" and inactiveCache[ 3 ] then -- spec 3 ( druid only )
-        SetSpecialization( inactiveCache[ 3 ])
+	--if IsShiftKeyDown() then
+	--	element:ToggleTalentTab(TALENT_TAB_TALENTS) -- taken from original code's right click function
+	if button == "LeftButton" and inactiveCache[1] then -- switch to inactive spec 1 if valid
+		SetSpecialization(inactiveCache[1])
+	elseif button == "RightButton" and inactiveCache[2] then -- spec 2
+		SetSpecialization(inactiveCache[2])
+	elseif button == "MiddleButton" and inactiveCache[3] then -- spec 3 (druid only)
+		SetSpecialization(inactiveCache[3])
 	end
 end
 
@@ -170,31 +170,32 @@ end
 function element.OnTooltipShow(GameTooltip)
 	element:TooltipHeader(LEVEL_UP_DUALSPEC)
 
-    local activeSpec = GetSpecialization() -- get current spec ID
-    local colorY, colorW = "|cFFFFFF00", "|r" -- text color flags
-    local dualspecHint -- text string with hint to be displayed
+	local activeSpec = GetSpecialization() -- get current spec ID
+	local dualspecHint = "" -- text string with hint to be displayed
 
-    for i = 1, MAX_SPECS do -- loop through all specs
-        local specNum = ((( i == activeSpec ) and colorY  or "" ) .. "Spec " .. i .. ":" ) -- numerate specs, coloring active
-        local specName = ((( i == activeSpec ) and colorY  or "" ) .. ( specCache[ i ].name or "None" )) -- list spec names, coloring active
-        GameTooltip:AddDoubleLine( specNum, specName, 1,1,1, 1,1,1)
-    end
+	for i = 1, MAX_SPECS do -- loop through all specs
+		local specNum = (format(L["InfoDualspec_Spec_Num"], i)) -- numerate specs
+		local specName = (specCache[i].name) -- list spec names
 
-    -- loot spec text from original code
-    GameTooltip:AddLine(" ")
+		if i == activeSpec then -- highlight active spec
+			local highlight = CreateColor(1, 1, 0)
+			specNum = highlight:WrapTextInColorCode(specNum)
+			specName = highlight:WrapTextInColorCode(specName)
+		end
+		GameTooltip:AddDoubleLine(specNum, specName, 1,1,1, 1,1,1)
+	end
+
+	-- loot spec text from original code
+	GameTooltip:AddLine(" ")
 	local lootSpec = select(2, GetSpecializationInfoByID(GetLootSpecialization())) or LOOT_SPECIALIZATION_DEFAULT
 	GameTooltip:AddDoubleLine(format("%s:", SELECT_LOOT_SPECIALIZATION), lootSpec, 1,1,1, 1,1,1)
 
-    if MAX_SPECS >= 2 then -- has 2 specs ( demon hunter )
-        dualspecHint = format( L[ "InfoDualspec_Hint_Left-2" ], specCache[ inactiveCache[ 1 ]].name ) .. ".\n"
-        if MAX_SPECS >= 3 then -- has 3 specs ( most )
-            dualspecHint = dualspecHint .. format( L[ "InfoDualspec_Hint_Right-2" ], specCache[ inactiveCache[ 2 ]].name ) .. ".\n"
-            if MAX_SPECS >= 4 then -- has 4 specs ( druid )
-                dualspecHint = dualspecHint .. format( L[ "InfoDualspec_Hint_Middle-2" ], specCache[ inactiveCache[ 3 ]].name ) .. ".\n"
-            end
-        end
-    end
-    element:AddHint( dualspecHint .. L[ "InfoDualspec_Hint_Shift-2" ] .. "." )
+	for i = 1, #inactiveCache do -- go through inactive specs
+		dualspecHint = dualspecHint .. format(L[format("InfoDualspec_Hint_%d", i)], specCache[inactiveCache[i]].name) -- add hint for current inactive spec
+		if i < #inactiveCache then dualspecHint = dualspecHint .. "\n" end -- separate lines if not last line
+	end
+
+	element:AddHint(dualspecHint) -- .. L["InfoDualspec_Hint_Shift"]
 end
 
 -- ####################################################################################################################
