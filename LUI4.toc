@@ -72,6 +72,9 @@ modules\bags\bags.lua
 modules\bags\bank.lua
 modules\bags\reagents.lua
 
+## Load InfoBars
+modules\infobars\infobars.lua
+
 ## Load Infotext
 modules\infotext\infotext.lua
 modules\infotext\infotip.lua
