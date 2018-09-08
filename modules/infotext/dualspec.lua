@@ -20,6 +20,7 @@ local GetSpecializationInfo = GetSpecializationInfo
 local GetActiveSpecGroup = GetActiveSpecGroup
 local SetActiveSpecGroup = SetActiveSpecGroup
 local GetSpecialization = GetSpecialization
+local SetSpecialization = SetSpecialization
 local GetMaxTalentTier = GetMaxTalentTier
 local GetNumSpecGroups = GetNumSpecGroups
 local IsShiftKeyDown = IsShiftKeyDown
@@ -45,8 +46,9 @@ local NONE = NONE
 -- locals
 local specCache = {}  -- Keep information about specs.
 local talentCache = {} -- Keep information about talents.
+local inactiveCache = {} -- Keep information about inactive specs
 local needNewCache = false
---TOODO: Move those two cache into the DB to carry the cache through logins. (Your specs arent going to change)
+--TODO: Move those >three< cache into the DB to carry the cache through logins. (Your specs arent going to change)
 
 -- ####################################################################################################################
 -- ##### Default Settings #############################################################################################
@@ -75,6 +77,7 @@ function element:CacheSpecInfo()
 			specCache[i].icon = icon
 		end
 	end
+	-- TODO inactiveCache initial setup here ?
 end
 
 function element:ToggleTalentTab(tabID)
@@ -121,7 +124,8 @@ end
 
 function element:UpdateSpec()
 	local db = module:GetDB()
-	local currentSpec = specCache[GetSpecialization()]
+	local currentSpecID = GetSpecialization()
+	local currentSpec = specCache[currentSpecID]
 	local specName = (currentSpec) and currentSpec.name or L["InfoDualspec_NoSpec"]
 	if db.lootSpec and GetLootSpecialization() > 0 then
 		local _, lootSpec = GetSpecializationInfoByID(GetLootSpecialization())
@@ -129,22 +133,33 @@ function element:UpdateSpec()
 	else
 		element.text = specName
 	end
+
 	--TODO: Add Icon Support
 	--element.icon = currentCache.icon
+
+	inactiveCache = {} -- reset inactive cache for rebuild
+	for i = 1, MAX_SPECS do -- loop through all specs
+		if i ~= currentSpecID then -- not the active spec, put in inactive
+			inactiveCache[#inactiveCache + 1] = i -- add to inactive cache
+		end
+	end
+
 	element:UpdateTooltip()
 end
 
--- Click: Switch Talent Group
--- Right-Click: Open Talent Frame
--- Shift-Click: Open Glyph Frame (TODO)
+-- Left-Click: Switch to inactive spec 1
+-- Right-Click: Switch to inactive spec 2
+-- Middle-Click: Switch to inactive spec 3 ( druid only )
+-- Shift-Click: Toggle Talent Frame -- TODO causes tooltip background to turn white temporarily ??
 function element.OnClick(frame_, button)
-	if IsShiftKeyDown() then
-		element:ToggleTalentTab(TALENT_TAB_GLYPHS)
-	elseif button == "RightButton" then
-		element:ToggleTalentTab(TALENT_TAB_TALENTS)
-	else
-		if not HasDualSpec() then return end
-		SetActiveSpecGroup(3 - GetActiveSpecGroup())
+	--if IsShiftKeyDown() then
+	--	element:ToggleTalentTab(TALENT_TAB_TALENTS) -- taken from original code's right click function
+	if button == "LeftButton" and inactiveCache[1] then -- switch to inactive spec 1 if valid
+		SetSpecialization(inactiveCache[1])
+	elseif button == "RightButton" and inactiveCache[2] then -- spec 2
+		SetSpecialization(inactiveCache[2])
+	elseif button == "MiddleButton" and inactiveCache[3] then -- spec 3 (druid only)
+		SetSpecialization(inactiveCache[3])
 	end
 end
 
@@ -155,25 +170,32 @@ end
 function element.OnTooltipShow(GameTooltip)
 	element:TooltipHeader(LEVEL_UP_DUALSPEC)
 
-	local activeSpecGroup = GetActiveSpecGroup()
-	for i = 1, GetNumSpecGroups() do
-		local currentSpec = GetSpecialization(nil, nil, i)
-		local talentSpec
-		if i == activeSpecGroup then
-			talentSpec = (i == 1) and TALENT_SPEC_PRIMARY_ACTIVE or TALENT_SPEC_SECONDARY_ACTIVE
-		else
-			talentSpec = (i == 1) and TALENT_SPEC_PRIMARY or TALENT_SPEC_SECONDARY
+	local activeSpec = GetSpecialization() -- get current spec ID
+	local dualspecHint = "" -- text string with hint to be displayed
+
+	for i = 1, MAX_SPECS do -- loop through all specs
+		local specNum = (format(L["InfoDualspec_Spec_Num"], i)) -- numerate specs
+		local specName = (specCache[i].name) -- list spec names
+
+		if i == activeSpec then -- highlight active spec
+			local highlight = CreateColor(1, 1, 0)
+			specNum = highlight:WrapTextInColorCode(specNum)
+			specName = highlight:WrapTextInColorCode(specName)
 		end
-		local specName = (currentSpec) and specCache[currentSpec].name or NONE
-		local talentString = element:GetTalentString(i)
-		GameTooltip:AddDoubleLine(format("%s:", talentSpec), format("%s (%s)", specName, talentString), 1,1,1, 1,1,1)
+		GameTooltip:AddDoubleLine(specNum, specName, 1,1,1, 1,1,1)
 	end
 
+	-- loot spec text from original code
 	GameTooltip:AddLine(" ")
 	local lootSpec = select(2, GetSpecializationInfoByID(GetLootSpecialization())) or LOOT_SPECIALIZATION_DEFAULT
 	GameTooltip:AddDoubleLine(format("%s:", SELECT_LOOT_SPECIALIZATION), lootSpec, 1,1,1, 1,1,1)
 
-	element:AddHint(L["InfoDualspec_Hint_Any"], L["InfoDualspec_Hint_Right"], L["InfoDualspec_Hint_Shift"])
+	for i = 1, #inactiveCache do -- go through inactive specs
+		dualspecHint = dualspecHint .. format(L[format("InfoDualspec_Hint_%d", i)], specCache[inactiveCache[i]].name) -- add hint for current inactive spec
+		if i < #inactiveCache then dualspecHint = dualspecHint .. "\n" end -- separate lines if not last line
+	end
+
+	element:AddHint(dualspecHint) -- .. L["InfoDualspec_Hint_Shift"]
 end
 
 -- ####################################################################################################################
