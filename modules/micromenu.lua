@@ -219,7 +219,7 @@ local microDefinitions = {
 			module:TogglePanel(PlayerTalentFrame)
 		end,
 	},
-	
+
 	{ -- [12]
 		name = "Spellbook",
 		title = L["MicroSpell_Name"],
@@ -325,7 +325,7 @@ MicroButtonClickerMixin.clickerBackdrop = {
 function module:NewMicroButton(buttonData)
 	local r, g, b, a_ = module:RGBA("Micromenu")
 	local name = buttonData.name
-	
+
 	local button = CreateFrame("Frame", "LUIMicromenu_"..name, UIParent)
 	button:SetSize(TEXTURE_SIZE_WIDTH, TEXTURE_SIZE_HEIGHT)
 	Mixin(button, buttonData)
@@ -447,7 +447,9 @@ function module:Refresh()
 	local r, g, b, a_ = module:RGBA("Micromenu")
 	for i = 1, #microList do
 		local button = microStorage[microList[i]]
-		button.tex:SetVertexColor(r, g, b)
+		if button then
+			button.tex:SetVertexColor(r, g, b)
+		end
 	end
 end
 
