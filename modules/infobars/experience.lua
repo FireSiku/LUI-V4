@@ -12,11 +12,14 @@ local L = LUI.L
 local ExperienceDataMixin = module:CreateNewDataMixin("Experience")
 
 function ExperienceDataMixin:ShouldBeVisible()
-    local level = UnitLevel("player")
     if IsXPUserDisabled() then
         return false
     end
-    return level < MAX_LEVEL
+
+    local level = UnitLevel("player")
+    local expansionLevel = GetExpansionLevel()
+    local maxLevel = GetMaxLevelForExpansionLevel(expansionLevel)
+    return level < maxLevel
 end
 
 function ExperienceDataMixin:GetValues()
