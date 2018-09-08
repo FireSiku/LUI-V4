@@ -21,17 +21,6 @@ local _, LUI = ...
 local module = LUI:NewModule("Info Bars")
 local L = LUI.L
 
-local SHORT_REPUTATION_NAMES = {
-	L["ExpBar_ShortName_Hatred"],		-- Ha
-	L["ExpBar_ShortName_Hostile"],		-- Ho
-	L["ExpBar_ShortName_Unfriendly"],	-- Un
-	L["ExpBar_ShortName_Neutral"],		-- Ne
-	L["ExpBar_ShortName_Friendly"],		-- Fr
-	L["ExpBar_ShortName_Honored"],		-- Hon
-	L["ExpBar_ShortName_Revered"],		-- Rev
-	L["ExpBar_ShortName_Exalted"],		-- Ex
-}
-
 -- ####################################################################################################################
 -- ##### Default Settings #############################################################################################
 -- ####################################################################################################################
@@ -66,7 +55,7 @@ module.defaults = {
 	},
 }
 
-local elementData = {}
+local mixinData = {}
 
 -- ####################################################################################################################
 -- ##### InfoBarDataMixin #############################################################################################
@@ -79,8 +68,7 @@ function InfoBarDataMixin:GetValues()
 	return 0, 0, 1
 end
 
--- Override this function to determine if the bar use percent value instead
-function InfoBarDataMixin:ShouldUsePercentValue()
+function InfoBarDataMixin:ShouldBeVisible()
 	return false
 end
 
@@ -104,18 +92,6 @@ function InfoBarDataMixin:SetTooltipInfo(tooltip) -- luacheck: ignore
 end
 
 module.InfoBarDataMixin = InfoBarDataMixin
-
-local ExperienceDataMixin = CreateFromMixins(InfoBarDataMixin)
-function ExperienceDataMixin:GetValues()
-	local currentXP = UnitXP("player")
-	local maxXP = UnitXPMax("player")
-
-	return 0, currentXP, maxXP
-end
-
-function ExperienceDataMixin:GetDataText()
-	return "XP"
-end
 
 -- ####################################################################################################################
 -- ##### InfoBarMixin #################################################################################################
@@ -151,15 +127,14 @@ end
 -- ####################################################################################################################
 
 -- Connects an element with a DataMixin together.
-function module:AddDataMixin(element, data)
-	if type(element) == "table" then
-		element = element:GetName()
-	end
-	elementData[element] = data
+function module:CreateNewDataMixin(name)
+	local newMixin = CreateFromMixins(InfoBarDataMixin)
+	mixinData[name] = newMixin
+	return newMixin
 end
 
 function module:CreateBar(name, dataMixin)
-	if not dataMixin or not elementData[dataMixin] then
+	if not dataMixin or not mixinData[dataMixin] then
 		error("Usage: CreateBar(name, dataMixin): dataMixin is not valid")
 	end
 
@@ -182,8 +157,7 @@ function module:CreateBar(name, dataMixin)
 	text:SetShadowOffset(1.25, -1.25)
 	bar.text = text
 
-	local newMixin = elementData[dataMixin]
-	Mixin(bar, InfoBarMixin, elementData[dataMixin])
+	Mixin(bar, InfoBarMixin, mixinData[dataMixin])
 
 	bar:SetBarColor(module:RGB("Experience"))
 	bar:UpdateText()
@@ -202,8 +176,14 @@ function module:SetMainBar()
 	module.anchor = anchor
 
 	module.ExpBar = module:CreateBar("LUI_InfoBarsExp", "Experience")
-
+	module.RepBar = module:CreateBar("LUI_InfoBarsRep", "Reputation")
+	module.HonorBar = module:CreateBar("LUI_InfoBarsHonor", "Honor")
+	module.AzeriteBar = module:CreateBar("LUI_InfoBarsAzerite", "Azerite")
+	
 	module.ExpBar:SetAllPoints(anchor)
+	module.RepBar:SetPoint("BOTTOM", module.ExpBar, "TOP", 0, 5)
+	module.HonorBar:SetPoint("BOTTOM", module.RepBar, "TOP", 0, 5)
+	module.AzeriteBar:SetPoint("BOTTOM", module.HonorBar, "TOP", 0, 5)
 end
 
 -- ####################################################################################################################
@@ -271,7 +251,6 @@ module.enableButton = true
 
 function module:OnInitialize()
 	LUI:RegisterModule(module)
-	module:AddDataMixin("Experience", ExperienceDataMixin)
 end
 
 function module:OnEnable()

@@ -74,6 +74,10 @@ modules\bags\reagents.lua
 
 ## Load InfoBars
 modules\infobars\infobars.lua
+modules\infobars\experience.lua
+modules\infobars\reputation.lua
+modules\infobars\honor.lua
+modules\infobars\azerite.lua
 
 ## Load Infotext
 modules\infotext\infotext.lua
