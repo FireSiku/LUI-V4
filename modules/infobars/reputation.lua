@@ -23,7 +23,8 @@ local SHORT_REPUTATION_NAMES = {
 local ReputationDataMixin = module:CreateNewDataMixin("Reputation")
 
 function ReputationDataMixin:ShouldBeVisible()
-	return true
+	local name = GetWatchedFactionInfo()
+	if name then return true end
 end
 
 function ReputationDataMixin:GetParagonValues(factionID)
@@ -54,8 +55,7 @@ function ReputationDataMixin:GetValues()
 	-- To get a 0 / 21000 representation, we have to reduce all three values by barMin.
 	-- Patch 7.2 changed barMin to be equal to barMax at Exalted, so we need to handle that too.
 
-	local name, standing, barMin, barMax, barValue, factionID = GetWatchedFactionInfo()
-	if not name then return end
+	local _, standing, barMin, barMax, barValue, factionID = GetWatchedFactionInfo()
 
 	self.repText = SHORT_REPUTATION_NAMES[standing]
 

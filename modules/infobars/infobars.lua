@@ -36,6 +36,7 @@ module.defaults = {
 		ShowRested = false,
 		BGMultiplier = 0.4,
 		ShowText = true,
+		ShowAzerite = true,
 		Precision = 2,
 		TextX = -2,
 		TextY = 0,
@@ -160,10 +161,15 @@ function module:CreateBar(name, dataMixin)
 	Mixin(bar, InfoBarMixin, mixinData[dataMixin])
 
 	bar:SetBarColor(module:RGB("Experience"))
-	bar:UpdateText()
-	bar:UpdateBar()
 
-	bar:Show()
+	if bar:ShouldBeVisible() then
+		bar:UpdateText()
+		bar:UpdateBar()
+		bar:Show()
+	else
+		bar:Hide()
+	end
+
 	return bar
 end
 
@@ -179,8 +185,8 @@ function module:SetMainBar()
 	module.RepBar = module:CreateBar("LUI_InfoBarsRep", "Reputation")
 	module.HonorBar = module:CreateBar("LUI_InfoBarsHonor", "Honor")
 	module.AzeriteBar = module:CreateBar("LUI_InfoBarsAzerite", "Azerite")
-	
-	module.ExpBar:SetAllPoints(anchor)
+
+	module.ExpBar:SetAllPointsanchor)
 	module.RepBar:SetPoint("BOTTOM", module.ExpBar, "TOP", 0, 5)
 	module.HonorBar:SetPoint("BOTTOM", module.RepBar, "TOP", 0, 5)
 	module.AzeriteBar:SetPoint("BOTTOM", module.HonorBar, "TOP", 0, 5)

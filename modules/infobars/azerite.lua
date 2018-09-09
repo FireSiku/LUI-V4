@@ -15,7 +15,7 @@ local AzeriteDataMixin = module:CreateNewDataMixin("Azerite")
 
 function AzeriteDataMixin:ShouldBeVisible()
 	local db = module:GetDB()
-	if db.General.artifact and C_AzeriteItem.HasActiveAzeriteItem() then
+	if db.ShowAzerite and C_AzeriteItem.HasActiveAzeriteItem() then
 		if C_AzeriteItem.FindActiveAzeriteItem() then
 			return true
 		end
