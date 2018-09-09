@@ -3,7 +3,7 @@
 -- ####################################################################################################################
 
 local _, LUI = ...
-local module = LUI:GetModule("Info Bars")
+local module = LUI:GetModule("Experience Bar")
 local L = LUI.L
 
 local C_AzeriteItem = C_AzeriteItem
@@ -15,7 +15,7 @@ local AzeriteDataMixin = module:CreateNewDataMixin("Azerite")
 
 function AzeriteDataMixin:ShouldBeVisible()
 	local db = module:GetDB()
-	if db.ShowAzerite and C_AzeriteItem.HasActiveAzeriteItem() then
+	if db.ShowAzerite and C_AzeriteItem.HasActiveAzeriteItem() then -- luacheck: ignore
 		if C_AzeriteItem.FindActiveAzeriteItem() then
 			return true
 		end

@@ -3,7 +3,7 @@
 -- ####################################################################################################################
 
 local _, LUI = ...
-local module = LUI:GetModule("Info Bars")
+local module = LUI:GetModule("Experience Bar")
 local L = LUI.L
 
 local SHORT_REPUTATION_NAMES = {
