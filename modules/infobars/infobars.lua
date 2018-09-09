@@ -31,12 +31,12 @@ module.defaults = {
 		Height = 12,
 		X = 0,
 		Y = 6,
-		Point = "CENTER",
-		RelativePoint = "CENTER",
+		Point = "BOTTOM",
+		RelativePoint = "BOTTOM",
 		ShowRested = false,
-		BGMultiplier = 0.4,
 		ShowText = true,
 		ShowAzerite = true,
+		ShowAbsolute = false,
 		Precision = 2,
 		TextX = -2,
 		TextY = 0,
@@ -44,6 +44,7 @@ module.defaults = {
 		Colors = {
 			Experience = { r = 0.6,  g = 0.6,  b = 1,    a = 1,   t = "Class", },
 			Reputation = { r = 0.2,  g = 0.2,  b = 0.2,  a = 1,   t = "Class", },
+			Azerite =    { r = 0.2,  g = 0.2,  b = 0.2,  a = 1,   t = "Class", },
 			Honor =      { r = 0.18, g = 0.18, b = 0.18, a = 0.8, t = "Class", },
 		},
 		Fonts = {
@@ -101,9 +102,15 @@ module.InfoBarDataMixin = InfoBarDataMixin
 local InfoBarMixin = {}
 
 function InfoBarMixin:UpdateBar()
-	local min, curr, max = self:GetValues()
-	self:SetMinMaxValues(min, max)
-	self:SetValue(curr)
+	self:UpdateVisibility()
+
+	if self:IsVisible() then
+		local min, curr, max = self:GetValues()
+		self:SetMinMaxValues(min, max)
+		self:SetValue(curr)
+		self:UpdateText()
+	end
+	
 end
 
 function InfoBarMixin:UpdateText()
@@ -117,10 +124,25 @@ function InfoBarMixin:UpdateText()
 	return self.text:SetText(self:GetDataText())
 end
 
+function InfoBarMixin:UpdateVisibility()
+	if self:ShouldBeVisible() then
+		self:Show()
+	else
+		self:Hide()
+	end
+end
+
 function InfoBarMixin:SetBarColor(r, g, b)
-	local mult = 0.4 -- Placeholder
+	local mult = 0.4 -- Placeholder for LUI:GetBGMultiplier
 	self:SetStatusBarColor(r, g, b)
 	self.bg:SetVertexColor(r * mult, g * mult, b * mult)
+end
+
+function InfoBarMixin:RegisterEvents()
+	if not self.BAR_EVENTS then return end
+	for i, event in ipairs(self.BAR_EVENTS) do
+		self:RegisterEvent(event)
+	end
 end
 
 -- ####################################################################################################################
@@ -173,6 +195,10 @@ function module:CreateBar(name, dataMixin)
 	return bar
 end
 
+-- ####################################################################################################################
+-- ##### Main Bar #####################################################################################################
+-- ####################################################################################################################
+
 function module:SetMainBar()
 	local db = module:GetDB()
 
@@ -186,10 +212,74 @@ function module:SetMainBar()
 	module.HonorBar = module:CreateBar("LUI_InfoBarsHonor", "Honor")
 	module.AzeriteBar = module:CreateBar("LUI_InfoBarsAzerite", "Azerite")
 
-	module.ExpBar:SetAllPointsanchor)
-	module.RepBar:SetPoint("BOTTOM", module.ExpBar, "TOP", 0, 5)
-	module.HonorBar:SetPoint("BOTTOM", module.RepBar, "TOP", 0, 5)
-	module.AzeriteBar:SetPoint("BOTTOM", module.HonorBar, "TOP", 0, 5)
+	module.ExpBar:SetPoint("RIGHT", module.anchor, "RIGHT")
+	module.RepBar:SetPoint("RIGHT", module.anchor, "RIGHT")
+	module.HonorBar:SetPoint("RIGHT", module.anchor, "RIGHT")
+	module.AzeriteBar:SetPoint("RIGHT", module.anchor, "RIGHT")
+end
+
+function module:SetMainBarVisibility()
+	local db = module:GetDB()
+	local barLeft, barRight
+
+	-- Check which bars can be visible at the moment
+	local expShown = module.ExpBar:ShouldBeVisible()
+	local repShown = module.RepBar:ShouldBeVisible()
+	local honorShown = module.HonorBar:ShouldBeVisible()
+	local apShown = module.AzeriteBar:ShouldBeVisible()
+	
+	-- Decide which bars should be ultimately shown.
+	if expShown then
+		barRight = module.ExpBar
+		if apShown then
+			barLeft = module.AzeriteBar
+		elseif honorShown then
+			barLeft = module.HonorBar
+		elseif repShown then
+			barLeft = module.RepBar
+		end
+	elseif apShown then
+		barRight = module.AzeriteBar
+		if honorShown then
+			barLeft = module.HonorBar
+		elseif repShown then
+			barLeft = module.RepBar
+		end
+	elseif honorShown then
+		barRight = module.HonorBar
+		if repShown then
+			barLeft = module.RepBar
+		end
+	elseif repShown then
+		barRight = module.RepBar
+	end
+
+	--- Force the main bars to be hidden.
+	module.ExpBar:Hide()
+	module.RepBar:Hide()
+	module.HonorBar:Hide()
+	module.AzeriteBar:Hide()
+
+	-- Adjust size and visibility
+	if barRight then
+		barRight:ClearAllPoints()
+		barRight:SetReverseFill(false)
+		barRight:SetPoint("RIGHT", module.anchor, "RIGHT")
+		barRight.text:SetPoint("RIGHT", barRight, "RIGHT", db.TextX, db.TextY)
+		barRight:Show()
+		if barLeft then
+			local halfWidth = (db.Width - db.Spacing) * 0.5
+			barRight:SetWidth(halfWidth)
+			barLeft:SetWidth(halfWidth)
+			barLeft:ClearAllPoints()
+			barLeft:SetReverseFill(true)
+			barLeft:SetPoint("LEFT", module.anchor, "LEFT")
+			barLeft.text:SetPoint("LEFT", barLeft, "LEFT", -db.TextX, db.TextY)
+			barLeft:Show()
+		else
+			barRight:SetWidth(db.Width)
+		end
+	end
 end
 
 -- ####################################################################################################################
@@ -207,41 +297,30 @@ end
 -- ####################################################################################################################
 
 function module:LoadOptions()
-	local modeList = {
-		Auto = L["ExpBar_Mode_Auto"],
-		Experience = L["ExpBar_Mode_Experience"],
-		Reputation = L["ExpBar_Mode_Reputation"],
-		Artifact = L["ExpBar_Mode_Artifact"],
-		Honor = L["ExpBar_Mode_Honor"],
-		None = L["ExpBar_Mode_None"]
-	}
 
 	local options = {
 		Header = module:NewHeader(L["ExpBar_Name"], 1),
 		Settings = module:NewRootGroup(L["Settings"], 2, nil, nil, {
 			--ShowRested = module:NewToggle("Show Rested XP", nil, 2, showRestedMeta, nil, function() return true end),
-			ShowText = module:NewToggle(L["ExpBar_Options_ShowText"] , nil, 3, "Refresh", "normal"),
-			Precision = module:NewSlider(L["Precision"], nil, 4, 0, 3, 1, false, "Refresh"),
-			Spacing = module:NewSlider(L["Spacing"], L["ExpBar_Options_Spacing_Desc"], 5, 0, 20, 1, false, "Refresh"),
-			Mode1 = module:NewSelect(format(L["ExpBar_Options_BarMode_Format"], 1), L["ExpBar_Options_BarMode_Desc"],
-			                            6, modeList, nil, "Refresh"),
-			Mode2 = module:NewSelect(format(L["ExpBar_Options_BarMode_Format"], 2), L["ExpBar_Options_BarMode_Desc"],
-			                            6, modeList, nil, "Refresh"),
+			ShowHonor = module:NewToggle("Show Honor If Tracked", nil, 2, "Refresh"),
+			ShowAzerite = module:NewToggle("Show Azerite XP", nil, 3, "Refresh"),
+			
 			PositionHeader = module:NewHeader(L["Position"], 10),
 			Position = module:NewPosition(L["ExpBar_Name"], 11, true, "Refresh"),
 			Point = module:NewSelect(L["Anchor"], nil, 12, LUI.Points, nil, "Refresh"),
 			RelativePoint = module:NewSelect(L["Relative Anchor"], nil, 13, LUI.Points, nil, "Refresh"),
-			TextPositionHeader = module:NewHeader(L["ExpBar_Options_TextPosition"], 14),
-			Text = module:NewPosition(L["ExpBar_Options_Text"], 15, nil, "Refresh"),
+			Spacing = module:NewSlider(L["Spacing"], L["ExpBar_Options_Spacing_Desc"], 14, 0, 20, 1, false, "Refresh"),
+			TextPositionHeader = module:NewHeader(L["ExpBar_Options_TextPosition"], 20),
+			ShowText = module:NewToggle(L["ExpBar_Options_ShowText"] , nil, 21, "Refresh", "normal"),
+			Precision = module:NewSlider(L["Precision"], nil, 22, 0, 3, 1, false, "Refresh"),
+			Text = module:NewPosition(L["ExpBar_Options_Text"], 23, nil, "Refresh"),
 		}),
 		Textures = module:NewRootGroup(L["Textures"], 3, nil, nil, {
 			ColorHeader = module:NewHeader(L["Colors"], 20),
-			BGMultiplier = module:NewSlider(L["API_BGMultiplier"], L["API_BGMultiplier_Desc"],
-			                                    21, 0, 1, 0.05, true, "RefreshColors"),
 			LineBreak = module:NewLineBreak(21.5),
 			Experience = module:NewColorMenu(L["ExpBar_Mode_Experience"], 22, true, "RefreshColors"),
 			Reputation = module:NewColorMenu(L["ExpBar_Mode_Reputation"], 23, true, "RefreshColors"),
-			Artifact = module:NewColorMenu(L["ExpBar_Mode_Artifact"], 24, true, "RefreshColors"),
+			Azerite = module:NewColorMenu(L["ExpBar_Mode_Artifact"], 24, true, "RefreshColors"),
 			Honor = module:NewColorMenu(L["ExpBar_Mode_Honor"], 25, true, "RefreshColors"),
 		}),
 	}
@@ -261,6 +340,7 @@ end
 
 function module:OnEnable()
 	module:SetMainBar()
+	module:SetMainBarVisibility()
 end
 
 function module:OnDisable()

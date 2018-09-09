@@ -33,7 +33,7 @@ end
 
 function AzeriteDataMixin:GetDataText()
 	local db = module:GetDB()
-	if db.General.ShowAbsolute then
+	if db.ShowAbsolute then
 		return format("AP (%s / %s)", self.currentXP, self.totalXP)
 	end
 	return "AP"
