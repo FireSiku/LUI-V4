@@ -22,6 +22,13 @@ local SHORT_REPUTATION_NAMES = {
 -- ####################################################################################################################
 local ReputationDataMixin = module:CreateNewDataMixin("Reputation")
 
+ReputationDataMixin.BAR_EVENTS = {
+	"LFG_BONUS_FACTION_ID_UPDATED",
+	"QUEST_LOG_UPDATE",
+	"UPDATE_FACTION",
+	"CRITERIA_UPDATE",
+}
+
 function ReputationDataMixin:ShouldBeVisible()
 	local name = GetWatchedFactionInfo()
 	if name then return true end
@@ -40,15 +47,15 @@ function ReputationDataMixin:GetParagonValues(factionID)
 		-- Also lets register for quest turn in to know when the reward isn't pending anymore.
 		--module:RegisterEvent("QUEST_LOG_UPDATE", "UpdateBarMode")
 		self.repText = L["ExpBar_ShortName_Reward"]
-		return 0, currentValue + rewardThreshold, rewardThreshold
+		return currentValue + rewardThreshold, rewardThreshold
 	else
 		--module:UnregisterEvent("QUEST_LOG_UPDATE")
 		self.repText = L["ExpBar_ShortName_Paragon"]
-		return 0, currentValue, rewardThreshold
+		return currentValue, rewardThreshold
 	end
 end
 
-function ReputationDataMixin:GetValues()
+function ReputationDataMixin:Update()
 	-- Blizzard store reputation in an interesting way.
 	-- barMin represents the minimum bound for the current standing, barMax represents the maximum bound.
 	-- For example, barMin for revered is 21000 (3000+6000+12000 from Neutral to Honored), barMax is 42000.
@@ -60,15 +67,14 @@ function ReputationDataMixin:GetValues()
 	self.repText = SHORT_REPUTATION_NAMES[standing]
 
 	if C_Reputation.IsFactionParagon(factionID) and barMin == barMax then
-		return self:GetParagonValues(factionID)
+		barValue, barMax = self:GetParagonValues(factionID)
 	elseif barMin == barMax then
-		return 0, 1, 1
+		barMin, barValue, barMax = 0, 1, 1
 	end
 	
 	-- Adjust display values
-	barMax = barMax - barMin
-	barValue = barValue - barMin
-	return 0, barValue, barMax
+	self.barMax = barMax - barMin
+	self.barValue = barValue - barMin
 end
 
 function ReputationDataMixin:GetDataText()

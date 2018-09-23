@@ -21,6 +21,8 @@ local _, LUI = ...
 local module = LUI:NewModule("Experience Bar")
 local L = LUI.L
 
+local mixinData = {}
+
 -- ####################################################################################################################
 -- ##### Default Settings #############################################################################################
 -- ####################################################################################################################
@@ -57,17 +59,21 @@ module.defaults = {
 	},
 }
 
-local mixinData = {}
-
 -- ####################################################################################################################
 -- ##### InfoBarDataMixin #############################################################################################
 -- ####################################################################################################################
 
-local InfoBarDataMixin = {}
+local InfoBarDataMixin = {
+	barMin = 0,
+	barValue = 0,
+	barMax = 1,
+}
 
--- Override this function to provides min, curr and max values to the host bar.
-function InfoBarDataMixin:GetValues()
-	return 0, 0, 1
+-- Override this function to update values whenever events are fired.
+function InfoBarDataMixin:Update()
+	self.barMin = 0
+	self.barValue = 0
+	self.barMax = 1
 end
 
 function InfoBarDataMixin:ShouldBeVisible()
@@ -93,33 +99,29 @@ end
 function InfoBarDataMixin:SetTooltipInfo(tooltip) -- luacheck: ignore
 end
 
-module.InfoBarDataMixin = InfoBarDataMixin
-
 -- ####################################################################################################################
 -- ##### InfoBarMixin #################################################################################################
 -- ####################################################################################################################
 
 local InfoBarMixin = {}
 
-function InfoBarMixin:UpdateBar()
+function InfoBarMixin:UpdateBar(event, ...)
 	self:UpdateVisibility()
 
 	if self:IsVisible() then
-		local min, curr, max = self:GetValues()
-		self:SetMinMaxValues(min, max)
-		self:SetValue(curr)
+		self:Update(event, ...)
+		self:SetMinMaxValues(self.barMin, self.barMax)
+		self:SetValue(self.barValue)
 		self:UpdateText()
 	end
-	
 end
 
 function InfoBarMixin:UpdateText()
 	if self.ShouldDisplayPercentText() then
 		local db = module:GetDB()
-		local min_, curr, max = self:GetValues()
-		local percentBar = curr / max * 100
+		local percentBar = self.barValue / self.barMax * 100
 		local percentText = format("%."..db.Precision.."f%%", percentBar)
-		return self.text:SetText(format("%s %s", percentText, self:GetDataText()))
+		return self.text:SetText(format("%s %s", percentText, self:GetDataText() or ""))
 	end
 	return self.text:SetText(self:GetDataText())
 end
@@ -139,6 +141,7 @@ function InfoBarMixin:SetBarColor(r, g, b)
 end
 
 function InfoBarMixin:RegisterEvents()
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	if not self.BAR_EVENTS then return end
 	for i, event in ipairs(self.BAR_EVENTS) do
 		self:RegisterEvent(event)
@@ -181,6 +184,8 @@ function module:CreateBar(name, dataMixin)
 	bar.text = text
 
 	Mixin(bar, InfoBarMixin, mixinData[dataMixin])
+	bar:SetScript("OnEvent", bar.UpdateBar)
+	bar:RegisterEvents()
 
 	bar:SetBarColor(module:RGB("Experience"))
 

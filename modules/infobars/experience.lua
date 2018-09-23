@@ -11,15 +11,16 @@ local L = LUI.L
 -- ####################################################################################################################
 local ExperienceDataMixin = module:CreateNewDataMixin("Experience")
 
+ExperienceDataMixin.BAR_EVENTS = {
+    "PLAYER_XP_UPDATE",
+}
+
 function ExperienceDataMixin:ShouldBeVisible()
     if IsXPUserDisabled() then
         return false
     end
 
-    local level = UnitLevel("player")
-    local expansionLevel = GetExpansionLevel()
-    local maxLevel = GetMaxLevelForExpansionLevel(expansionLevel)
-    return level < maxLevel
+    return not IsPlayerAtEffectiveMaxLevel()
 end
 
 function ExperienceDataMixin:GetValues()

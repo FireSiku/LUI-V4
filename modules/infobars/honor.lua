@@ -11,15 +11,23 @@ local L = LUI.L
 -- ####################################################################################################################
 local HonorDataMixin = module:CreateNewDataMixin("Honor")
 
+HonorDataMixin.BAR_EVENTS = {
+	"HONOR_XP_UPDATE",
+	"CVAR_UPDATE",
+	"ZONE_CHANGED",
+	"ZONE_CHANGED_NEW_AREA",
+}
+
 function HonorDataMixin:ShouldBeVisible()
 	return IsWatchingHonorAsXP() or InActiveBattlefield() or IsInActiveWorldPVP()
 end
 
-function HonorDataMixin:GetValues()
+function HonorDataMixin:Update()
 	local honorCurrent = UnitHonor("player")
 	local honorMax = UnitHonorMax("player")
 
-	return 0, honorCurrent, honorMax
+	self.barValue = honorCurrent
+	self.barMax = honorMax
 end
 
 function HonorDataMixin:GetDataText()
