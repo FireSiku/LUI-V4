@@ -233,6 +233,7 @@ function module:SetMainBar()
 	anchor:RegisterEvent("ZONE_CHANGED_NEW_AREA");
 	anchor:RegisterUnitEvent("UNIT_LEVEL", "player")
 	anchor:SetScript("OnEvent", function() module:UpdateMainBarVisibility() end)
+	module:SecureHook(StatusTrackingBarManager, "UpdateBarsShown", "UpdateMainBarVisibility")
 
 	local expBar = module:CreateBar("LUI_InfoBarsExp", "Experience")
 	local repBar = module:CreateBar("LUI_InfoBarsRep", "Reputation")

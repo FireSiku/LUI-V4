@@ -54,6 +54,7 @@ function ReputationDataMixin:GetParagonValues(factionID)
 	end
 end
 
+--TODO: Add support for Friendships
 function ReputationDataMixin:Update()
 	-- Blizzard store reputation in an interesting way.
 	-- barMin represents the minimum bound for the current standing, barMax represents the maximum bound.

@@ -5747,7 +5747,7 @@ stds["WoW"] = {
 		"_JKL_TEST", "_RECORDING_WARNING_CORRUPTED",
 
 		-- Function List
-		"APIDocumentation_LoadUI", "AbandonQuest", "AbandonSkill",
+		"APIDocumentation_LoadUI", "AbandonQuest", "AbandonSkill", 
 		"AbbreviateLargeNumbers", "AbbreviateNumbers", "AcceptAreaSpiritHeal",
 		"AcceptBattlefieldPort", "AcceptDuel", "AcceptGroup",
 		"AcceptGuild", "AcceptLevelGrant", "AcceptProposal",
@@ -7987,7 +7987,7 @@ stds["WoW"] = {
 		"AUTOCAST_SHINE_TIMERS", "AUTOCOMPLETE_COLOR_KEYS", "AUTOCOMPLETE_LIST",
 		"AUTOCOMPLETE_LIST_TEMPLATES", "AUTO_QUEST_POPUP_TRACKER_MODULE", "ActionBarActionEventsFrame",
 		"ActionBarController", "ActorPoolMixin", "AddFriendEntryFrame",
-		"AddFriendFrame", "AddFriendInfoFrame", "AddFriendNoteFrame",
+		"AddFriendFrame", "AddFriendInfoFrame", "AddFriendNoteFrame", "StatusTrackingBarManager",
 		"AddonList", "AddonListPortraitFrame", "AddonListScrollFrame","Advanced_UIScaleSliderThumb", "AlertContainerMixin", "AlertFrame",
 		"AlertFrameAutoAnchoredMixin", "AlertFrameExternallyAnchoredMixin", "AlertFrameMixin",
 		"AlertFrameQueueMixin", "AnimateCallout", "AnimateMouse", "GuildFrame",
