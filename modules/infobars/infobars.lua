@@ -127,9 +127,9 @@ function InfoBarMixin:UpdateText()
 end
 
 function InfoBarMixin:UpdateVisibility()
-	if self:ShouldBeVisible() and not self:IsShown() then
+	if self:ShouldBeVisible() then
 		self:Show()
-	elseif self:IsShown() then
+	else
 		self:Hide()
 	end
 end
@@ -223,6 +223,16 @@ function module:SetMainBar()
 	local anchor = CreateFrame("Frame", "LUI_MainExpBar", UIParent)
 	anchor:SetPoint(db.Point, UIParent, db.RelativePoint, db.X, db.Y)
 	anchor:SetSize(db.Width, db.Height)
+	
+	anchor:RegisterEvent("PLAYER_ENTERING_WORLD");
+	anchor:RegisterEvent("UPDATE_EXPANSION_LEVEL");
+	anchor:RegisterEvent("UPDATE_FACTION");
+	anchor:RegisterEvent("ENABLE_XP_GAIN");
+	anchor:RegisterEvent("DISABLE_XP_GAIN");
+	anchor:RegisterEvent("ZONE_CHANGED");
+	anchor:RegisterEvent("ZONE_CHANGED_NEW_AREA");
+	anchor:RegisterUnitEvent("UNIT_LEVEL", "player")
+	anchor:SetScript("OnEvent", function() module:UpdateMainBarVisibility() end)
 
 	local expBar = module:CreateBar("LUI_InfoBarsExp", "Experience")
 	local repBar = module:CreateBar("LUI_InfoBarsRep", "Reputation")
@@ -233,16 +243,6 @@ function module:SetMainBar()
 	for bar in module:IterateMainBars() do
 		bar:SetPoint("RIGHT", anchor, "RIGHT")
 	end
-
-	anchor:RegisterEvent("PLAYER_ENTERING_WORLD");
-	anchor:RegisterEvent("UPDATE_EXPANSION_LEVEL");
-	anchor:RegisterEvent("UPDATE_FACTION");
-	anchor:RegisterEvent("ENABLE_XP_GAIN");
-	anchor:RegisterEvent("DISABLE_XP_GAIN");
-	anchor:RegisterEvent("ZONE_CHANGED");
-	anchor:RegisterEvent("ZONE_CHANGED_NEW_AREA");
-	anchor:RegisterUnitEvent("UNIT_LEVEL", "player")
-	anchor:SetScript("OnEvent", function() module:UpdateMainBarVisibility() end)
 
 	module.anchor = anchor
 	module.ExpBar = expBar

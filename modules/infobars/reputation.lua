@@ -68,12 +68,15 @@ function ReputationDataMixin:Update()
 	if C_Reputation.IsFactionParagon(factionID) and barMin == barMax then
 		barValue, barMax = self:GetParagonValues(factionID)
 	elseif barMin == barMax then
-		barMin, barValue, barMax = 0, 1, 1
+		barValue, barMax = 1, 1
+	else
+		barMax = barMax - barMin
+		barValue = barValue - barMin
 	end
 	
-	-- Adjust display values
-	self.barMax = barMax - barMin
-	self.barValue = barValue - barMin
+	self.barMin = 0
+	self.barMax = barMax
+	self.barValue = barValue
 end
 
 function ReputationDataMixin:GetDataText()
