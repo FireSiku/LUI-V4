@@ -23,11 +23,12 @@ function ExperienceDataMixin:ShouldBeVisible()
     return not IsPlayerAtEffectiveMaxLevel()
 end
 
-function ExperienceDataMixin:GetValues()
+function ExperienceDataMixin:Update()
 	local currentXP = UnitXP("player")
-	local maxXP = UnitXPMax("player")
+    local maxXP = UnitXPMax("player")
 
-	return 0, currentXP, maxXP
+    self.barValue = currentXP
+    self.barMax = maxXP
 end
 
 function ExperienceDataMixin:GetDataText()

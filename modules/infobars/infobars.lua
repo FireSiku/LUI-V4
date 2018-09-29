@@ -18,10 +18,13 @@
 -- ####################################################################################################################
 
 local _, LUI = ...
-local module = LUI:NewModule("Experience Bar")
+local module = LUI:NewModule("Experience Bar", "AceHook-3.0")
 local L = LUI.L
 
 local mixinData = {}
+local barsList = {}
+local mainBarList = {}
+local mainBarsCreated
 
 -- ####################################################################################################################
 -- ##### Default Settings #############################################################################################
@@ -38,7 +41,6 @@ module.defaults = {
 		ShowRested = false,
 		ShowText = true,
 		ShowAzerite = true,
-		ShowAbsolute = false,
 		Precision = 2,
 		TextX = -2,
 		TextY = 0,
@@ -106,8 +108,6 @@ end
 local InfoBarMixin = {}
 
 function InfoBarMixin:UpdateBar(event, ...)
-	self:UpdateVisibility()
-
 	if self:IsVisible() then
 		self:Update(event, ...)
 		self:SetMinMaxValues(self.barMin, self.barMax)
@@ -127,10 +127,19 @@ function InfoBarMixin:UpdateText()
 end
 
 function InfoBarMixin:UpdateVisibility()
-	if self:ShouldBeVisible() then
+	if self:ShouldBeVisible() and not self:IsShown() then
 		self:Show()
-	else
+	elseif self:IsShown() then
 		self:Hide()
+	end
+end
+
+function InfoBarMixin:UpdateTextVisibility()
+	local db = module:GetDB()
+	if db.ShowText then
+		self.text:Show()
+	else
+		self.text:Hide()
 	end
 end
 
@@ -165,7 +174,6 @@ function module:CreateBar(name, dataMixin)
 	end
 
 	local db = module:GetDB()
-
 	local bar = CreateFrame("StatusBar", name, UIParent)
 	bar:SetFrameStrata("HIGH")
 	bar:SetSize(db.Width, db.Height)
@@ -186,17 +194,12 @@ function module:CreateBar(name, dataMixin)
 	Mixin(bar, InfoBarMixin, mixinData[dataMixin])
 	bar:SetScript("OnEvent", bar.UpdateBar)
 	bar:RegisterEvents()
-
+	
 	bar:SetBarColor(module:RGB("Experience"))
+	bar:UpdateTextVisibility()
+	bar:UpdateBar()
 
-	if bar:ShouldBeVisible() then
-		bar:UpdateText()
-		bar:UpdateBar()
-		bar:Show()
-	else
-		bar:Hide()
-	end
-
+	tinsert(barsList, bar)
 	return bar
 end
 
@@ -204,26 +207,52 @@ end
 -- ##### Main Bar #####################################################################################################
 -- ####################################################################################################################
 
+function module:IterateMainBars()
+	local i, n = 0, #mainBarList
+	return function()
+		i = i + 1
+		if i <= n then
+			return mainBarList[i]
+		end
+	end
+end
+
 function module:SetMainBar()
 	local db = module:GetDB()
 
 	local anchor = CreateFrame("Frame", "LUI_MainExpBar", UIParent)
 	anchor:SetPoint(db.Point, UIParent, db.RelativePoint, db.X, db.Y)
 	anchor:SetSize(db.Width, db.Height)
+
+	local expBar = module:CreateBar("LUI_InfoBarsExp", "Experience")
+	local repBar = module:CreateBar("LUI_InfoBarsRep", "Reputation")
+	local honorBar = module:CreateBar("LUI_InfoBarsHonor", "Honor")
+	local azeriteBar = module:CreateBar("LUI_InfoBarsAzerite", "Azerite")
+	mainBarList = {expBar, repBar, honorBar, azeriteBar}
+
+	for bar in module:IterateMainBars() do
+		bar:SetPoint("RIGHT", anchor, "RIGHT")
+	end
+
+	anchor:RegisterEvent("PLAYER_ENTERING_WORLD");
+	anchor:RegisterEvent("UPDATE_EXPANSION_LEVEL");
+	anchor:RegisterEvent("UPDATE_FACTION");
+	anchor:RegisterEvent("ENABLE_XP_GAIN");
+	anchor:RegisterEvent("DISABLE_XP_GAIN");
+	anchor:RegisterEvent("ZONE_CHANGED");
+	anchor:RegisterEvent("ZONE_CHANGED_NEW_AREA");
+	anchor:RegisterUnitEvent("UNIT_LEVEL", "player")
+	anchor:SetScript("OnEvent", function() module:UpdateMainBarVisibility() end)
+
 	module.anchor = anchor
-
-	module.ExpBar = module:CreateBar("LUI_InfoBarsExp", "Experience")
-	module.RepBar = module:CreateBar("LUI_InfoBarsRep", "Reputation")
-	module.HonorBar = module:CreateBar("LUI_InfoBarsHonor", "Honor")
-	module.AzeriteBar = module:CreateBar("LUI_InfoBarsAzerite", "Azerite")
-
-	module.ExpBar:SetPoint("RIGHT", module.anchor, "RIGHT")
-	module.RepBar:SetPoint("RIGHT", module.anchor, "RIGHT")
-	module.HonorBar:SetPoint("RIGHT", module.anchor, "RIGHT")
-	module.AzeriteBar:SetPoint("RIGHT", module.anchor, "RIGHT")
+	module.ExpBar = expBar
+	module.RepBar = repBar
+	module.HonorBar = honorBar
+	module.AzeriteBar = azeriteBar
+	mainBarsCreated = true
 end
 
-function module:SetMainBarVisibility()
+function module:UpdateMainBarVisibility()
 	local db = module:GetDB()
 	local barLeft, barRight
 
@@ -259,11 +288,10 @@ function module:SetMainBarVisibility()
 		barRight = module.RepBar
 	end
 
-	--- Force the main bars to be hidden.
-	module.ExpBar:Hide()
-	module.RepBar:Hide()
-	module.HonorBar:Hide()
-	module.AzeriteBar:Hide()
+	-- Force the main bars to be hidden.
+	for bar in module:IterateMainBars() do
+		bar:Hide()
+	end
 
 	-- Adjust size and visibility
 	if barRight then
@@ -292,9 +320,22 @@ end
 -- ####################################################################################################################
 
 function module:RefreshColors()
+	for bar in module:IterateMainBars() do
+		bar:SetBarColor(module:RGB("Experience"))
+	end
 end
 
 function module:Refresh()
+	local db = module:GetDB()
+	module.anchor:SetPoint(db.Point, UIParent, db.RelativePoint, db.X, db.Y)
+	module.anchor:SetSize(db.Width, db.Height)
+	for bar in module:IterateMainBars() do
+		bar:SetStatusBarTexture(module:FetchStatusBar("ExpBar"))
+		bar.bg:SetTexture(module:FetchStatusBar("ExpBar"))
+		bar:UpdateTextVisibility()
+		bar:UpdateText()
+	end
+	module:UpdateMainBarVisibility()
 end
 
 -- ####################################################################################################################
@@ -307,7 +348,6 @@ function module:LoadOptions()
 		Header = module:NewHeader(L["ExpBar_Name"], 1),
 		Settings = module:NewRootGroup(L["Settings"], 2, nil, nil, {
 			--ShowRested = module:NewToggle("Show Rested XP", nil, 2, showRestedMeta, nil, function() return true end),
-			ShowHonor = module:NewToggle("Show Honor If Tracked", nil, 2, "Refresh"),
 			ShowAzerite = module:NewToggle("Show Azerite XP", nil, 3, "Refresh"),
 			
 			PositionHeader = module:NewHeader(L["Position"], 10),
@@ -318,7 +358,8 @@ function module:LoadOptions()
 			TextPositionHeader = module:NewHeader(L["ExpBar_Options_TextPosition"], 20),
 			ShowText = module:NewToggle(L["ExpBar_Options_ShowText"] , nil, 21, "Refresh", "normal"),
 			Precision = module:NewSlider(L["Precision"], nil, 22, 0, 3, 1, false, "Refresh"),
-			Text = module:NewPosition(L["ExpBar_Options_Text"], 23, nil, "Refresh"),
+			Linebreak = module:NewLineBreak(23),
+			Text = module:NewPosition(L["ExpBar_Options_Text"], 24, nil, "Refresh"),
 		}),
 		Textures = module:NewRootGroup(L["Textures"], 3, nil, nil, {
 			ColorHeader = module:NewHeader(L["Colors"], 20),
@@ -344,9 +385,12 @@ function module:OnInitialize()
 end
 
 function module:OnEnable()
-	module:SetMainBar()
-	module:SetMainBarVisibility()
+	if not mainBarsCreated then
+		module:SetMainBar()
+	end
+	module:UpdateMainBarVisibility()
 end
 
 function module:OnDisable()
+	module.anchor:Hide()
 end

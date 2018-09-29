@@ -103,7 +103,7 @@ stds["WoW"] = {
 			"AddActiveModelScene", "AddActiveModelSceneActor", "ClearActiveModelScene", "ClearActiveModelSceneActor", "GetModelSceneActorDisplayInfoByID",
  			"GetModelSceneActorInfoByID", "GetModelSceneCameraInfoByID", "GetModelSceneInfoByID", }},
 		C_AzeriteItem = { fields = { 
-			"FindActiveAzeriteItem", "GetAzeriteItemXPInfo", "GetPowerLevel", "IsAzeriteItem", "IsAzeriteItemByID",
+			"FindActiveAzeriteItem", "GetAzeriteItemXPInfo", "GetPowerLevel", "IsAzeriteItem", "IsAzeriteItemByID", "HasActiveAzeriteItem",
 		}},
 		C_VideoOptions = { fields = { "GetGxAdapterInfo", }},
 		C_UI = { fields = { "Reload", }},
@@ -5752,7 +5752,7 @@ stds["WoW"] = {
 		"AcceptBattlefieldPort", "AcceptDuel", "AcceptGroup",
 		"AcceptGuild", "AcceptLevelGrant", "AcceptProposal",
 		"AcceptQuest", "AcceptResurrect", "AcceptSockets",
-		"AcceptSpellConfirmationPrompt", "AcceptTrade", "AcceptXPLoss",
+		"AcceptSpellConfirmationPrompt", "AcceptTrade", "AcceptXPLoss", "IsPlayerAtEffectiveMaxLevel",
 		"AccountSecurityOpenTicket_OnClick", "AchievementAlertFrame_OnClick", "AchievementAlertFrame_SetUp",
 		"AchievementFrame_LoadUI", "AchievementMicroButton_OnEvent", "AchievementObjectiveTracker_OnAchievementUpdate",
 		"AchievementObjectiveTracker_OnOpenDropDown", "AchievementObjectiveTracker_UntrackAchievement", "AcknowledgeAutoAcceptQuest",

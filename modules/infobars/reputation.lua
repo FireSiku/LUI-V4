@@ -26,7 +26,6 @@ ReputationDataMixin.BAR_EVENTS = {
 	"LFG_BONUS_FACTION_ID_UPDATED",
 	"QUEST_LOG_UPDATE",
 	"UPDATE_FACTION",
-	"CRITERIA_UPDATE",
 }
 
 function ReputationDataMixin:ShouldBeVisible()

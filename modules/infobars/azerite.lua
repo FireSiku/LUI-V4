@@ -19,7 +19,7 @@ AzeriteDataMixin.BAR_EVENTS = {
 
 function AzeriteDataMixin:ShouldBeVisible()
 	local db = module:GetDB()
-	if db.ShowAzerite and C_AzeriteItem.HasActiveAzeriteItem() then -- luacheck: ignore
+	if db.ShowAzerite and C_AzeriteItem.HasActiveAzeriteItem() then
 		if C_AzeriteItem.FindActiveAzeriteItem() then
 			return true
 		end
