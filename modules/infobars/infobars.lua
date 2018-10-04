@@ -197,6 +197,7 @@ function module:CreateBar(name, dataMixin)
 	
 	bar:SetBarColor(module:RGB("Experience"))
 	bar:UpdateTextVisibility()
+	bar:UpdateVisibility()
 	bar:UpdateBar()
 
 	tinsert(barsList, bar)
