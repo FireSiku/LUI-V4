@@ -9,9 +9,9 @@ local oUF = ns.oUF
 local Private = oUF.Private
 
 local argcheck = Private.argcheck
-
-local print = Private.print
 local error = Private.error
+local print = Private.print
+local UnitExists = Private.UnitExists
 
 local styles, style = {}
 local callback, objects, headers = {}, {}, {}
@@ -141,12 +141,6 @@ for k, v in next, {
 
 		activeElements[self][name] = nil
 
-		-- We need to run a new update cycle in-case we knocked ourself out of sync.
-		-- The main reason we do this is to make sure the full update is completed
-		-- if an element for some reason removes itself _during_ the update
-		-- progress.
-		self:UpdateAllElements('DisableElement')
-
 		return elements[name].disable(self)
 	end,
 
@@ -204,6 +198,12 @@ for k, v in next, {
 		assert(type(event) == 'string', "Invalid argument 'event' in UpdateAllElements.")
 
 		if(self.PreUpdate) then
+			--[[ Callback: frame:PreUpdate(event)
+			Fired before the frame is updated.
+
+			* self  - the unit frame
+			* event - the event triggering the update (string)
+			--]]
 			self:PreUpdate(event)
 		end
 
@@ -212,6 +212,12 @@ for k, v in next, {
 		end
 
 		if(self.PostUpdate) then
+			--[[ Callback: frame:PostUpdate(event)
+			Fired after the frame is updated.
+
+			* self  - the unit frame
+			* event - the event triggering the update (string)
+			--]]
 			self:PostUpdate(event)
 		end
 	end,
@@ -285,12 +291,7 @@ local function initObject(unit, style, styleFunc, header, ...)
 
 			-- No need to enable this for *target frames.
 			if(not (unit:match('target') or suffix == 'target')) then
-				if(unit:match('raid') or unit:match('party')) then
-					-- See issue #404
-					object:SetAttribute('toggleForVehicle', false)
-				else
-					object:SetAttribute('toggleForVehicle', true)
-				end
+				object:SetAttribute('toggleForVehicle', true)
 			end
 
 			-- Other boss and target units are handled by :HandleUnit().
@@ -320,7 +321,7 @@ local function initObject(unit, style, styleFunc, header, ...)
 
 		styleFunc(object, objectUnit, not header)
 
-		object:SetScript('OnAttributeChanged', onAttributeChanged)
+		object:HookScript('OnAttributeChanged', onAttributeChanged)
 		object:SetScript('OnShow', onShow)
 
 		activeElements[object] = {}
@@ -350,7 +351,7 @@ local function walkObject(object, unit)
 	-- Check if we should leave the main frame blank.
 	if(object:GetAttribute('oUF-onlyProcessChildren')) then
 		object.hasChildren = true
-		object:SetScript('OnAttributeChanged', onAttributeChanged)
+		object:HookScript('OnAttributeChanged', onAttributeChanged)
 		return initObject(unit, style, styleFunc, header, object:GetChildren())
 	end
 
@@ -461,13 +462,15 @@ end
 local function generateName(unit, ...)
 	local name = 'oUF_' .. style:gsub('^oUF_?', ''):gsub('[^%a%d_]+', '')
 
-	local raid, party, groupFilter
+	local raid, party, groupFilter, unitsuffix
 	for i = 1, select('#', ...), 2 do
 		local att, val = select(i, ...)
-		if(att == 'showRaid') then
-			raid = true
+		if(att == 'oUF-initialConfigFunction') then
+			unitsuffix = val:match('unitsuffix[%p%s]+(%a+)')
+		elseif(att == 'showRaid') then
+			raid = val ~= false and val ~= nil
 		elseif(att == 'showParty') then
-			party = true
+			party = val ~= false and val ~= nil
 		elseif(att == 'groupFilter') then
 			groupFilter = val
 		end
@@ -477,10 +480,10 @@ local function generateName(unit, ...)
 	if(raid) then
 		if(groupFilter) then
 			if(type(groupFilter) == 'number' and groupFilter > 0) then
-				append = groupFilter
-			elseif(groupFilter:match('TANK')) then
+				append = 'Raid' .. groupFilter
+			elseif(groupFilter:match('MAINTANK')) then
 				append = 'MainTank'
-			elseif(groupFilter:match('ASSIST')) then
+			elseif(groupFilter:match('MAINASSIST')) then
 				append = 'MainAssist'
 			else
 				local _, count = groupFilter:gsub(',', '')
@@ -500,13 +503,15 @@ local function generateName(unit, ...)
 	end
 
 	if(append) then
-		name = name .. append
+		name = name .. append .. (unitsuffix or '')
 	end
 
 	-- Change oUF_LilyRaidRaid into oUF_LilyRaid
 	name = name:gsub('(%u%l+)([%u%l]*)%1', '%1')
 	-- Change oUF_LilyTargettarget into oUF_LilyTargetTarget
 	name = name:gsub('t(arget)', 'T%1')
+	name = name:gsub('p(et)', 'P%1')
+	name = name:gsub('f(ocus)', 'F%1')
 
 	local base = name
 	local i = 2
@@ -524,7 +529,7 @@ do
 	end
 
 	-- There has to be an easier way to do this.
-	local initialConfigFunctionTemp = [[
+	local initialConfigFunction = [[
 		local header = self:GetParent()
 		local frames = table.new()
 		table.insert(frames, self)
@@ -566,7 +571,6 @@ do
 
 				frame:SetAttribute('*type1', 'target')
 				frame:SetAttribute('*type2', 'togglemenu')
-				frame:SetAttribute('toggleForVehicle', %d == 1) -- See issue #404
 				frame:SetAttribute('oUF-guessUnit', unit)
 			end
 
@@ -584,9 +588,6 @@ do
 			clique:RunAttribute('clickcast_register')
 		end
 	]]
-
-	-- Necessary for a vehicle support hack (see issue #404)
-	local initialConfigFunction = initialConfigFunctionTemp:format(1)
 
 	--[[ oUF:SpawnHeader(overrideName, template, visibility, ...)
 	Used to create a group header and apply the currently active style to it.
@@ -656,71 +657,6 @@ do
 
 		return header
 	end
-
-	-- The remainder of this scope is a temporary fix for issue #404,
-	-- regarding vehicle support on headers for the Antorus raid instance.
-	-- Track changes to SecureButton_GetModifiedUnit, this hack should be
-	-- removed when UnitTargetsVehicleInRaidUI is added to it. Supposedly,
-	-- it should happen in 8.x.
-	local isHacked = false
-	local shouldHack
-
-	local function toggleHeaders(flag)
-		for _, header in next, headers do
-			header:SetAttribute('initialConfigFunction', initialConfigFunction)
-
-			for _, child in next, {header:GetChildren()} do
-				child:SetAttribute('toggleForVehicle', flag)
-			end
-		end
-
-		isHacked = not flag
-		shouldHack = nil
-	end
-
-	local eventHandler = CreateFrame('Frame')
-	eventHandler:RegisterEvent('ZONE_CHANGED_NEW_AREA')
-	eventHandler:RegisterEvent('PLAYER_ENTERING_WORLD')
-	eventHandler:RegisterEvent('PLAYER_REGEN_ENABLED')
-	eventHandler:SetScript('OnEvent', function(_, event)
-		if(event == 'ZONE_CHANGED_NEW_AREA') then
-			local _, _, _, _, _, _, _, id = GetInstanceInfo()
-			if(id == 1712 and not isHacked) then
-				initialConfigFunction = initialConfigFunctionTemp:format(0)
-
-				if(not InCombatLockdown()) then
-					toggleHeaders(false)
-				else
-					shouldHack = true
-				end
-			elseif(id ~= 1712 and isHacked) then
-				initialConfigFunction = initialConfigFunctionTemp:format(1)
-
-				if(not InCombatLockdown()) then
-					toggleHeaders(true)
-				else
-					shouldHack = false
-				end
-			end
-		elseif(event == 'PLAYER_ENTERING_WORLD') then
-			local _, _, _, _, _, _, _, id = GetInstanceInfo()
-			if(id == 1712 and not isHacked) then
-				initialConfigFunction = initialConfigFunctionTemp:format(0)
-
-				toggleHeaders(false)
-			elseif(id ~= 1712 and isHacked) then
-				initialConfigFunction = initialConfigFunctionTemp:format(1)
-
-				toggleHeaders(true)
-			end
-		elseif(event == 'PLAYER_REGEN_ENABLED') then
-			if(isHacked and shouldHack == false) then
-				toggleHeaders(true)
-			elseif(not isHacked and shouldHack) then
-				toggleHeaders(false)
-			end
-		end
-	end)
 end
 
 --[[ oUF:Spawn(unit, overrideName)
@@ -730,6 +666,10 @@ Used to create a single unit frame and apply the currently active style to it.
 * unit         - the frame's unit (string)
 * overrideName - unique global name to use for the unit frame. Defaults to an auto-generated name based on the unit
                  (string?)
+
+oUF implements some of its own attributes. These can be supplied by the layout, but are optional.
+
+* oUF-enableArenaPrep - can be used to toggle arena prep support. Defaults to true (boolean)
 --]]
 function oUF:Spawn(unit, overrideName)
 	argcheck(unit, 2, 'string')
@@ -756,7 +696,8 @@ Used to create nameplates and apply the currently active style to them.
 * self      - the global oUF object
 * prefix    - prefix for the global name of the nameplate. Defaults to an auto-generated prefix (string?)
 * callback  - function to be called after a nameplate unit or the player's target has changed. The arguments passed to
-              the callback are the updated nameplate, the event that triggered the update and the new unit (function?)
+              the callback are the updated nameplate, if any, the event that triggered the update, and the new unit
+              (function?)
 * variables - list of console variable-value pairs to be set when the player logs in (table?)
 --]]
 function oUF:SpawnNamePlates(namePrefix, nameplateCallback, nameplateCVars)
@@ -801,12 +742,12 @@ function oUF:SpawnNamePlates(namePrefix, nameplateCallback, nameplateCVars)
 			end
 		elseif(event == 'PLAYER_TARGET_CHANGED') then
 			local nameplate = C_NamePlate.GetNamePlateForUnit('target')
-			if(not nameplate) then return end
-
-			nameplate.unitFrame:UpdateAllElements(event)
+			if(nameplate) then
+				nameplate.unitFrame:UpdateAllElements(event)
+			end
 
 			if(nameplateCallback) then
-				nameplateCallback(nameplate.unitFrame, event, 'target')
+				nameplateCallback(nameplate and nameplate.unitFrame, event, 'target')
 			end
 		elseif(event == 'NAME_PLATE_UNIT_ADDED' and unit) then
 			local nameplate = C_NamePlate.GetNamePlateForUnit(unit)
