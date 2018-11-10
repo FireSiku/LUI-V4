@@ -55,7 +55,6 @@ modules\artwork.lua
 modules\minimap.lua
 modules\tooltip.lua
 modules\micromenu.lua
-modules\expbar.lua
 ## modules\bars.lua
 modules\aura.xml
 
@@ -71,6 +70,13 @@ modules\bags\templates.lua
 modules\bags\bags.lua
 modules\bags\bank.lua
 modules\bags\reagents.lua
+
+## Load InfoBars
+modules\infobars\infobars.lua
+modules\infobars\experience.lua
+modules\infobars\reputation.lua
+modules\infobars\honor.lua
+modules\infobars\azerite.lua
 
 ## Load Infotext
 modules\infotext\infotext.lua

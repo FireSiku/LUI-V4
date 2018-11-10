@@ -1,0 +1,85 @@
+-- ####################################################################################################################
+-- ##### Setup and Locals #############################################################################################
+-- ####################################################################################################################
+
+local _, LUI = ...
+local module = LUI:GetModule("Experience Bar")
+local L = LUI.L
+
+local SHORT_REPUTATION_NAMES = {
+	L["ExpBar_ShortName_Hatred"],		-- Ha
+	L["ExpBar_ShortName_Hostile"],		-- Ho
+	L["ExpBar_ShortName_Unfriendly"],	-- Un
+	L["ExpBar_ShortName_Neutral"],		-- Ne
+	L["ExpBar_ShortName_Friendly"],		-- Fr
+	L["ExpBar_ShortName_Honored"],		-- Hon
+	L["ExpBar_ShortName_Revered"],		-- Rev
+	L["ExpBar_ShortName_Exalted"],		-- Ex
+}
+
+-- ####################################################################################################################
+-- ##### ReputationDataMixin #############################################################################################
+-- ####################################################################################################################
+local ReputationDataMixin = module:CreateNewDataMixin("Reputation")
+
+ReputationDataMixin.BAR_EVENTS = {
+	"LFG_BONUS_FACTION_ID_UPDATED",
+	"QUEST_LOG_UPDATE",
+	"UPDATE_FACTION",
+}
+
+function ReputationDataMixin:ShouldBeVisible()
+	local name = GetWatchedFactionInfo()
+	if name then return true end
+end
+
+function ReputationDataMixin:GetParagonValues(factionID)
+	-- Blizzard also stores Paragon in an interesting way.
+	-- currentValue is the total amount of paragon a character accrued.
+	-- Need to remove threshold value out of currentValue for every reward already received.
+
+	local currentValue, rewardThreshold, _,  rewardPending = C_Reputation.GetFactionParagonInfo(factionID)
+	currentValue = (currentValue - rewardThreshold) % rewardThreshold
+
+	if rewardPending then
+		-- If there's a reward pending, the bar should be full, adjust percent value to be above 100%
+		-- Also lets register for quest turn in to know when the reward isn't pending anymore.
+		--module:RegisterEvent("QUEST_LOG_UPDATE", "UpdateBarMode")
+		self.repText = L["ExpBar_ShortName_Reward"]
+		return currentValue + rewardThreshold, rewardThreshold
+	else
+		--module:UnregisterEvent("QUEST_LOG_UPDATE")
+		self.repText = L["ExpBar_ShortName_Paragon"]
+		return currentValue, rewardThreshold
+	end
+end
+
+--TODO: Add support for Friendships
+function ReputationDataMixin:Update()
+	-- Blizzard store reputation in an interesting way.
+	-- barMin represents the minimum bound for the current standing, barMax represents the maximum bound.
+	-- For example, barMin for revered is 21000 (3000+6000+12000 from Neutral to Honored), barMax is 42000.
+	-- To get a 0 / 21000 representation, we have to reduce all three values by barMin.
+	-- Patch 7.2 changed barMin to be equal to barMax at Exalted, so we need to handle that too.
+
+	local _, standing, barMin, barMax, barValue, factionID = GetWatchedFactionInfo()
+
+	self.repText = SHORT_REPUTATION_NAMES[standing]
+
+	if C_Reputation.IsFactionParagon(factionID) and barMin == barMax then
+		barValue, barMax = self:GetParagonValues(factionID)
+	elseif barMin == barMax then
+		barValue, barMax = 1, 1
+	else
+		barMax = barMax - barMin
+		barValue = barValue - barMin
+	end
+	
+	self.barMin = 0
+	self.barMax = barMax
+	self.barValue = barValue
+end
+
+function ReputationDataMixin:GetDataText()
+	return self.repText
+end

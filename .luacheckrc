@@ -103,7 +103,7 @@ stds["WoW"] = {
 			"AddActiveModelScene", "AddActiveModelSceneActor", "ClearActiveModelScene", "ClearActiveModelSceneActor", "GetModelSceneActorDisplayInfoByID",
  			"GetModelSceneActorInfoByID", "GetModelSceneCameraInfoByID", "GetModelSceneInfoByID", }},
 		C_AzeriteItem = { fields = { 
-			"FindActiveAzeriteItem", "GetAzeriteItemXPInfo", "GetPowerLevel", "IsAzeriteItem", "IsAzeriteItemByID",
+			"FindActiveAzeriteItem", "GetAzeriteItemXPInfo", "GetPowerLevel", "IsAzeriteItem", "IsAzeriteItemByID", "HasActiveAzeriteItem",
 		}},
 		C_VideoOptions = { fields = { "GetGxAdapterInfo", }},
 		C_UI = { fields = { "Reload", }},
@@ -5747,12 +5747,12 @@ stds["WoW"] = {
 		"_JKL_TEST", "_RECORDING_WARNING_CORRUPTED",
 
 		-- Function List
-		"APIDocumentation_LoadUI", "AbandonQuest", "AbandonSkill",
+		"APIDocumentation_LoadUI", "AbandonQuest", "AbandonSkill", 
 		"AbbreviateLargeNumbers", "AbbreviateNumbers", "AcceptAreaSpiritHeal",
 		"AcceptBattlefieldPort", "AcceptDuel", "AcceptGroup",
 		"AcceptGuild", "AcceptLevelGrant", "AcceptProposal",
 		"AcceptQuest", "AcceptResurrect", "AcceptSockets",
-		"AcceptSpellConfirmationPrompt", "AcceptTrade", "AcceptXPLoss",
+		"AcceptSpellConfirmationPrompt", "AcceptTrade", "AcceptXPLoss", "IsPlayerAtEffectiveMaxLevel",
 		"AccountSecurityOpenTicket_OnClick", "AchievementAlertFrame_OnClick", "AchievementAlertFrame_SetUp",
 		"AchievementFrame_LoadUI", "AchievementMicroButton_OnEvent", "AchievementObjectiveTracker_OnAchievementUpdate",
 		"AchievementObjectiveTracker_OnOpenDropDown", "AchievementObjectiveTracker_UntrackAchievement", "AcknowledgeAutoAcceptQuest",
@@ -7987,7 +7987,7 @@ stds["WoW"] = {
 		"AUTOCAST_SHINE_TIMERS", "AUTOCOMPLETE_COLOR_KEYS", "AUTOCOMPLETE_LIST",
 		"AUTOCOMPLETE_LIST_TEMPLATES", "AUTO_QUEST_POPUP_TRACKER_MODULE", "ActionBarActionEventsFrame",
 		"ActionBarController", "ActorPoolMixin", "AddFriendEntryFrame",
-		"AddFriendFrame", "AddFriendInfoFrame", "AddFriendNoteFrame",
+		"AddFriendFrame", "AddFriendInfoFrame", "AddFriendNoteFrame", "StatusTrackingBarManager",
 		"AddonList", "AddonListPortraitFrame", "AddonListScrollFrame","Advanced_UIScaleSliderThumb", "AlertContainerMixin", "AlertFrame",
 		"AlertFrameAutoAnchoredMixin", "AlertFrameExternallyAnchoredMixin", "AlertFrameMixin",
 		"AlertFrameQueueMixin", "AnimateCallout", "AnimateMouse", "GuildFrame",
