@@ -52,7 +52,7 @@ module.defaults = {
 			Honor =      { r = 0.18, g = 0.18, b = 0.18, a = 0.8, t = "Class", },
 		},
 		Fonts = {
-			Text = { Name = "Prototype", Size = 13, Flag = "NONE" },
+			Text = { Name = "NotoSans-SCB", Size = 14, Flag = "NONE" },
 		},
 		StatusBars = {
 			ExpBar = "LUI_Gradient",

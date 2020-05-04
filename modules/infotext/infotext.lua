@@ -60,8 +60,8 @@ module.defaults = {
 			Panels = { r = 0.12, g = 0.58,  b = 0.89, a = 0.5, t = "Class", },
 		},
 		Fonts = {
-			Infotext = { Name = "vibroceb",  Size = 12, Flag = "OUTLINE", },
-			Infotip =  { Name = "prototype", Size = 12, Flag = "NONE",    },
+			Infotext = { Name = "NotoSans-SCB", Size = 12, Flag = "OUTLINE", },
+			Infotip =  { Name = "NotoSans-SCB", Size = 12, Flag = "NONE",    },
 		},
 	},
 }

@@ -102,6 +102,7 @@ module.defaults = {
 		Scale = 1,
 		X = -150,
 		Y = 0,
+		HealthFontSize = 12,
 		Textures = {
 			healthBar = "LUI_Minimalist",
 			backgroundTex = "Blizzard Dialog Background Dark",

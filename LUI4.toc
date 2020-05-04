@@ -1,14 +1,13 @@
 ## Interface: 80000
 ## Version: 4.0
 ## Title: LUI4
-## Author: Siku, Mule
-## eMail: chaoslux [at] gmail [dot] com
+## Author: Siku
 ## Notes: User Interface Modification
 ## SavedVariables: LUI4DB
 ## X-Website: http://www.wowlui.com
 ## X-oUF: oUF_LUI
 
-## Load Libraries
+# Load Libraries
 libs\LibStub\LibStub.lua
 libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
 libs\AceAddon-3.0\AceAddon-3.0.xml
@@ -30,15 +29,15 @@ libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 libs\LibWindow-1.1\LibWindow-1.1.lua
 libs\LibCompress\LibCompress.lua
 
-## Load Localization Files
+# Load Localization Files
 locale\enUS.lua
 
-## Initialize LUI
+# Initialize LUI
 LUI.lua
 api\curse.lua
 api\oUF\oUF.xml
 
-## Load API files
+# Load API files
 api\utils.lua
 api\modapi.lua
 api\options.lua
@@ -47,38 +46,38 @@ api\strings.lua
 api\cpanel.lua
 api\compat.lua
 
-## Load Core Modules
+# Load Core Modules
 modules\layout.lua
 modules\artwork.lua
 
-## Load Single Modules
+# Load Single Modules
 modules\minimap.lua
 modules\tooltip.lua
 modules\micromenu.lua
-## modules\bars.lua
+#modules\bars.lua
 modules\aura.xml
 
-## Load Unitframes
+# Load Unitframes
 modules\unitframes\unitframes.lua
 modules\unitframes\defaults.lua
 modules\unitframes\style.lua
 modules\unitframes\class.lua
 
-## Load Bags
-modules\bags\container.lua
-modules\bags\templates.lua
-modules\bags\bags.lua
-modules\bags\bank.lua
-modules\bags\reagents.lua
+# Load Bags
+# modules\bags\container.lua
+# modules\bags\templates.lua
+# modules\bags\bags.lua
+# modules\bags\bank.lua
+# modules\bags\reagents.lua
 
-## Load InfoBars
+# Load InfoBars
 modules\infobars\infobars.lua
 modules\infobars\experience.lua
 modules\infobars\reputation.lua
 modules\infobars\honor.lua
 modules\infobars\azerite.lua
 
-## Load Infotext
+# Load Infotext
 modules\infotext\infotext.lua
 modules\infotext\infotip.lua
 modules\infotext\durability.lua
@@ -93,10 +92,10 @@ modules\infotext\guild.lua
 modules\infotext\friends.lua
 modules\infotext\archaeology.lua
 
-## Load UI Elements
+# Load UI Elements
 modules\uielements\uielements.lua
 modules\uielements\colorpicker.lua
 
-## Load Addon Support Files
+# Load Addon Support Files
 api\addons.lua
 addons\bartender4.lua

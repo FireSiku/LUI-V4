@@ -49,10 +49,10 @@ module.defaults = {
 			ReverseSort = false,
 		},
 		Fonts = {
-			BuffsDur =     { Name = "vibroceb", Size = 12, Flag = "OUTLINE", },
-			DebuffsDur =   { Name = "vibroceb", Size = 12, Flag = "OUTLINE", },
-			BuffsCount =   { Name = "vibroceb", Size = 12, Flag = "OUTLINE", },
-			DebuffsCount = { Name = "vibroceb", Size = 12, Flag = "OUTLINE", },
+			BuffsDur =     { Name = "NotoSans-SCB", Size = 12, Flag = "OUTLINE", },
+			DebuffsDur =   { Name = "NotoSans-SCB", Size = 12, Flag = "OUTLINE", },
+			BuffsCount =   { Name = "NotoSans-SCB", Size = 12, Flag = "OUTLINE", },
+			DebuffsCount = { Name = "NotoSans-SCB", Size = 12, Flag = "OUTLINE", },
 		},
 		Colors = {
 			--Font Colors

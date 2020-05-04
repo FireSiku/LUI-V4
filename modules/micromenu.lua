@@ -244,7 +244,7 @@ local microDefinitions = {
 -- ##### Module Functions #############################################################################################
 -- ####################################################################################################################
 
--- Function to attach the alert frame to point to micromenu buttonsw
+-- Function to attach the alert frame to point to micromenu buttons
 function module:HookAlertFrame(name, anchor)
 	local r, g, b, a = module:RGBA("Micromenu")
 	local alertFrame      = _G[name.."MicroButtonAlert"]
@@ -306,7 +306,6 @@ function MicroButtonClickerMixin:OnEnter()
 	if parent.level and UnitLevel("player") < parent.level then
 		GameTooltip:AddLine(format(L["Micro_PlayerReq"], parent.level), LUI:NegativeColor())
 	end
-
 	GameTooltip:Show()
 end
 

@@ -13,7 +13,6 @@ local L = LUI.L
 
 --For Testing Purposes Only
 _G["LUI"] = LUI
-
 local Media = LibStub("LibSharedMedia-3.0")
 local ACD = LibStub("AceConfigDialog-3.0")
 
@@ -52,6 +51,8 @@ LUI.defaults = {
 			IsConfigured = false, -- Currently unused, will be when Install process is done
 			BlizzFrameScale = 1, -- Not sure if we'll use that, or if it's going to be part of scripts.
 			ModuleMessages = true,
+			MasterFont = "NotoSans-SCB",
+			MasterFlag = "OUTLINE",
 		},
 		Snippets = {
 		-- Siku TODO note: Snippet Engine. Dynamic creation and editing of LUIv3's Scripts.
@@ -70,12 +71,10 @@ LUI.defaults = {
 -- ####################################################################################################################
 
 -- REGISTER FONTS
-Media:Register("font", "vibrocen", [[Interface\Addons\LUI4\media\fonts\vibrocen.ttf]])
 Media:Register("font", "vibroceb", [[Interface\Addons\LUI4\media\fonts\vibroceb.ttf]])
 Media:Register("font", "Prototype", [[Interface\Addons\LUI4\media\fonts\prototype.ttf]])
-Media:Register("font", "neuropol", [[Interface\AddOns\LUI4\media\fonts\neuropol.ttf]])
-Media:Register("font", "AvantGarde_LT_Medium", [[Interface\AddOns\LUI4\media\fonts\AvantGarde_LT_Medium.ttf]])
-Media:Register("font", "Arial Narrow", [[Interface\AddOns\LUI4\media\fonts\ARIALN.TTF]])
+Media:Register("font", "NotoSans-SCB", [[Interface\AddOns\LUI4\media\fonts\NotoSans-SemiCondensedBold.ttf]])
+
 
 -- REGISTER BORDERS
 Media:Register("border", "glow", [[Interface\Addons\LUI4\media\borders\glow.tga]])
