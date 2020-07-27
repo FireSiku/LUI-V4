@@ -74,13 +74,14 @@ element.defaults = {
 		Horde = {},
 	},
 }
+module:MergeDefaults(element.defaults, "Gold")
 
 -- ####################################################################################################################
 -- ##### Module Functions #############################################################################################
 -- ####################################################################################################################
 
 function element:FormatMoney(money, color)
-	local db = element:GetDB()
+	local db = module:GetDB().Gold
 	if db.useBlizzard then
 		return GetMoneyString(money)
 	end
@@ -107,11 +108,11 @@ function element:FormatMoney(money, color)
 end
 
 function element:UpdateGold()
-	local db = element:GetDB()
+	local db = module:GetDB().Gold
 	local realm = LUI.playerRealm
 	local faction = LUI.playerFaction
-	local realmDB = element:GetDBScope("realm")[faction]
-	local globalDB = element:GetDBScope("global")[faction]
+	local realmDB = module:GetDBScope("realm").Gold[faction]
+	local globalDB = module:GetDBScope("global").Gold[faction]
 
 	local newMoney = GetMoney()
 
@@ -138,8 +139,8 @@ end
 
 function element:UpdateRealmMoney()
 	local faction = LUI.playerFaction
-	local realmDB = element:GetDBScope("realm")[faction]
-	local globalDB = element:GetDBScope("global")[faction]
+	local realmDB = module:GetDBScope("realm").Gold[faction]
+	local globalDB = module:GetDBScope("global").Gold[faction]
 	
 	--Update for current character
 	realmDB[LUI.playerName] = GetMoney()
@@ -159,7 +160,7 @@ function element.OnClick(frame_, button)
 		moneyProfit = 0
 		element:UpdateTooltip()
 	else
-		local db = element:GetDB()
+		local db = module:GetDB().Gold
 		db.showRealm = not db.showRealm
 		element:UpdateGold()
 	end
@@ -188,7 +189,7 @@ function element.OnTooltipShow(GameTooltip)
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddLine(L["InfoGold_Characters"] )
 	for i, faction in ipairs(FACTION_ORDER_REALM) do
-		local realmDB = element:GetDBScope("realm")
+		local realmDB = module:GetDBScope("realm").Gold
 		for name, money in pairs(realmDB[faction]) do
 			local r, g, b = LUI:GetFactionColor(faction)
 			GameTooltip:AddDoubleLine(name, element:FormatMoney(money, true), r, g, b, 1,1,1)
@@ -197,7 +198,7 @@ function element.OnTooltipShow(GameTooltip)
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddLine(L["InfoGold_Realms"])
 	for i, faction in ipairs(FACTION_ORDER_GLOBAL) do
-		local globalDB = element:GetDBScope("global")
+		local globalDB = module:GetDBScope("global").Gold
 		for realm, money in pairs(globalDB[faction]) do
 			local r, g, b = LUI:GetFactionColor(faction)
 			GameTooltip:AddDoubleLine(format("%s-%s", realm, faction), element:FormatMoney(money, true), r, g, b, 1,1,1)

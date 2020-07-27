@@ -117,13 +117,14 @@ element.defaults = {
 		},
 	},
 }
+module:MergeDefaults(element.defaults, "Friends")
 
 -- ####################################################################################################################
 -- ##### Infotip Setup ################################################################################################
 -- ####################################################################################################################
 
 function element:BuildTooltip()
-	infotip = module:GetModule("Infotip"):NewInfotip(element)
+	infotip = module:NewInfotip(element)
 	infotip.BNFriends = {}
 	infotip.FriendsBC = {}
 	infotip.Friends = {}

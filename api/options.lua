@@ -19,7 +19,7 @@ local LSM_DCONTROL_BACKGROUND = "LSM30_Background"
 local LSM_DCONTROL_STATUSBAR = "LSM30_Statusbar"
 local LSM_DCONTROL_BORDER = "LSM30_Border"
 local LSM_DCONTROL_SOUND = "LSM30_Sound"
---local LSM_DCONTROL_FONT = "LSM30_Font"
+local LSM_DCONTROL_FONT = "LSM30_Font"
 
 -- Mixin Table
 local OptionsMixin = {} -- Embed Prototype
@@ -617,6 +617,66 @@ function OptionsMixin:NewUnitframeSize(name_, order, hasRelative, meta, width, d
 	end)
 	return t
 end
+
+-- ####################################################################################################################
+-- ##### OptionsMixin: Font Widgets ###################################################################################
+-- ####################################################################################################################
+-- Font = {
+-- 	name = "Font",
+-- 	desc = "Choose the Font for your Minimap Location and Coords!",
+-- 	type = "select",
+-- 	dialogControl = "LSM30_Font",
+-- 	values = AceGUIWidgetLSMlists.font,
+-- 	get = function() return db.Fonts.Minimap.Name end,
+-- 	set = function(info, Font)
+-- 		db.Fonts.Minimap.Name = Font
+-- 	end,
+-- 	order = 11,
+-- },
+
+--[[ font args:
+	fontName
+--]]
+
+function OptionsMixin:NewFont(name, desc, order, meta, width, disabled, hidden)
+	-- TODO: Sort out the confusing nature of dcontrol (possibly split it using new wrappers)
+	local t = SetVals("select", name, desc, order)
+
+	t.dialogControl = LSM_DCONTROL_FONT
+	t.values = AceGUIWidgetLSMlists.font
+
+	SetupMeta(t, meta)
+	SetState(t, width, disabled, hidden)
+	return t
+end
+
+-- Generate a / Dropdown combo, the dropdown selection determines the color bypass. (Theme, Class, Spec, etc)
+-- TODO/EXAMINE: Should we use Color's alpha slider or use a separate alpha slider considering theme/class
+-- Width arg not respected.
+function OptionsMixin:NewFontMenu(name, order, fontName, meta, width_, disabled, hidden)
+	local db = self:GetDB("Fonts")
+	local function FontGetter(info)
+		local opt = info[#info]
+		return db[fontName][opt]
+	end
+	local function FontSetter(info, value, ...)
+		local opt = info[#info]
+		db[fontName][opt] = value
+		SetFunc(self, info, value, ...)
+	end
+	-- local function isFontSelectDisabled()
+	-- 	return db[fontName].Master
+	-- end
+
+	local t = self:NewGroup(name, order, nil, true, FontGetter, FontSetter, {
+		--Master = self:NewToggle("Use Master Font", nil, order+0.1, nil, "Normal"),
+		Name = self:NewFont("Font Name", nil, order+0.2)
+		
+	})
+
+	return t
+end
+
 
 -- ####################################################################################################################
 -- ##### OptionsMixin: Color Widgets ##################################################################################

@@ -5,7 +5,6 @@
 
 local _, LUI = ...
 local module = LUI:GetModule("Bags")
-local element = module:NewElement("Reagent", "AceHook-3.0", "AceEvent-3.0")
 
 local format = format
 
@@ -131,48 +130,4 @@ function Reagent:CreateUnlockInfo()
 	self.unlockButton = button
 end
 
--- ####################################################################################################################
--- ##### Module Functions #############################################################################################
--- ####################################################################################################################
-
--- When opening bank, open bags if needed.
--- If bank opened bags, bags should close at same time.
-
-local hasBankOpenBags = false
-
-local function OpenBank()
-	--TODO: Only create bank when needed. Currently doesnt work.
-	--if not LUIBank then
-	--	module:CreateNewContainer("Bank", Bank)
-	--end
-
-	if not LUIBags:IsShown() then
-		hasBankOpenBags = true
-		LUIBags:Open()
-	end
-	LUIReagent:Open()
-end
-
-local function CloseBank()
-	if hasBankOpenBags then
-		LUIBags:Close()
-		hasBankOpenBags = false
-	end
-	LUIReagent:Close()
-end
-
--- ####################################################################################################################
--- ##### Framework Events #############################################################################################
--- ####################################################################################################################
-
-function element:OnEnable()
-	-- Create container
-	module:CreateNewContainer("Reagent", Reagent)
-	tinsert(UISpecialFrames, "LUIReagent")
-	element:RegisterEvent("BANKFRAME_OPENED", OpenBank)
-	element:RegisterEvent("BANKFRAME_CLOSED", CloseBank)
-	module:RegisterEvent("PLAYERREAGENTBANKSLOTS_CHANGED", Reagent.BankSlotsUpdate)
-end
-
-function element:OnDisable()
-end
+module.BankReagentContainer = Reagents

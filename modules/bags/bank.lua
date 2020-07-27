@@ -3,7 +3,6 @@
 -- ####################################################################################################################
 local _, LUI = ...
 local module = LUI:GetModule("Bags")
-local element = module:NewElement("Bank", "AceHook-3.0")
 
 local format = format
 
@@ -168,7 +167,7 @@ end
 
 local hasBankOpenBags = false
 
-local function OpenBank()
+function module.OpenBank()
 	--TODO: Only create bank when needed. Currently doesnt work.
 	--if not LUIBank then
 	--	module:CreateNewContainer("Bank", Bank)
@@ -181,7 +180,7 @@ local function OpenBank()
 	LUIBank:Open()
 end
 
-local function CloseBank()
+function module.CloseBank()
 	if hasBankOpenBags then
 		LUIBags:Close()
 		hasBankOpenBags = false
@@ -189,22 +188,5 @@ local function CloseBank()
 	LUIBank:Close()
 end
 
--- ####################################################################################################################
--- ##### Framework Events #############################################################################################
--- ####################################################################################################################
-
-function element:OnEnable()
-	-- Create container
-	module:CreateNewContainer("Bank", Bank)
-	tinsert(UISpecialFrames, "LUIBank")
-	module:RegisterEvent("BANKFRAME_OPENED", OpenBank)
-	module:RegisterEvent("BANKFRAME_CLOSED", CloseBank)
-	--element:HookScript(LUIBags, "OnHide", CloseBank)
-	module:RegisterEvent("PLAYERBANKSLOTS_CHANGED", Bank.BankSlotsUpdate)
-	BankFrame:UnregisterAllEvents()
-end
-
-function element:OnDisable()
-	BankFrame:RegisterEvent("BANKFRAME_OPENED")
-	BankFrame:RegisterEvent("BANKFRAME_CLOSED")
-end
+--Placeholders until refactor
+module.BankContainer = Bank

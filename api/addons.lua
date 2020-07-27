@@ -32,10 +32,12 @@ end
 -- ####################################################################################################################
 -- ##### Framework Events #############################################################################################
 -- ####################################################################################################################
+--TODO: Redesign to simplify things. Create a specialized Data Provider Mixin for supported addons.
 
 function module:OnInitialize()
 	LUI:RegisterModule(module)
 	--Set EnabledState based on addons that are loaded.
+	
 	for name, element in module:IterateModules() do
 		if IsAddOnLoaded(name) then
 			element:SetEnabledState(true)
@@ -47,6 +49,7 @@ end
 
 function module:OnEnable()
 	local db = module:GetDB("installed")
+	--Todo: Redesign to use internal loop
 	for name, element in module:IterateModules() do
 		-- Explicit nil check because false should have a different result
 		if db[name] == nil then

@@ -1,5 +1,4 @@
--- Infotip module, this is not supposed to be an Infotext's element.
--- This provides Infotext with a clickable frame, mainly used for Guild/Friends.
+-- This provides Infotext with a clickable multi-column frame, mainly used for Guild/Friends.
 
 -- ####################################################################################################################
 -- ##### Setup and Locals #############################################################################################
@@ -7,7 +6,8 @@
 
 local _, LUI = ...
 local module = LUI:GetModule("Infotext")
-local element = module:NewModule("Infotip", "AceHook-3.0")
+local modTooltip = LUI:GetModule("Tooltip")
+local element = {}
 local L = LUI.L
 
 -- local copies
@@ -175,7 +175,7 @@ end
 
 -- To revisit later, originally wanted a customizable minWidth. (default 300 to match V3 layout)
 -- Right now its a strict minimum width to prevent frame from breaking.
-function element:EnforceMinWidth(infotip, value)
+function module:EnforceMinWidth(infotip, value)
 	if value < infotip.minWidth then
 		infotip:SetWidth(infotip.minWidth)
 	end
@@ -203,7 +203,6 @@ function element:AddSlider(newtip)
 end
 
 function element:ApplyBackdropColors()
-	local modTooltip = LUI:GetModule("Tooltip")
 	local isModded = (modTooltip and modTooltip:IsEnabled()) and true or false
 	local colorDB = (isModded) and modTooltip:GetDB("Colors")
 	for _, infotip in pairs(infotipStorage) do
@@ -217,7 +216,15 @@ function element:ApplyBackdropColors()
 	end
 end
 
-function element:NewInfotip(infotext)
+function module:NewInfotip(infotext)
+	-- Hook relevant functions from the tooltip module to maintain tooltip look if it hasnt been done yet.
+	
+	if not module:IsHooked(modTooltip, "OnEnable") then
+		module:SecureHook(modTooltip, "UpdateBackdropColors", element.ApplyBackdropColors)
+		module:SecureHook(modTooltip, "OnEnable",  element.ApplyBackdropColors)
+		module:SecureHook(modTooltip, "OnDisable", element.ApplyBackdropColors)
+	end
+
 	local name = infotext:GetName()
 	local parent = infotext:GetFrame()
 
@@ -249,7 +256,7 @@ function element:NewInfotip(infotext)
 
 	-- Enforce Infotip minimum width.
 	newtip.minWidth = INFOTIP_MIN_WIDTH
-	element:SecureHook(newtip, "SetWidth", "EnforceMinWidth")
+	module:SecureHook(newtip, "SetWidth", "EnforceMinWidth")
 
 	-- Initialize some values
 	newtip.maxHeight = 0
@@ -260,16 +267,4 @@ function element:NewInfotip(infotext)
 	newtip.totalLines = 0
 
 	return newtip
-end
-
--- ####################################################################################################################
--- ##### Framework Events #############################################################################################
--- ####################################################################################################################
-
-function element:OnEnable()
-	-- Hook relevant functions from the tooltip module to maintain tooltip look.
-	local modTooltip = LUI:GetModule("Tooltip")
-	element:SecureHook(modTooltip, "UpdateBackdropColors", "ApplyBackdropColors")
-	element:SecureHook(modTooltip, "OnEnable", "ApplyBackdropColors")
-	element:SecureHook(modTooltip, "OnDisable", "ApplyBackdropColors")
 end

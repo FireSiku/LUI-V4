@@ -1,6 +1,5 @@
 --[[
 	Module.....: Bars
-	Elements...: None
 	Description: Replace the action bars and surrounding graphics. Bartender Lite.
 ]]
 -- ####################################################################################################################

@@ -1,10 +1,10 @@
-## Interface: 80000
+## Interface: 80300
 ## Version: 4.0
 ## Title: LUI4
 ## Author: Siku
 ## Notes: User Interface Modification
 ## SavedVariables: LUI4DB
-## X-Website: http://www.wowlui.com
+## X-Website: https://www.wowlui.com
 ## X-oUF: oUF_LUI
 
 # Load Libraries
@@ -54,7 +54,7 @@ modules\artwork.lua
 modules\minimap.lua
 modules\tooltip.lua
 modules\micromenu.lua
-#modules\bars.lua
+# modules\bars.lua
 modules\aura.xml
 
 # Load Unitframes
@@ -90,7 +90,6 @@ modules\infotext\dualspec.lua
 modules\infotext\gold.lua
 modules\infotext\guild.lua
 modules\infotext\friends.lua
-modules\infotext\archaeology.lua
 
 # Load UI Elements
 modules\uielements\uielements.lua
@@ -98,4 +97,4 @@ modules\uielements\colorpicker.lua
 
 # Load Addon Support Files
 api\addons.lua
-addons\bartender4.lua
+# addons\bartender4.lua

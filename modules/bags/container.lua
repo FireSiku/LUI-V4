@@ -216,8 +216,8 @@ function ContainerMixin:NewBagInfo(id)
 end
 
 -- Due to using Blizzard's template itemSlots which contains differences in names and format,
--- This should be handled by elements personally [using :NewItemSlot(id, slot)]
--- The elements should then call self:SetItemSlotProperties for post-creation shared code.
+-- This should be handled by containers personally [using :NewItemSlot(id, slot)]
+-- The containers should then call self:SetItemSlotProperties for post-creation shared code.
 function ContainerMixin:SetItemSlotProperties(itemSlot)
 	--Make it easy to fetch Cooldown information
 	itemSlot.cooldown = _G[itemSlot:GetName() .. "Cooldown"]
@@ -643,8 +643,8 @@ function module:CreateNewContainer(name, obj)
 	-- Add reference tables
 	frame.toolbars = {} -- Used to store BagBar and such
 
-	-- More Robust Embedding system. It will embed things from the given object.
-	-- Then Container contains the shared code, hook it to existing functions or embed it.
+	-- Embed things from the given object, then mixin the shared code or hook it.
+	-- TODO: Re-evaluate if hooking is necessary or should be refactored
 	for k, v in pairs(obj) do
 		frame[k] = v
 	end
@@ -696,7 +696,6 @@ function module:CreateNewContainer(name, obj)
 	end
 
 	--Do those needs to be here?
-	--SetBagFonts -- Nope, this one seems very specific to some frames, could probably set
 	containerStorage[name] = frame
 	frame:SetBagsProperties()
 	--SetBagsDimensions
@@ -704,7 +703,6 @@ function module:CreateNewContainer(name, obj)
 	frame:Hide()
 end
 
--- Placeholder function, only makes the text appear, no actual functionality.
 function module:CreateSearchEditBox(parent)
 	local search = parent:CreateFontString(nil, "OVERLAY", "GameFonthighlightLarge")
 	local searchText = LUI:ColorText(SEARCH, "Search")
@@ -858,18 +856,38 @@ module.enableButton = true
 
 function module:OnInitialize()
 	LUI:RegisterModule(module)
-	--Make elements share EnabledState with their modules.
-	--TODO: Support for different enable states when we have GBank/Void support.
-	for name_, element in module:IterateModules() do
-		element:SetEnabledState(module:IsEnabled())
-	end
 end
 
 function module:OnEnable()
 	module:RefreshBackdrops()
-	for name, element_ in module:IterateModules() do
-		module:EnableModule(name)
-	end
+
+	-- Bags
+	-- Create container
+	module:CreateNewContainer("Bags", module.BagsContainer)
+	LUIBags:CreateTitleBar()
+	tinsert(UISpecialFrames, "LUIBags")
+	module:RawHook("ToggleBag",      module.ToggleBags, true)
+	module:RawHook("ToggleBackpack", module.ToggleBags, true)
+	module:RawHook("OpenAllBags",    module.ToggleBags, true)
+	module:RawHook("ToggleAllBags",  module.ToggleBags, true)
+	module:RawHook("OpenBackpack",   module.OpenBags,   true)
+	module:RawHook("CloseBackpack",  module.CloseBags,  true)
+	module:RawHook("CloseAllBags",   module.CloseBags,  true)
+
+	-- Bank
+	module:CreateNewContainer("Bank", module.BankContainer)
+	tinsert(UISpecialFrames, "LUIBank")
+	module:RegisterEvent("BANKFRAME_OPENED", module.OpenBank)
+	module:RegisterEvent("BANKFRAME_CLOSED", module.CloseBank)
+	--module:HookScript(LUIBags, "OnHide", CloseBank)
+	-- TODO: Shouldn't it be the bank frame that registers this event?
+	module:RegisterEvent("PLAYERBANKSLOTS_CHANGED", module.BankContainer.BankSlotsUpdate)
+	BankFrame:UnregisterAllEvents()
+
+	-- Reagents
+	module:CreateNewContainer("Reagent", Reagent)
+	tinsert(UISpecialFrames, "LUIReagent")
+	module:RegisterEvent("PLAYERREAGENTBANKSLOTS_CHANGED", module.BankReagentContainer.BankSlotsUpdate)
 
 	-- close bags before Enabling/Disabling the module
 	CloseAllBags()
@@ -877,4 +895,8 @@ end
 
 function module:OnDisable()
 	CloseAllBags()
+
+	-- Bank
+	BankFrame:RegisterEvent("BANKFRAME_OPENED")
+	BankFrame:RegisterEvent("BANKFRAME_CLOSED")
 end

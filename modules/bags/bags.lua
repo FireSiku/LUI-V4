@@ -3,7 +3,6 @@
 -- ####################################################################################################################
 local _, LUI = ...
 local module = LUI:GetModule("Bags")
-local element = module:NewElement("Bags")
 local Media = LibStub("LibSharedMedia-3.0")
 
 local format, tinsert, wipe = format, tinsert, wipe
@@ -174,20 +173,5 @@ local function ToggleBags()
 	end
 end
 
--- ####################################################################################################################
--- ##### Framework Events #############################################################################################
--- ####################################################################################################################
-
-function element:OnEnable()
-	-- Create container
-	module:CreateNewContainer("Bags", Bags)
-	LUIBags:CreateTitleBar()
-	tinsert(UISpecialFrames, "LUIBags")
-	module:RawHook("ToggleBag",      ToggleBags, true)
-	module:RawHook("ToggleBackpack", ToggleBags, true)
-	module:RawHook("OpenAllBags",    ToggleBags, true)
-	module:RawHook("ToggleAllBags",  ToggleBags, true)
-	module:RawHook("OpenBackpack",   OpenBags,   true)
-	module:RawHook("CloseBackpack",  CloseBags,  true)
-	module:RawHook("CloseAllBags",   CloseBags,  true)
-end
+--Placeholders until refactor
+module.BagsContainer = Bags

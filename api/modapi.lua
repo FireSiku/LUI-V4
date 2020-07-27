@@ -183,15 +183,8 @@ end
 -- @tparam[opt] ?string tbl The name of a table in the database to return.
 function ModuleMixin:GetDB(subTable)
 	local db
-	if self:IsElement() then
-		local _, parent = self:GetParent()
-		if parent and parent.db and parent.db.profile then
-			db = parent.db.profile[self:GetName()]
-		end
-	else
-		if self.db then
-			db = self.db.profile
-		end
+	if self.db then
+		db = self.db.profile
 	end
 	if db and subTable and type(db[subTable] == "table") then
 		return db[subTable]
@@ -203,24 +196,11 @@ end
 -- @tparam[opt] ?string scope The scope to look up. Can be one of the nine database types as specified by AceDB.
 function ModuleMixin:GetDBScope(scope)
 	scope = scope or "profile"
-	if self:IsElement() then
-		local _, parent = self:GetParent()
-		if parent and parent.db and parent.db[scope] then
-			return parent.db[scope][self:GetName()]
-		end
-	else
-		if self.db then
-			return self.db[scope]
-		end
+	if self.db then
+		return self.db[scope]
 	end
 end
 
---- Check if the module is an element.
--- @treturn bool Returns true if it's an element, false if it's a module (or the LUI object)
-function ModuleMixin:IsElement()
-	if not self.GetParent then return false end
-	return (self:GetParent() ~= addonname) and true or false
-end
 
 --- Print exclusively for Module Messages.
 -- Those prints will not appear if ModuleMessages is disabled
@@ -235,49 +215,43 @@ end
 -- ####################################################################################################################
 -- ##### Module Creation Mixin ########################################################################################
 -- ####################################################################################################################
--- @local here
-function ModuleCreationMixin:NewElement(name, ...)
-	local newElement = self:NewModule(name, ...)
-	LUI:EmbedModule(newElement)
-	return newElement
-end
-
---Make sure every element also has a :GetParent()
-function ModuleCreationMixin:OnModuleCreated(newElement)
-	newElement.GetParent = function()
-		return self:GetName(), self
-	end
-end
-
---- Get the module's parent.
--- This function returns nil if called by LUI.
--- @function ModuleMixin:GetParent
--- @treturn string The parent's name.
--- @treturn table The parent's table
 
 --- Toggle a module's enabled state.
--- This function is not avaible to elements or LUI.
--- @function Toggle
-
-function LUI:OnModuleCreated(newModule)
-	newModule.GetParent = function()
-		return self:GetName(), self
+function ModuleCreationMixin:Toggle()
+	local name = self:GetName()
+	local state = not self:IsEnabled()
+	if state then
+		LUI:EnableModule(name)
+	else
+		LUI:DisableModule(name)
 	end
+	LUI.db.profile.modules[name] = state
+end
 
-	--Only modules with an enableButton should be toggle-able.
-	newModule.Toggle = function()
-		local name = newModule:GetName()
-		local state = not newModule:IsEnabled()
-		if state then
-			LUI:EnableModule(name)
-		else
-			LUI:DisableModule(name)
+--- Merge given table into module.defaults if it exists. Support all AceDB types
+---@param source table
+---@param name string
+function ModuleCreationMixin:MergeDefaults(source, name)
+	if not self.defaults then self.defaults = {} end
+	for i, scope in ipairs(LUI.DB_TYPES) do
+		if source[scope] then
+			if not self.defaults[scope] then self.defaults[scope] = {} end
+			if name then
+				self.defaults[scope][name] = LUI:CopyTable(source[scope], self.defaults[scope][name])
+			else
+				self.defaults[scope] = LUI:CopyTable(source[scope], self.defaults[scope])
+			end
 		end
-		local db = LUI:GetDB("modules")
-		db[name] = state
-	end
-
-	for k, v in pairs(ModuleCreationMixin) do
-		newModule[k] = v
 	end
 end
+
+--- Since we arent doing any closure shenanigans using OnModuleCreated, this accomplish the same in a much better way.
+LUI:SetDefaultModulePrototype(ModuleCreationMixin)
+
+--- Will be executed automatically after Ace :NewModule is called, before OnInitialize
+---@param newModule Module
+-- function LUI:OnModuleCreated(newModule)
+-- 	for k, v in pairs(ModuleCreationMixin) do
+-- 		newModule[k] = v
+-- 	end
+-- end

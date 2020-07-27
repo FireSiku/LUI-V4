@@ -1,6 +1,5 @@
 --[[
 	Module.....: Minimap
-	Elements...: None
 	Description: Replace the default minimap.
 ]]
 -- ####################################################################################################################
@@ -49,6 +48,7 @@ module.defaults = {
 			alwaysShowText = false,
 			hideMissingCoord = true,
 			showTextures = true,
+			FontSize = 12,
 		},
 		Position = {
 			X = -24,
@@ -102,7 +102,7 @@ function module:HideDefaultMinimap()
 
 	-- Move Mail icon
 	MiniMapMailFrame:ClearAllPoints()
-	MiniMapMailFrame:SetPoint(ICON_LOCATION.Mail, Minimap, 3, 4)
+	MiniMapMailFrame:SetPoint(ICON_LOCATION.Mail, Minimap, 3, 8)
 	MiniMapMailBorder:Hide()
 	oldDefault.Mail = MiniMapMailIcon:GetTexture()
 	MiniMapMailIcon:SetTexture(MAIL_ICON_TEXTURE)
@@ -205,7 +205,7 @@ function module:SetMinimap()
 	-- Set Coord Text
 	local minimapCoord = CreateFrame("Frame", "LUIMinimapCoord", Minimap)
 	minimapCoord:SetSize(40, 20)
-	minimapCoord:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 2, 2)
+	minimapCoord:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 4, 2)
 
 	local minimapCoordText = module:SetFontString(minimapCoord, "LUIMinimapCoordText", "Minimap", "Overlay", "LEFT", "MIDDLE")
 	minimapCoordText:SetPoint("LEFT", -1, 0)
@@ -397,6 +397,7 @@ end
 module.enableButton = true
 
 function module:LoadOptions()
+	local db = module:GetDB()
 	local options = {
 		Header = module:NewHeader(MINIMAP_LABEL, 1),
 		General = module:NewGroup(L["Settings"], 2, nil, nil, {
@@ -405,6 +406,19 @@ function module:LoadOptions()
 			coordPrecision = module:NewSlider(L["Minimap_CoordPrecision_Name"], L["Minimap_CoordPrecision_Desc"], 4, 0, 2, 1),
 			LineBreak = module:NewLineBreak(9),
 			Minimap = module:NewColorMenu(L["Minimap_BorderColor_Name"], 10, true, "SetColors"),
+			FontMenu = module:NewFontMenu("Font Menu", 12, "Minimap"),
+			Font = {
+				name = "Font",
+				desc = "Choose the Font for your Minimap Location and Coords!",
+				type = "select",
+				dialogControl = "LSM30_Font",
+				values = AceGUIWidgetLSMlists.font,
+				get = function() return db.Fonts.Minimap.Name end,
+				set = function(info, Font)
+					db.Fonts.Minimap.Name = Font
+				end,
+				order = 11,
+			},
 		}),
 		Position = module:NewGroup(L["Position"], 3, nil, nil, {
 			Position = module:NewPosition(L["Position"], 1, true, "SetMinimapSize"),

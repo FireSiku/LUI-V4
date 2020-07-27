@@ -7,7 +7,7 @@
 -- ####################################################################################################################
 
 local _, LUI = ...
-local module = LUI:NewModule("Infotext")
+local module = LUI:NewModule("Infotext", "AceHook-3.0")
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
 module.RegisterLDBCallback = LDB.RegisterCallback
 module.LDB = LDB
@@ -177,11 +177,7 @@ local function SetInfoPanels()
 	bottomAnchor:Show()
 end
 
--- Unlike other modules, the infotexts elements needs to be LDB DataObjects so we cant use Ace :NewModule()
--- The choices were to make an Ace module and clone LDB functionality, or an LDB object that has Ace functionality.
--- The former requires to clone both LDB Object and LDB Display functionality to support actual LDBs.
--- Went with the latter one, thus the need to keep memory of Elements created through this function.
--- :NewElement is only called for LUI infotexts.
+-- TODO: Change elemnent style to be more akin to data providers? (which is what they are)
 function module:NewElement(name, ...)
 	local element = LDB:NewDataObject(name, {type = "data source", text = name})
 	for k, v in pairs(InfoMixin) do
@@ -192,9 +188,6 @@ function module:NewElement(name, ...)
 		LibStub(select(i, ...)):Embed(element)
 	end
 	elementStorage[name] = element
-	element.GetParent = function()
-		return self:GetName(), self
-	end
 	return element
 end
 
