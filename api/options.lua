@@ -126,20 +126,6 @@ local function SetFunc(self, info, ...)
 	end
 end
 
--- The only way to get additional parameters to pass to get/set without Ace3 throwing a fit is to use a metatable
--- This function allows you to grab this information,optionally requires it to be a certain type.
--- Returns the value of the entry if it exists (and is valid) or nil otherwise.
-local function CheckMeta(info, entry, datatype)
-	local meta = getmetatable(info.option)
-	if meta and meta[entry] then
-		if datatype and type(meta[entry]) == datatype then
-			return meta[entry]
-		elseif not datatype then
-			return meta[entry]
-		end
-	end
-end
-
 --- Set the metatable for options based on the meta param.
 -- No further modifications of the table should happen after the call, as we're reusing existing tables.
 -- Set uniqueTable to true if you need to apply modifications to the table after this call.
@@ -200,9 +186,6 @@ end
 -- Drop most of the useless bullshit of getter/setter
 function OptionsMixin:GenericGetter(info)
 	local db = self:GetDB(info[#info-1])
-	-- LUI:Printf("Info: %s, Parent: %s, self: %s", info[#info], info[#info-1], tostring(self))
-	-- LUI:Printf("DB: %s, DBParent: %s", tostring(self:GetDB()), tostring(self:GetDB(info[#info-1])))
-	-- if not db then LUI:PrintTable(self:GetDB()) end
 	local value = db[info[#info]]
 	--Inputs cannot display numbers. Have to convert to string.
 	if info.option.type == "input" then return tostring(value) end
@@ -291,20 +274,6 @@ end
 		- Same as giving a function in the meta arg.
 --]]
 
---- Template for functions (not real function).
--- The first 3 params are always (name, desc, order), unless stated otherwise.
--- The last 4 params are always (meta, width, disabled, hidden), unless stated otherwise.
--- @function OptionsMixin:NewOption
--- @tparam string|function name Display name for the option
--- @tparam string|function desc Description for the option (appears in a tooltip)
--- @tparam number order Relative position of the option. (0 = first, -1 = last)
--- @param ... Any specified parameter
--- @tparam boolean|table|function|method meta Used as jack-of-all-trades parameters
---                                            to combine many lesser-used or situational additional parameters.
--- @tparam "double"|"half"|"full"|"normal" width How wide the option needs to be.
--- @tparam function|method|bool disabled Make the option disabled but visible
--- @tparam function|method|bool hidden Make the option hidden from view.
-
 function OptionsMixin:NewGroup(name, order, childGroups, inline, get, set, args, disabled, hidden)
 	local t = SetVals("group", name, nil, order)
 	t.childGroups = childGroups
@@ -332,7 +301,6 @@ end
 
 local function IsAdvancedLocked() return false end -- To change when i get a value set up.
 function OptionsMixin:NewAdvancedGroup(args)
-	--args["AdvHeader"] = OptionsMixin:NewDesc("This tab is used
 	return self:NewGroup(L["API_Advanced"], 100, nil, nil, args, IsAdvancedLocked, IsAdvancedLocked)
 end
 
@@ -359,8 +327,6 @@ function OptionsMixin:NewLineBreak(order, hidden)
 end
 
 --- Generate a Description text block. This function ignores the desc and meta parameters.
--- @function OptionsMixin:NewDesc
--- @param ...
 function OptionsMixin:NewDesc(name, order, width, disabled, hidden)
 	local t = SetVals("description", name, nil, order)
 	t.fontSize = "medium"
@@ -369,8 +335,6 @@ function OptionsMixin:NewDesc(name, order, width, disabled, hidden)
 end
 
 --- Generate a Checkbox option
--- @function OptionsMixin:NewToggle
--- @param ...
 function OptionsMixin:NewToggle(name, desc, order, meta, width, disabled, hidden)
 	local t = SetVals("toggle", name, desc, order)
 
@@ -387,10 +351,6 @@ function OptionsMixin:NewToggle(name, desc, order, meta, width, disabled, hidden
 end
 
 --- Generate an executable button. This function ignores the meta parameter.
--- @function OptionsMixin:NewExecute
--- @param ...
--- @func func The function to call when the button is pressed.
--- @param ...
 function OptionsMixin:NewExecute(name, desc, order, func, width, disabled, hidden)
 	local t = SetVals("execute", name, desc, order)
 	t.func = func
@@ -400,11 +360,6 @@ function OptionsMixin:NewExecute(name, desc, order, func, width, disabled, hidde
 end
 
 --- Generate an Enable button as seen in the Modules pane.
--- @function OptionsMixin:NewEnableButton
--- @param ...
--- @func enableFunc Bool function to determine Enable/Disable state.
--- @func func The function to call when the button is pressed.
--- @param ...
 function OptionsMixin:NewEnableButton(name, desc, order, enableFunc, func, width, disabled, hidden)
 	local function nameFunc()
 		return format("%s: %s", name, (enableFunc()) and L["API_BtnEnabled"] or L["API_BtnDisabled"])
@@ -417,9 +372,6 @@ end
 -- ##### OptionsMixin: User Input Widgets ############################################################################
 -- ####################################################################################################################
 
---- Generate an input box.
--- @function OptionsMixin:NewInput
--- @param ...
 function OptionsMixin:NewInput(name, desc, order, meta, width, disabled, hidden)
 	local t = SetVals("input", name, desc, order)
 
@@ -428,9 +380,6 @@ function OptionsMixin:NewInput(name, desc, order, meta, width, disabled, hidden)
 	return t
 end
 
---- Generate an input box that only accept numbers.
--- @function OptionsMixin:NewInputNumber
--- @param ...
 function OptionsMixin:NewInputNumber(name, desc, order, meta, width, disabled, hidden)
 	local t = SetVals("input", name, desc, order)
 	--t.validate = IsNumber
@@ -453,14 +402,6 @@ end
 		- By default, the absolutes are the same as the UI.
 --]]
 
---- Generate a value slider.
--- @function OptionsMixin:NewSlider
--- @param ...
--- @number smin Minimal value for the slider, represented in the UI
--- @number smax Maximal value for the slider, represented in the UI
--- @number step How much is a tick of the slider worth
--- @bool isPercent If true, the slider value will display 1.0 as 100%
--- @param ...
 function OptionsMixin:NewSlider(name, desc, order, smin, smax, step, isPercent, meta, width, disabled, hidden)
 	local t = SetVals("range", name, desc, order)
 	t.isPercent = isPercent
@@ -477,10 +418,6 @@ end
 
 -- Wrapper of Slider for the purpose of Scaling Sliders
 -- Ranges: 50-200, Absolutes: 25-300.
-
---- Generate a scaling slider
--- @function OptionsMixin:NewScale
--- @param ...
 function OptionsMixin:NewScale(name, desc, order, meta, width, disabled, hidden)
 	local t = self:NewSlider(name, desc, order, 0.5, 2.5, 0.05, true, meta, width, disabled, hidden)
 	t.min, t.max, t.step = 0.25, 3, 0.01
@@ -488,12 +425,6 @@ function OptionsMixin:NewScale(name, desc, order, meta, width, disabled, hidden)
 	return t
 end
 
---- Generate a dropdown menu
--- @function OptionsMixin:NewSelect
--- @param ...
--- @tparam table|boolean values A table containing the options given in the dropdown
--- @param dcontrol If you want to specify a specialized LibSharedMedia dropdown control.
--- @param ...
 function OptionsMixin:NewSelect(name, desc, order, values, dcontrol, meta, width, disabled, hidden)
 	-- TODO: Sort out the confusing nature of dcontrol (possibly split it using new wrappers)
 	local t = SetVals("select", name, desc, order)
@@ -621,19 +552,6 @@ end
 -- ####################################################################################################################
 -- ##### OptionsMixin: Font Widgets ###################################################################################
 -- ####################################################################################################################
--- Font = {
--- 	name = "Font",
--- 	desc = "Choose the Font for your Minimap Location and Coords!",
--- 	type = "select",
--- 	dialogControl = "LSM30_Font",
--- 	values = AceGUIWidgetLSMlists.font,
--- 	get = function() return db.Fonts.Minimap.Name end,
--- 	set = function(info, Font)
--- 		db.Fonts.Minimap.Name = Font
--- 	end,
--- 	order = 11,
--- },
-
 --[[ font args:
 	fontName
 --]]
@@ -651,7 +569,7 @@ function OptionsMixin:NewFont(name, desc, order, meta, width, disabled, hidden)
 end
 
 -- Generate a / Dropdown combo, the dropdown selection determines the color bypass. (Theme, Class, Spec, etc)
--- TODO/EXAMINE: Should we use Color's alpha slider or use a separate alpha slider considering theme/class
+-- TODO: Should we use Color's alpha slider or use a separate alpha slider considering theme/class
 -- Width arg not respected.
 function OptionsMixin:NewFontMenu(name, order, fontName, meta, width_, disabled, hidden)
 	local db = self:GetDB("Fonts")
@@ -664,9 +582,6 @@ function OptionsMixin:NewFontMenu(name, order, fontName, meta, width_, disabled,
 		db[fontName][opt] = value
 		SetFunc(self, info, value, ...)
 	end
-	-- local function isFontSelectDisabled()
-	-- 	return db[fontName].Master
-	-- end
 
 	local t = self:NewGroup(name, order, nil, true, FontGetter, FontSetter, {
 		--Master = self:NewToggle("Use Master Font", nil, order+0.1, nil, "Normal"),
@@ -686,11 +601,6 @@ end
 	hasAlpha (boolean) - if true, there will be a transparency slider on
 --]]
 
---- Generate a color box
--- @function OptionsMixin:NewColor
--- @param ...
--- @bool hasAlpha Wether the color supports an alpha channel or not.
--- @param ...
 function OptionsMixin:NewColor(name, desc, order, meta, width, disabled, hidden)
 	-- if desc is a number (order) shift everything to the right
 	if type(desc) == "number" then
@@ -722,7 +632,7 @@ function OptionsMixin:NewAlphaColor(name, desc, order, meta, width, disabled, hi
 end
 
 -- Generate a Color / Dropdown combo, the dropdown selection determines the color bypass. (Theme, Class, Spec, etc)
--- TODO/EXAMINE: Should we use Color's alpha slider or use a separate alpha slider considering theme/class
+-- TODO: Should we use Color's alpha slider or use a separate alpha slider considering theme/class
 -- Width arg not respected.
 function OptionsMixin:NewColorMenu(name, order, hasAlpha, meta, width_, disabled, hidden)
 	local t = ShadowOption()
@@ -759,25 +669,3 @@ function OptionsMixin:NewColorMenu(name, order, hasAlpha, meta, width_, disabled
 
 	return t
 end
-
---[[Keeping as note for later. If we were to make a function to either show color wheel or alpha slider based on menu.
-function(info)
-	local parent = GetParentTable(info)
-	local optName = info[#info]
-
-	--If i were to use this function on both opt and optAlpha, would need to get opt out of optAlpha.
-	--Easy way to do that would be changing the color wheel from opt to optColor and then subtract 5 letters from name.
-	local opt = strsub(optName, 1, -6)
-	local curOpt = strsub(optName, -5)
-
-	--How to get self out of the info table?
-	local db = self:GetDB("Colors")
-
-	--Alpha Slider should be hidden when under Custom/Individual, displayed all other cases.
-	if curOpt == "Alpha" then
-		return (db[opt].t == "Custom")
-	elseif curOpt == "Color" then
-		return not (db[opt].t == "Custom")
-	end
-end
---]]

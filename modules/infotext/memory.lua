@@ -68,9 +68,6 @@ function element:UpdateMemory()
 
 	--sort table
 	LUI:SortTable(sortedAddons, addonMemory, addonSort)
-
-	-- Not using formatMemory here, always shows in mb and only one precision is needed.
-	-- Makes for a better and cleaner display, can always look at the tooltip for more details.
 	element.text = format("%.1fmb", totalMemory / KB_PER_MB)
 
 	element:UpdateTooltip()

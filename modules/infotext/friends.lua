@@ -520,7 +520,6 @@ function element:UpdateFriends()
 end
 
 function element:FriendlistUpdate()
-	--As this event is trigger by a server query but may be trigger by other reasons
 	--Make sure we don't query the server more than once per update time.
 	element:ResetUpdateTimer()
 
@@ -640,9 +639,4 @@ function element:OnCreate()
 	element:RegisterEvent("BN_DISCONNECTED", "UpdateFriends")
 	element:RegisterEvent("BN_FRIEND_ACCOUNT_ONLINE", "UpdateFriends")
 	element:RegisterEvent("BN_FRIEND_ACCOUNT_OFFLINE", "UpdateFriends")
-
---[[ These two triggers a tooltip update and nothing else.
-	element:RegisterEvent("BN_FRIEND_INFO_CHANGED")
-	element:RegisterEvent("BN_CUSTOM_MESSAGE_CHANGED")
---]]
 end

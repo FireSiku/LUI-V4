@@ -18,37 +18,27 @@ local GetLootSpecialization = GetLootSpecialization
 local PanelTemplates_SetTab = PanelTemplates_SetTab
 local GetSpecializationInfo = GetSpecializationInfo
 local GetActiveSpecGroup = GetActiveSpecGroup
-local SetActiveSpecGroup = SetActiveSpecGroup
 local GetSpecialization = GetSpecialization
 local SetSpecialization = SetSpecialization
 local GetMaxTalentTier = GetMaxTalentTier
 local GetNumSpecGroups = GetNumSpecGroups
-local IsShiftKeyDown = IsShiftKeyDown
 local GetTalentInfo = GetTalentInfo
 local ShowUIPanel = ShowUIPanel
 local HideUIPanel = HideUIPanel
 
 -- constants
 local LOOT_SPECIALIZATION_DEFAULT = strsplit("(", LOOT_SPECIALIZATION_DEFAULT):trim()
-local TALENT_SPEC_SECONDARY_ACTIVE = TALENT_SPEC_SECONDARY_ACTIVE
-local TALENT_SPEC_PRIMARY_ACTIVE = TALENT_SPEC_PRIMARY_ACTIVE
 local SELECT_LOOT_SPECIALIZATION = SELECT_LOOT_SPECIALIZATION
-local TALENT_SPEC_SECONDARY = TALENT_SPEC_SECONDARY
-local TALENT_SPEC_PRIMARY = TALENT_SPEC_PRIMARY
 local NUM_TALENT_COLUMNS = NUM_TALENT_COLUMNS
 local LEVEL_UP_DUALSPEC = LEVEL_UP_DUALSPEC
 local MAX_SPECS -- Set this during OnCreate
-local TALENT_TAB_TALENTS = 2
-local TALENT_TAB_GLYPHS = 3
 local TALENT_DELIMITER = ""
-local NONE = NONE
 
 -- locals
 local specCache = {}  -- Keep information about specs.
 local talentCache = {} -- Keep information about talents.
 local inactiveCache = {} -- Keep information about inactive specs
 local needNewCache = false
---TODO: Move those >three< cache into the DB to carry the cache through logins. (Your specs arent going to change)
 
 -- ####################################################################################################################
 -- ##### Default Settings #############################################################################################
@@ -66,10 +56,6 @@ module:MergeDefaults(element.defaults, "DualSpec")
 -- ##### Module Functions #############################################################################################
 -- ####################################################################################################################
 
-local function HasDualSpec()
-	return (GetNumSpecGroups() >= 2) and true or false
-end
-
 function element:CacheSpecInfo()
 	for i = 1, MAX_SPECS do
 		if not specCache[i] then
@@ -79,7 +65,6 @@ function element:CacheSpecInfo()
 			specCache[i].icon = icon
 		end
 	end
-	-- TODO inactiveCache initial setup here ?
 end
 
 function element:ToggleTalentTab(tabID)
@@ -138,10 +123,10 @@ function element:UpdateSpec()
 	--TODO: Add Icon Support
 	--element.icon = currentCache.icon
 
-	inactiveCache = {} -- reset inactive cache for rebuild
-	for i = 1, MAX_SPECS do -- loop through all specs
+	inactiveCache = {}
+	for i = 1, MAX_SPECS do
 		if i ~= currentSpecID then -- not the active spec, put in inactive
-			inactiveCache[#inactiveCache + 1] = i -- add to inactive cache
+			inactiveCache[#inactiveCache + 1] = i
 		end
 	end
 
@@ -171,14 +156,14 @@ end
 function element.OnTooltipShow(GameTooltip)
 	element:TooltipHeader(LEVEL_UP_DUALSPEC)
 
-	local activeSpec = GetSpecialization() -- get current spec ID
-	local dualspecHint = "" -- text string with hint to be displayed
+	local activeSpec = GetSpecialization()
+	local dualspecHint = ""
 
-	for i = 1, MAX_SPECS do -- loop through all specs
-		local specNum = (format(L["InfoDualspec_Spec_Num"], i)) -- numerate specs
-		local specName = (specCache[i].name) -- list spec names
+	for i = 1, MAX_SPECS do
+		local specNum = (format(L["InfoDualspec_Spec_Num"], i))
+		local specName = (specCache[i].name)
 
-		if i == activeSpec then -- highlight active spec
+		if i == activeSpec then
 			local highlight = CreateColor(1, 1, 0)
 			specNum = highlight:WrapTextInColorCode(specNum)
 			specName = highlight:WrapTextInColorCode(specName)
@@ -191,9 +176,10 @@ function element.OnTooltipShow(GameTooltip)
 	local lootSpec = select(2, GetSpecializationInfoByID(GetLootSpecialization())) or LOOT_SPECIALIZATION_DEFAULT
 	GameTooltip:AddDoubleLine(format("%s:", SELECT_LOOT_SPECIALIZATION), lootSpec, 1,1,1, 1,1,1)
 
-	for i = 1, #inactiveCache do -- go through inactive specs
-		dualspecHint = dualspecHint .. format(L[format("InfoDualspec_Hint_%d", i)], specCache[inactiveCache[i]].name) -- add hint for current inactive spec
-		if i < #inactiveCache then dualspecHint = dualspecHint .. "\n" end -- separate lines if not last line
+	for i = 1, #inactiveCache do
+		-- add hint for current inactive spec
+		dualspecHint = dualspecHint .. format(L[format("InfoDualspec_Hint_%d", i)], specCache[inactiveCache[i]].name)
+		if i < #inactiveCache then dualspecHint = dualspecHint .. "\n" end
 	end
 
 	element:AddHint(dualspecHint) -- .. L["InfoDualspec_Hint_Shift"]

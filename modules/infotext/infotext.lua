@@ -360,38 +360,6 @@ function module:NewInfotextOptionGroup(name, order, childGroups_)
 	end
 
 	return optionGroup
-	--[[return module:NewGroup(name, order, nil, nil, "PanelGetter", "PanelSetter", {
-		TexHead = module:NewHeader(L["Texture"], 1),
-		ImageDesc = {
-			type = "description", name = " ", order = 2, image = GetOptionImageTexture,
-			imageWidth = 256, imageHeight = 128, imageCoords = GetOptionTexCoords,
-		},
-		TexMode = module:NewSelect(L["Panels_Options_Category"], nil, 3, TEX_MODE_SELECT),
-		Texture = module:NewInput(L["Texture"], L["Panels_Options_Texture_Desc"], 4, nil, nil, nil, IsTextureInputHidden),
-		TextureSelect = module:NewSelect(L["Panels_Options_TextureSelect"], L["Panels_Options_TextureSelect_Desc"], 4,
-		                                 PRESET_LUI_TEXTURES, nil, texSelectMeta, nil, nil, IsTextureSelectHidden),
-		LineBreak1 = module:NewLineBreak(5),
-		Anchored = module:NewToggle(L["Panels_Options_Anchored"], L["Panels_Options_Anchored_Desc"], 6, nil, "normal"),
-		Parent = module:NewInput(L["Parent"], L["Panels_Options_Parent_Desc"], 7, nil, nil, IsAnchorParentDisabled),
-		HorizontalFlip = module:NewToggle(L["Panels_Options_HorizontalFlip"], L["Panels_Options_HorizontalFlip_Desc"], 8),
-		VerticalFlip = module:NewToggle(L["Panels_Options_VerticalFlip"], L["Panels_Options_VerticalFlip_Desc"], 9),
-		CustomTexCoords = module:NewToggle(L["Panels_Options_CustomTexCoords"], L["Panels_Options_CustomTexCoords_Desc"],
-		                                   10, nil, nil, nil, IsCustomTexCoordsHidden),
-		Left = module:NewInput(L["Point_Left"], nil, 11, nil, "half", nil, IsTexCoordsHidden),
-		Right = module:NewInput(L["Point_Right"], nil, 12, nil, "half", nil, IsTexCoordsHidden),
-		Up = module:NewInput(L["Point_Up"], nil, 13, nil, "half", nil, IsTexCoordsHidden),
-		Down = module:NewInput(L["Point_Down"], nil, 14, nil, "half", nil, IsTexCoordsHidden),
-		SettingsHeader = module:NewHeader(L["Settings"], 15),
-		Width = module:NewInputNumber(L["Width"], nil, 16),
-		Height = module:NewInputNumber(L["Height"], nil, 17),
-		LineBreak2 = module:NewLineBreak(18),
-		[(name)] = module:NewColorMenu(L["Color"], 19, true, RefreshPanel),
-		PosHeader = module:NewHeader(L["Position"], 20),
-		Point = module:NewSelect(L["Anchor"], nil, 21, LUI.Points),
-		RelativePoint = module:NewSelect(L["Anchor"], nil, 22, LUI.Points),
-		LineBreak3 = module:NewLineBreak(23),
-		Position = module:NewPosition(L["Position"], 24, true),
-	}) --]]
 end
 
 function module:LoadOptions()
@@ -415,20 +383,6 @@ function module:LoadOptions()
 		options[name] = module:NewInfotextOptionGroup(name, orderCount)
 		orderCount = orderCount + 1
 	end
-	--[[
-	for elementName, element in module:IterateModules() do
-		if element.LoadOptions then
-			LUI:EmbedOptions(element)
-			options[elementName] = {
-				type = "group",
-				handler = element,
-				name = element.optionsName or elementName,
-				order = element.order or 10,
-				childGroups = element.childGroups or "tab",
-				args = element:LoadOptions(),
-			}
-		end
-	end ]]--
 
 	return options
 end

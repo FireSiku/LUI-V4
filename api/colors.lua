@@ -196,11 +196,6 @@ end
 -- ##### Gradient Color API ###########################################################################################
 -- ####################################################################################################################
 
--- TODO: More defined gradient system that starts off with the two basic colors (Positive / Negative)
---       Then lets you add in-between gradient colors on your own.
---       Also, make a frame appear in the gradient tab options that shows the whole range of the gradient.
---       Debating between having the color evaluated every 2% for more granulity or every 5% for more impact.
-
 -- TODO: Possibly rename some variables inside to better names. (such as relperc.)
 --- Based on Wowpedia's ColorGradient. Use our three gradient colors to make a color based on a percentage
 ---@param perc number

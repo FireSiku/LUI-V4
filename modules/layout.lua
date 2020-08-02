@@ -74,43 +74,6 @@ local function bypassModule(name)
 	return false
 end
 
---CommonStrings V2. This time it deepcopies the table AND converts it.
-function LUI:ToCommonStrings(orig)
-	local CS = LUI.ReverseStrings
-	local data
-	if type(orig) == 'table' then
-		data = {}
-		for k, v in pairs(orig) do
-			if CS[k] then data[CS[k]] = LUI:ToCommonStrings(v)
-			else data[k] = LUI:ToCommonStrings(v)
-			end
-		end
-	else
-		if CS[orig] then data = CS[orig]
-		else data = orig
-		end
-	end
-	return data
-end
-
-function LUI:FromCommonStrings(orig)
-	local CS = LUI.CommonStrings
-	local data
-	if type(orig) == 'table' then
-		data = {}
-		for k, v in pairs(orig) do
-			if CS[k] then data[CS[k]] = LUI:FromCommonStrings(v)
-			else data[k] = LUI:FromCommonStrings(v)
-			end
-		end
-	else
-		if CS[orig] then data  = CS[orig]
-		else data = orig
-		end
-	end
-	return data
-end
-
 local function ModuleColorsToString(target)
 	if target.Colors then
 		for k, v in pairs(target.Colors) do
@@ -139,11 +102,6 @@ function LUI:SaveLayout(layoutName, layoutDesc, layoutAuthor)
 		},
 	}
 
-
-	--Check that the CommonStrings are loaded.
-	if not LUI.CommonStrings then LUI:GenerateCommonStrings() end
-
-	--Set up Core table.
 	layoutTable["LUI"] = LUI:OnLayoutSave()
 
 	--ToDo: Filter out default values out of the table before compressing it.
@@ -163,36 +121,10 @@ function LUI:SaveLayout(layoutName, layoutDesc, layoutAuthor)
 
 	layoutDB[layoutName] = nil
 	layoutDB[layoutName] = layoutTable
-
-	--This is only for debug purposes. Actual serialization will be in the import function
-	local data = layoutTable
-	if (not disableOptimize) then data = LUI:ToCommonStrings(layoutTable) end
-	local one = NS:Serialize(data)
-	--local two = LibC:CompressHuffman(one)
-	--local final = LibCE:Encode(two)
-	layoutText = one
 end
 
 function LUI:LoadLayout(layoutName_)
 
-	--ResetProfileHere
-	local one = LibCE:Decode(layoutText)
-	local two = LibC:Decompress(one)
-	layoutText = two
-	--[[
-	local data = NS:DeSerialize(layoutText)
-	local layoutTable = LUI:FromCommonStrings(data)
-	--If the module had a LayoutSave call, try to call LayoutLoad to revert the changes.
-	for name, module in self:IterateModules() do
-		if module.OnLayoutSave and not bypassModule(name) then
-			if module.OnLayoutLoad then
-				layoutTable[name] = module:OnLayoutLoad(layoutTable[name])
-			end
-		end
-	end
-
-	LUI:PrintTable(layoutTable)
-	--]]
 end
 
 -- ####################################################################################################################

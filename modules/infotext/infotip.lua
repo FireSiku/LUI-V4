@@ -23,15 +23,6 @@ local ICON_SIZE = 13
 
 --Find better name for these constants
 local GAP = 10
---local TEXT_OFFSET = 5
-
---Colors for the Guild/Friends, to be moved to their db when it's time.
--- local GF_COLORS = {
--- 	Broadcast = {1, 0.1, 0.1},
--- 	Title = {1, 1, 1},
--- 	Realm = {1, 0.8, 0},
--- 	Status = {0.7, 0.7, 0.7},
--- }
 
 -- locals
 local infotipStorage = {}
@@ -66,11 +57,8 @@ function LineMixin:AddFontString(justify, anchor, offsetX, r, g, b)
 		anchor = nil
 		offsetX = nil
 	end
-	--What kind of font is THAT?
 	local fs = module:SetFontString(self, nil, "Infotip", "OVERLAY", justify)
-	--local fs = self:CreateFontString(nil, "OVERLAY", "SystemFont_Shadow_Med1")
 	if anchor then fs:SetPoint("LEFT", anchor, "RIGHT", offsetX or GAP, 0) end
-	--if justify then fs:SetJustifyH(justify) end
 	if r and g and b then fs:SetTextColor(r, g, b) end
 	fs:SetShadowOffset(1, -1)
 	return fs
@@ -181,7 +169,6 @@ function module:EnforceMinWidth(infotip, value)
 	end
 end
 
---TODO: Put constants up in this bitch
 function element:AddSlider(newtip)
 	local slider = CreateFrame("Slider", nil, newtip)
 	slider:SetWidth(SLIDER_WIDTH)

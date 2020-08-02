@@ -105,7 +105,7 @@ function Bank:Layout()
 	end
 end
 
---Clean this up, using LUIBank global looks dirty.
+-- TODO: Clean this up, using LUIBank global looks dirty.
 function Bank:BankSlotsUpdate()
 	for i = 1, #LUIBank.itemList[-1] do
 		LUIBank:SlotUpdate(LUIBank.itemList[-1][i])
@@ -168,11 +168,7 @@ end
 local hasBankOpenBags = false
 
 function module.OpenBank()
-	--TODO: Only create bank when needed. Currently doesnt work.
-	--if not LUIBank then
-	--	module:CreateNewContainer("Bank", Bank)
-	--end
-
+	--TODO: Only create bank when needed.
 	if not LUIBags:IsShown() then
 		hasBankOpenBags = true
 		LUIBags:Open()

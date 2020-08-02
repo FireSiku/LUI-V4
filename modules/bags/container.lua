@@ -626,14 +626,14 @@ function module:CreateNewContainer(name, obj)
 	frame:SetClampedToScreen(true)
 	frame:SetSize(1,1)
 
-	-- Create Background frame
+	-- Background frame
 	local bgFrame = CreateFrame("Frame", nil, frame)
-	--When Bags and Bank are opened at the same time, there is overlap happening. FIgure a better way to fix it.
+	-- TODO: When Bags and Bank are opened at the same time, there is overlap happening. FIgure a better way to fix it.
 	bgFrame:SetFrameLevel(frame:GetParent():GetFrameLevel()+1)
 	bgFrame:SetClampedToScreen(true)
 	frame.background = bgFrame
 
-	-- Add Close Button
+	-- Close Button
 	local closeBtn = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
 	closeBtn:SetSize(32,32)
 	closeBtn:SetPoint("TOPRIGHT", -3, -3)
@@ -641,7 +641,6 @@ function module:CreateNewContainer(name, obj)
 	closeBtn:SetScript("OnClick", function() frame:Close() end)
 	frame.closeButton = closeBtn
 
-	-- Add reference tables
 	frame.toolbars = {} -- Used to store BagBar and such
 
 	-- Embed things from the given object, then mixin the shared code or hook it.
@@ -667,7 +666,7 @@ function module:CreateNewContainer(name, obj)
 	frame:SetScript("OnMouseUp", frame.StopMovingFrame)
 
 	-- Craete Search Box
-	module:CreateSearchBar(frame)  -- Placeholder
+	module:CreateSearchBar(frame)
 
 	-- Create the Bag Bar
 	if frame.CreateBagBar then
@@ -696,7 +695,6 @@ function module:CreateNewContainer(name, obj)
 		frame.itemList[id] = {}
 	end
 
-	--Do those needs to be here?
 	containerStorage[name] = frame
 	frame:SetBagsProperties()
 	--SetBagsDimensions

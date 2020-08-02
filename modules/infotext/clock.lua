@@ -237,7 +237,7 @@ function element.OnTooltipShow(GameTooltip)
 			end
 		end
 	end
-	--Check for World Bosses toow
+	--Check for World Bosses too
 	if db.showWorldBosses then
 		for i = 1, GetNumSavedWorldBosses() do
 			local name, _, reset = GetSavedWorldBossInfo(i)

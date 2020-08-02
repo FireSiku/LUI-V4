@@ -514,20 +514,3 @@ function module:OnDisable()
 	module:RevertTooltipBackdrop()
 	module:RevertHealthBar()
 end
-
--- ####################################################################################################################
--- ##### Debug #############################################################################################
--- ####################################################################################################################
-
--- Debug function, will print frames with Tooltip in the name that we arent skinning.
--- Useful whenever we looking for something.
-function PrintTooltips()
-	for k, v in pairs(_G) do
-		if strmatch(k, "Tooltip%d?$") and type(v) == "table" then
-			-- Do not show tooltips ending in TooltipTooltip, those are generally embedded tooltips.
-			if not strmatch(k, "TooltipTooltip$") then
-				if not tContains(TOOLTIPS_LIST, k) then LUI:Print(k) end
-			end
-		end
-	end
-end

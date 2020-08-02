@@ -75,7 +75,6 @@ Media:Register("font", "vibroceb", [[Interface\Addons\LUI4\media\fonts\vibroceb.
 Media:Register("font", "Prototype", [[Interface\Addons\LUI4\media\fonts\prototype.ttf]])
 Media:Register("font", "NotoSans-SCB", [[Interface\AddOns\LUI4\media\fonts\NotoSans-SemiCondensedBold.ttf]])
 
-
 -- REGISTER BORDERS
 Media:Register("border", "glow", [[Interface\Addons\LUI4\media\borders\glow.tga]])
 Media:Register("border", "Stripped", [[Interface\Addons\LUI4\media\borders\Stripped.tga]])
@@ -127,7 +126,6 @@ function LUI:OnInstall()
 	self.db:SetProfile(format("%s - %s", LUI.playerName, LUI.playerRealm))
 	-- Got nothing to put here for now.
 	db.Installed.LUI = true
-	--Also placeholder print. Possibly?
 	LUI:Print(L["Core_InstallSucess"])
 end
 
@@ -151,10 +149,6 @@ function LUI:LoadOptions()
 	-- Only creates and load the options table in memory when needed. There's no need for a huge options table sitting
     -- in  the memory of a user that only opens the options panel once every week.
 	if not LUI.options then
-
-		--Pattern will match "r" followed by a number, a svn rev.
-		-- local revision = LUI.revision
-		-- if revision then revision = strmatch(revision,"r%d+") end
 
 		LUI.options = {
 			name = "LUI",
@@ -203,7 +197,6 @@ function LUI:LoadOptions()
 		LUI.options.args.profiles.order = 4
 
 		for modName, module in LUI:IterateModules() do
-			-- Load the module's :LoadOptions() into the options table
 			-- If a module related to an addon has an option table but the addon isnt loaded, do not load it in.
 			local ok = true
 			if module.addon and (not IsAddOnLoaded(module.addon)) then ok = false end
@@ -291,7 +284,6 @@ end
 -- ####################################################################################################################
 
 --Function that will create a namespace for each module.
--- module - Ace Object from :NewModule
 function LUI:RegisterModule(module)
 	local mName = module:GetName()
 
@@ -302,25 +294,7 @@ function LUI:RegisterModule(module)
 	end
 	module:SetEnabledState(db.modules[mName])
 
-	--LUI:EmbedModule(module)
-	--Register DB Namespace
-	--TODO: Allow for DB-less modules.
-	-- if not module.defaults then
-	-- 	LUI:Print("Cant Proceed, Module ["..mName.."] has no database")
-	-- 	return
-	-- end
 	if module.defaults then
-		--Merge Defaults from elements.
-		-- for name, element in module:IterateModules() do
-		-- 	if element.defaults then
-		-- 		for i, scope in ipairs(LUI.DB_TYPES) do
-		-- 			if element.defaults[scope] then
-		-- 				if not module.defaults[scope] then module.defaults[scope] = {} end
-		-- 				module.defaults[scope][name] = LUI:CopyTable(element.defaults[scope], module.defaults[scope][name])
-		-- 			end
-		-- 		end
-		-- 	end
-		-- end
 		module.db = self.db:RegisterNamespace(mName, module.defaults)
 
 		-- Register Callbacks

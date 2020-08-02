@@ -34,7 +34,6 @@ function ReputationDataMixin:ShouldBeVisible()
 end
 
 function ReputationDataMixin:GetParagonValues(factionID)
-	-- Blizzard also stores Paragon in an interesting way.
 	-- currentValue is the total amount of paragon a character accrued.
 	-- Need to remove threshold value out of currentValue for every reward already received.
 
@@ -43,12 +42,9 @@ function ReputationDataMixin:GetParagonValues(factionID)
 
 	if rewardPending then
 		-- If there's a reward pending, the bar should be full, adjust percent value to be above 100%
-		-- Also lets register for quest turn in to know when the reward isn't pending anymore.
-		--module:RegisterEvent("QUEST_LOG_UPDATE", "UpdateBarMode")
 		self.repText = L["ExpBar_ShortName_Reward"]
 		return currentValue + rewardThreshold, rewardThreshold
 	else
-		--module:UnregisterEvent("QUEST_LOG_UPDATE")
 		self.repText = L["ExpBar_ShortName_Paragon"]
 		return currentValue, rewardThreshold
 	end
