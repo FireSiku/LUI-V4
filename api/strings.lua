@@ -23,13 +23,24 @@ local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE
 -- local UNIT_NAME_FONT_CYRILLIC = UNIT_NAME_FONT_CYRILLIC  -- Russian Font
 
 -- ####################################################################################################################
+-- ##### StringUtils: EmmyLua #########################################################################################
+-- ####################################################################################################################
+
+---@alias FrameLayer string|"BACKGROUND"|"BORDER"|"ARTWORK"|"OVERLAY"|"HIGHLIGHT"
+---@alias FrameStrata string|"BACKGROUND"|"LOW"|"MEDIUM"|"HIGH"|"DIALOG"|"FULLSCREEN"|"TOOLTIP"
+---@alias DBScope string|"profile"|"global"|"char"|"realm"|"class"|"race"|"faction"|"factionrealm"
+---@alias ClassToken string|"DEATHKNIGHT"|"DEMONHUNTER"|"DRUID"|"HUNTER"|"MAGE"|"MONK"|"PALADIN"|"PRIEST"|"ROGUE"|"SHAMAN"|"WARLOCK"|"WARRIOR"
+---@alias UnitId string|"player"|"target"|"focus"|"mouseover"|"pet"|"vehicle"|"partyN"|"nameplateN"|"raidN"|"bossN"
+---@alias Point string|"CENTER"|"TOP"|"BOTTOM"|"LEFT"|"RIGHT"|"TOPLEFT"|"TOPRIGHT"|"BOTTOMLEFT"|"BOTTOMRIGHT"
+
+-- ####################################################################################################################
 -- ##### StringUtils: Classes #########################################################################################
 -- ####################################################################################################################
 
 local localClassNames
---- Return a class token given a localized class name
--- @string className The localized name of one of the player classes.
--- @treturn string A locale-independant class token. (ie: "DEATHKNIGHT")
+--- Returns a locale-independant class token from a localized class name.
+---@param className string @ Localized class name
+---@return ClassToken
 function LUI:GetTokenFromClassName(className)
 	if not localClassNames then
 		localClassNames = {}

@@ -25,11 +25,6 @@ function LUI:EmbedModule(target)
 	end
 end
 
---- Few doc alias
----@alias FrameLayer string|"BACKGROUND"|"BORDER"|"ARTWORK"|"OVERLAY"|"HIGHLIGHT"
----@alias FrameStrata string|"BACKGROUND"|"LOW"|"MEDIUM"|"HIGH"|"DIALOG"|"FULLSCREEN"|"TOOLTIP"
----@alias DBScope string|"profile"|"global"|"char"|"realm"|"class"|"race"|"faction"|"factionrealm"
-
 -- ####################################################################################################################
 -- ##### Module Mixin #################################################################################################
 -- ####################################################################################################################
@@ -222,7 +217,6 @@ function ModuleMixin:GetDBScope(scope)
 		return self.db[scope]
 	end
 end
-
 
 --- Print exclusively for Module Messages.
 --- Those prints will not appear if ModuleMessages is disabled

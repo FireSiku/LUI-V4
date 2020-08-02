@@ -108,8 +108,9 @@ module.defaults = {
 -- ##### Local Functions ##############################################################################################
 -- ####################################################################################################################
 
--- Return r, g, b for any color stored by the color api.
--- If the color doesn't exists, return nil.
+--- Return r, g, b for any color stored by the color api.
+--- If the color doesn't exists, return nil
+--- @param colorName string
 local function GetColorRGB(colorName)
 	local color = db.Colors[colorName]
 	if color then
@@ -121,19 +122,22 @@ end
 -- ##### Simple API ###################################################################################################
 -- ####################################################################################################################
 
+--- Return a Multiplier for RGB values to use for darker background colors.
+---@return number
 function LUI:GetBGMultiplier()
 	return db.Advanced.BackgroundMultiplier
 end
 
--- Utility function for other modules to fetch a color stored here.
+--- Utility function for other modules to fetch a color stored in Color module.
 function LUI:GetFallbackRGB(colorName)
 	return GetColorRGB(colorName)
 end
 
---Function wrappers for Good/Bad colors convenience.
+--- Convenience wrapper for "Good" color.
 function LUI:PositiveColor()
 	return GetColorRGB("Good")
 end
+--- Convenience wrapper for "Bad" color.
 function LUI:NegativeColor()
 	return GetColorRGB("Bad")
 end
@@ -143,7 +147,8 @@ end
 -- ####################################################################################################################
 -- Most of these functions will return a r, g, b value for a specific purpose, and fallback to white as needed.
 
--- Return r, g, b for given class.
+--- Return r, g, b for given class.
+---@param class ClassToken
 function LUI:GetClassColor(class)
 	local r, g, b = GetColorRGB(class)
 	if r and g and b then
@@ -153,7 +158,8 @@ function LUI:GetClassColor(class)
 	end
 end
 
--- Return r, g, b for given faction
+--- Return r, g, b for given faction
+---@param faction string
 function LUI:GetFactionColor(faction)
 	local r, g, b = GetColorRGB(faction)
 	if r and g and b then
@@ -163,8 +169,10 @@ function LUI:GetFactionColor(faction)
 	end
 end
 
--- Return r, g, b based on reaction of unit towards another unit.
--- If a second unit isnt given, assume player.
+--- Return r, g, b based on reaction of unit towards another unit.
+--- If a second unit isnt given, assume player.
+---@param unit UnitId
+---@param otherUnit UnitId
 function LUI:GetReactionColor(unit, otherUnit)
 	local reaction = UnitReaction(unit, otherUnit or "player")
 	local colorName = format("Standing%d", reaction)
@@ -177,7 +185,8 @@ function LUI:GetReactionColor(unit, otherUnit)
 	end
 end
 
--- Return r, g, b based on level difference.
+--- Return r, g, b based on level difference.
+---@param level number
 function LUI:GetDifficultyColor(level)
 	local color = GetQuestDifficultyColor(level)
 	return color.r, color.g, color.b
@@ -192,8 +201,9 @@ end
 --       Also, make a frame appear in the gradient tab options that shows the whole range of the gradient.
 --       Debating between having the color evaluated every 2% for more granulity or every 5% for more impact.
 
--- Based on Wowpedia's ColorGradient. Use our three gradient colors to make a color based on a percentage
 -- TODO: Possibly rename some variables inside to better names. (such as relperc.)
+--- Based on Wowpedia's ColorGradient. Use our three gradient colors to make a color based on a percentage
+---@param perc number
 function LUI:RGBGradient(perc)
 	if perc >= 1 then
 		return LUI:PositiveColor()
@@ -217,7 +227,7 @@ function LUI:RGBGradient(perc)
 	return r, g, b
 end
 
---Wrapper for ColorGradient's that inverse the percent given.
+---Wrapper for ColorGradient's that inverse the percent given.
 function LUI:InverseGradient(perc)
 	return LUI:RGBGradient(1 - perc)
 end
