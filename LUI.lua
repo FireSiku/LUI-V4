@@ -305,7 +305,7 @@ function LUI:RegisterModule(module)
 	end
 	module:SetEnabledState(db.modules[mName])
 
-	LUI:EmbedModule(module)
+	--LUI:EmbedModule(module)
 	--Register DB Namespace
 	--TODO: Allow for DB-less modules.
 	-- if not module.defaults then

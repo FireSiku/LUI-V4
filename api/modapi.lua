@@ -6,39 +6,41 @@
 -- ####################################################################################################################
 
 -- Addon building reference.
-local addonname, LUI = ...
+local _, LUI = ...
 local Media = LibStub("LibSharedMedia-3.0")
 
 --local copies
 local pairs = pairs
 
 --Local variables
+---@class LUIModule
 local ModuleMixin = {}
-local ModuleCreationMixin = {}
 
+--- Embed the ModuleMixin into target object. $
+--- Note: This is done automatically for modules created with :NewModule()
+---@param target table
 function LUI:EmbedModule(target)
 	for k, v in pairs(ModuleMixin) do
 		target[k] = v
 	end
 end
 
+--- Few doc alias
+---@alias FrameLayer string|"BACKGROUND"|"BORDER"|"ARTWORK"|"OVERLAY"|"HIGHLIGHT"
+---@alias FrameStrata string|"BACKGROUND"|"LOW"|"MEDIUM"|"HIGH"|"DIALOG"|"FULLSCREEN"|"TOOLTIP"
+---@alias DBScope string|"profile"|"global"|"char"|"realm"|"class"|"race"|"faction"|"factionrealm"
 
 -- ####################################################################################################################
 -- ##### Module Mixin #################################################################################################
 -- ####################################################################################################################
 
---- Module API
--- @section moduleapi
-
---- Fetch a colo and return the r, g, b values
--- @string color Name of the color to fetch as named in the database.
--- This will check the specific module's database and then check the generic Color module.
--- This function will be really helpful later on when we add choice to use a class or theme color instead of individual.
--- @treturn number r Red
--- @treturn number g Green
--- @treturn number b Blue
+--- Fetch a color and return the r, g, b value
+--- @param colorName string @ check module db first, then color module.
+--- @return number r
+--- @return number g
+--- @return number b
+--  TODO: Fix the issue with RGB colors as RGBA colors in the options
 function ModuleMixin:RGB(colorName)
-	--TODO: Fix the issue with RGB colors as RGBA colors in the options
 	local db = self:GetDB("Colors")
 	if db and db[colorName] then
 		-- TODO: Check for all planned types (.t)
@@ -52,6 +54,11 @@ function ModuleMixin:RGB(colorName)
 	return LUI:GetFallbackRGB(colorName)
 end
 
+--- Fetch a color and return the r, g, b, a values.
+--- @param colorName string @ check module db first, then color module.
+--- @return number r
+--- @return number g
+--- @return number b
 function ModuleMixin:RGBA(colorName)
 	local db = self:GetDB("Colors")
 
@@ -72,10 +79,9 @@ function ModuleMixin:RGBA(colorName)
 	end
 end
 
---- Fetch a color from LUI database and creates a Blizzard Color with it.
--- @string color Name of the color to fetch as named in the database.
--- @treturn ColorMixin color
--- TODO: Cache this information?
+--- Fetch a color and creates a Blizzard Color with it.
+--- @param colorName string @ check module db first, then color module.
+--- @return ColorMixin
 function ModuleMixin:Color(colorName)
 	local r, g, b, a = self:RGBA(colorName)
 	if r and g and b then
@@ -83,6 +89,9 @@ function ModuleMixin:Color(colorName)
 	end
 end
 
+--- Fetch a color and wrap text with its color code.
+--- @param colorName string @ check module db first, then color module.
+--- @return string coloredText
 function ModuleMixin:ColorText(text, colorName)
 	local color = self:Color(colorName)
 	if color then
@@ -91,7 +100,7 @@ function ModuleMixin:ColorText(text, colorName)
 	return text
 end
 
--- Wrapper around SharedMedia fetch features.
+--- Wrapper around SharedMedia's `:Fetch("statusbar")`
 function ModuleMixin:FetchStatusBar(name)
 	local db = self:GetDB("StatusBars")
 	if db and db[name] then
@@ -99,6 +108,7 @@ function ModuleMixin:FetchStatusBar(name)
 	end
 end
 
+--- Wrapper around SharedMedia's `:Fetch("border")`
 function ModuleMixin:FetchBorder(name)
 	local db = self:GetDB("Borders")
 	if db and db[name] then
@@ -106,6 +116,7 @@ function ModuleMixin:FetchBorder(name)
 	end
 end
 
+--- Wrapper around SharedMedia's `:Fetch("background")`
 function ModuleMixin:FetchBackground(name)
 	local db = self:GetDB("Backgrounds")
 	if db and db[name] then
@@ -113,10 +124,18 @@ function ModuleMixin:FetchBackground(name)
 	end
 end
 
--- Function that creates a backdrop table for use with SetBackdrop and keeps a copy around based on name.
--- When function is called on an existing backdrop, update it and return it.
--- If Tile or Insets options aren't found in the DB, they can be optionally be set through parameters.
--- Requires a DB.Backdrop entry based on name.
+--- Function that creates a backdrop table for use with SetBackdrop and keeps a copy around based on name.
+--- * When function is called on an existing backdrop, update it and return it.
+--- * If Tile or Insets options aren't found in the DB, they can be optionally be set through parameters.
+--- * Requires a DB.Backdrop entry based on name.
+---@param name string
+---@param tile boolean @ True = Tile, False = Stretch
+---@param tileSize number @ Size of each tiled copy of bgFile
+---@param l number @ How far from the edge bg is drawn. (Higher = Thicker)
+---@param r number @ How far from the edge bg is drawn. (Higher = Thicker)
+---@param t number @ How far from the edge bg is drawn. (Higher = Thicker)
+---@param b number @ How far from the edge bg is drawn. (Higher = Thicker)
+---@return BackdropTable
 function ModuleMixin:FetchBackdrop(name, tile, tileSize, l, r, t, b)
 	local db = self:GetDB("Backdrop")
 	if db and db[name] then
@@ -146,7 +165,7 @@ function ModuleMixin:FetchBackdrop(name, tile, tileSize, l, r, t, b)
 	end
 end
 
--- Function that fetch and set Backdrop, along with setting color and border color.
+--- Function that fetch and set Backdrop, along with setting color and border color.
 function ModuleMixin:UpdateFrameBackdrop(name, frame, ...)
 	local backdrop = self:FetchBackdrop(name, ...)
 
@@ -156,12 +175,13 @@ function ModuleMixin:UpdateFrameBackdrop(name, frame, ...)
 end
 
 --- Quickly Setup a FontString widget
--- @tparam table frame Frame to attach the font string to.
--- @string gName Global name for the new font stirng
--- @string mFont Name of the font to fetch as named in the database.
--- @tparam[opt] ?string layer Layer on which to create the font string, default to ARTWORK.
--- @tparam[opt] ?string hJustify Set the font horizontal alignment.
--- @tparam[opt] ?string vJustify Set the font vertical alignment.
+---@param frame Frame
+---@param gName string
+---@param mFont fontName
+---@param layer FrameLayer|nil @ Layer font should be drawn in. Defaults to ARTWORK
+---@param hJustify boolean|nil
+---@param vJustify boolean|nil
+---@return FontString
 function ModuleMixin:SetFontString(frame, gName, mFont, layer, hJustify, vJustify)
 	local fs = frame:CreateFontString(gName, layer)
 	local db = self:GetDB("Fonts")
@@ -180,7 +200,8 @@ function ModuleMixin:RefreshFontString(fs, mFont)
 end
 
 --- Returns the profile database table.
--- @tparam[opt] ?string tbl The name of a table in the database to return.
+--- @param subTable string|nil @Optional: Return the requested subtable if found. Otherwise return the module's db.
+--- @return AceDB
 function ModuleMixin:GetDB(subTable)
 	local db
 	if self.db then
@@ -192,8 +213,9 @@ function ModuleMixin:GetDB(subTable)
 	return db
 end
 
---- Returns a database scope table.
--- @tparam[opt] ?string scope The scope to look up. Can be one of the nine database types as specified by AceDB.
+--- Returns a database scope table. Defaults to profile.
+---@param scope DBScope
+---@return AceDB
 function ModuleMixin:GetDBScope(scope)
 	scope = scope or "profile"
 	if self.db then
@@ -203,8 +225,7 @@ end
 
 
 --- Print exclusively for Module Messages.
--- Those prints will not appear if ModuleMessages is disabled
--- @string msg Message to print. Note that this print automatically adds the module name at the start.
+--- Those prints will not appear if ModuleMessages is disabled
 function ModuleMixin:ModPrint(...)
 	local db = LUI:GetDB("General")
 	if db.ModuleMessages then
@@ -217,7 +238,7 @@ end
 -- ####################################################################################################################
 
 --- Toggle a module's enabled state.
-function ModuleCreationMixin:Toggle()
+function ModuleMixin:Toggle()
 	local name = self:GetName()
 	local state = not self:IsEnabled()
 	if state then
@@ -231,7 +252,7 @@ end
 --- Merge given table into module.defaults if it exists. Support all AceDB types
 ---@param source table
 ---@param name string
-function ModuleCreationMixin:MergeDefaults(source, name)
+function ModuleMixin:MergeDefaults(source, name)
 	if not self.defaults then self.defaults = {} end
 	for i, scope in ipairs(LUI.DB_TYPES) do
 		if source[scope] then
@@ -246,12 +267,4 @@ function ModuleCreationMixin:MergeDefaults(source, name)
 end
 
 --- Since we arent doing any closure shenanigans using OnModuleCreated, this accomplish the same in a much better way.
-LUI:SetDefaultModulePrototype(ModuleCreationMixin)
-
---- Will be executed automatically after Ace :NewModule is called, before OnInitialize
----@param newModule Module
--- function LUI:OnModuleCreated(newModule)
--- 	for k, v in pairs(ModuleCreationMixin) do
--- 		newModule[k] = v
--- 	end
--- end
+LUI:SetDefaultModulePrototype(ModuleMixin)
