@@ -441,6 +441,7 @@ module.enableButton = true
 
 function module:OnInitialize()
 	LUI:RegisterModule(module)
+	db = module.db.profile
 end
 
 function module:OnEnable()
