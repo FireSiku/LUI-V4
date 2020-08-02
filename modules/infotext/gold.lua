@@ -81,7 +81,7 @@ module:MergeDefaults(element.defaults, "Gold")
 -- ####################################################################################################################
 
 function element:FormatMoney(money, color)
-	local db = module:GetDB().Gold
+	local db = module.db.profile.Gold
 	if db.useBlizzard then
 		return GetMoneyString(money)
 	end
@@ -108,7 +108,7 @@ function element:FormatMoney(money, color)
 end
 
 function element:UpdateGold()
-	local db = module:GetDB().Gold
+	local db = module.db.profile.Gold
 	local realm = LUI.playerRealm
 	local faction = LUI.playerFaction
 	local realmDB = module:GetDBScope("realm").Gold[faction]
@@ -160,7 +160,7 @@ function element.OnClick(frame_, button)
 		moneyProfit = 0
 		element:UpdateTooltip()
 	else
-		local db = module:GetDB().Gold
+		local db = module.db.profile.Gold
 		db.showRealm = not db.showRealm
 		element:UpdateGold()
 	end

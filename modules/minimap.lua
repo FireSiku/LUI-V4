@@ -9,6 +9,7 @@
 local _, LUI = ...
 local module = LUI:NewModule("Minimap")
 local L = LUI.L
+local db
 
 -- luacheck: globals Minimap MinimapZoomIn MinimapZoomOut GarrisonLandingPageMinimapButton MiniMapTrackingDropDown
 -- luacheck: globals LUIMinimapZone LUIMinimapCoord LUIMinimapBorder
@@ -44,10 +45,10 @@ module.defaults = {
 	profile = {
 		General = {
 			Scale = 1,
-			coordPrecision = 1,
-			alwaysShowText = false,
-			hideMissingCoord = true,
-			showTextures = true,
+			CoordPrecision = 1,
+			AlwaysShowText = false,
+			HideMissingCoord = true,
+			ShowTextures = true,
 			FontSize = 12,
 		},
 		Position = {
@@ -167,7 +168,6 @@ end
 -- ####################################################################################################################
 
 function module:SetMinimap()
-	local db = module:GetDB()
 
 	--Enable Scroll Zooming
 	Minimap:EnableMouseWheel(true)
@@ -219,7 +219,7 @@ function module:SetMinimap()
 			if position then
 				local x, y = position:GetXY()
 				if x and y then
-					return minimapCoordText:SetFormattedText(COORD_FORMAT_LIST[db.General.coordPrecision], x * 100, y * 100)
+					return minimapCoordText:SetFormattedText(COORD_FORMAT_LIST[db.General.CoordPrecision], x * 100, y * 100)
 				end
 			end
 		end
@@ -237,7 +237,7 @@ function module:SetMinimap()
 		end
 	end)
 	Minimap:SetScript("OnLeave",function()
-		if not db.General.alwaysShowText then
+		if not db.General.AlwaysShowText then
 			LUIMinimapZone:Hide()
 			LUIMinimapCoord:Hide()
 		end
@@ -348,7 +348,6 @@ function module:SetMinimapFrames()
 end
 
 function module:SetMinimapSize()
-	local db = module:GetDB()
 	LUI:RegisterConfig(Minimap, db.Position)
 	LUI:RestorePosition(Minimap)
 end
@@ -365,8 +364,7 @@ function module:SetColors()
 end
 
 function module:ToggleMinimapText()
-	local db = module:GetDB("General")
-	if db.alwaysShowText then
+	if db.General.AlwaysShowText then
 		LUIMinimapZone:Show()
 		LUIMinimapCoord:Show()
 	else
@@ -376,8 +374,7 @@ function module:ToggleMinimapText()
 end
 
 function module:ToggleMinimapTextures()
-	local db = module:GetDB("General")
-	if db.showTextures then
+	if db.General.ShowTextures then
 		LUIMinimapBorder:Show()
 		for i = 1, 8 do
 			_G["LUIMinimapTexture"..i]:Show()
@@ -397,13 +394,12 @@ end
 module.enableButton = true
 
 function module:LoadOptions()
-	local db = module:GetDB()
 	local options = {
 		Header = module:NewHeader(MINIMAP_LABEL, 1),
 		General = module:NewGroup(L["Settings"], 2, nil, nil, {
-			alwaysShowText = module:NewToggle(L["Minimap_AlwaysShowText_Name"], L["Minimap_AlwaysShowText_Desc"], 1, "ToggleMinimapText"),
-			showTextures = module:NewToggle(L["Minimap_ShowTextures_Name"], L["Minimap_ShowTextures_Desc"], 2, "ToggleMinimapTextures"),
-			coordPrecision = module:NewSlider(L["Minimap_CoordPrecision_Name"], L["Minimap_CoordPrecision_Desc"], 4, 0, 2, 1),
+			AlwaysShowText = module:NewToggle(L["Minimap_AlwaysShowText_Name"], L["Minimap_AlwaysShowText_Desc"], 1, "ToggleMinimapText"),
+			ShowTextures = module:NewToggle(L["Minimap_ShowTextures_Name"], L["Minimap_ShowTextures_Desc"], 2, "ToggleMinimapTextures"),
+			CoordPrecision = module:NewSlider(L["Minimap_CoordPrecision_Name"], L["Minimap_CoordPrecision_Desc"], 4, 0, 2, 1),
 			LineBreak = module:NewLineBreak(9),
 			Minimap = module:NewColorMenu(L["Minimap_BorderColor_Name"], 10, true, "SetColors"),
 			FontMenu = module:NewFontMenu("Font Menu", 12, "Minimap"),
@@ -435,6 +431,7 @@ end
 
 function module:OnInitialize()
 	LUI:RegisterModule(module, true)
+	db = module.db.profile
 end
 
 function module:OnEnable()

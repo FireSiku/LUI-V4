@@ -20,6 +20,7 @@
 local _, LUI = ...
 local module = LUI:NewModule("Experience Bar", "AceHook-3.0")
 local L = LUI.L
+local db
 
 local mixinData = {}
 local barsList = {}
@@ -118,7 +119,6 @@ end
 
 function InfoBarMixin:UpdateText()
 	if self.ShouldDisplayPercentText() then
-		local db = module:GetDB()
 		local percentBar = self.barValue / self.barMax * 100
 		local percentText = format("%."..db.Precision.."f%%", percentBar)
 		return self.text:SetText(format("%s %s", percentText, self:GetDataText() or ""))
@@ -135,7 +135,6 @@ function InfoBarMixin:UpdateVisibility()
 end
 
 function InfoBarMixin:UpdateTextVisibility()
-	local db = module:GetDB()
 	if db.ShowText then
 		self.text:Show()
 	else
@@ -173,7 +172,6 @@ function module:CreateBar(name, dataMixin)
 		error("Usage: CreateBar(name, dataMixin): dataMixin is not valid")
 	end
 
-	local db = module:GetDB()
 	local bar = CreateFrame("StatusBar", name, UIParent)
 	bar:SetFrameStrata("HIGH")
 	bar:SetSize(db.Width, db.Height)
@@ -219,7 +217,6 @@ function module:IterateMainBars()
 end
 
 function module:SetMainBar()
-	local db = module:GetDB()
 
 	local anchor = CreateFrame("Frame", "LUI_MainExpBar", UIParent)
 	anchor:SetPoint(db.Point, UIParent, db.RelativePoint, db.X, db.Y)
@@ -255,7 +252,6 @@ function module:SetMainBar()
 end
 
 function module:UpdateMainBarVisibility()
-	local db = module:GetDB()
 	local barLeft, barRight
 
 	-- Check which bars can be visible at the moment
@@ -328,7 +324,6 @@ function module:RefreshColors()
 end
 
 function module:Refresh()
-	local db = module:GetDB()
 	module.anchor:SetPoint(db.Point, UIParent, db.RelativePoint, db.X, db.Y)
 	module.anchor:SetSize(db.Width, db.Height)
 	for bar in module:IterateMainBars() do
@@ -384,6 +379,7 @@ module.enableButton = true
 
 function module:OnInitialize()
 	LUI:RegisterModule(module)
+	db = module.db.profile
 end
 
 function module:OnEnable()

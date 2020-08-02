@@ -18,7 +18,7 @@ AzeriteDataMixin.BAR_EVENTS = {
 }
 
 function AzeriteDataMixin:ShouldBeVisible()
-	local db = module:GetDB()
+	local db = module.db.profile
 	if db.ShowAzerite and C_AzeriteItem.HasActiveAzeriteItem() then
 		if C_AzeriteItem.FindActiveAzeriteItem() then
 			return true
@@ -34,7 +34,7 @@ function AzeriteDataMixin:Update()
 end
 
 function AzeriteDataMixin:GetDataText()
-	local db = module:GetDB()
+	local db = module.db.profile
 	if db.ShowAbsolute then
 		return format("AP (%s / %s)", self.barValue, self.barMax)
 	end

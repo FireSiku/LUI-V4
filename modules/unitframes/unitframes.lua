@@ -6,6 +6,7 @@ local _, LUI = ...
 local module = LUI:NewModule("Unitframes", "AceHook-3.0")
 local L = LUI.L
 local oUF = LUI.oUF
+local db
 
 local unitSpawns = { "player", "target", }
 
@@ -16,7 +17,7 @@ local unitSpawns = { "player", "target", }
 -- ####################################################################################################################
 
 function module:GetUnitDB(unit)
-	return module:GetDB("Units")[unit]
+	return db.Units[unit]
 end
 
 --TODO: Fix color system so we don't have to create new tables every call.
@@ -129,7 +130,6 @@ function module:NewUnitOptionGroup(unit, order)
 	-- Create an object to represent the unit, GetDB is the only function we need to recreate for the Options API.
 	local opt = {}
 	function opt:GetDB(subTable)
-		local db = module:GetDB()
 		return (subTable and db.Units[unit][subTable]) or db.Units[unit]
 	end
 	LUI:EmbedOptions(opt)
@@ -327,6 +327,7 @@ module.enableButton = true
 function module:OnInitialize()
 	LUI:RegisterModule(module)
 	oUF:RegisterStyle("LUI4", module.SetStyle)
+	db = module.db.profile
 
 	for k, v in pairs(SpawnMixin) do
 		oUF:RegisterMetaFunction(k, v)
@@ -337,7 +338,7 @@ function module:OnEnable()
 	module:SetOUFColors()
 	for i = 1, #unitSpawns do
 		local unit = unitSpawns[i]
-		local db = module:GetUnitDB(unit)
+		local db = db.Units[unit]
 		local spawn_ = SpawnUnit(unit, db.Point, db.X, db.Y)
 	end
 end

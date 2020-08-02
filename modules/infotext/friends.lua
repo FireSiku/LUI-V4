@@ -514,8 +514,7 @@ end
  -- Friends/Guild have different tooltip implementation, comment all tooltip updates for now.
 
 function element:UpdateFriends()
-	local db = module:GetDB()
-	local formatString = (db.showTotal) and "%s: %d/%d" or "%s: %d"
+	local formatString = (module.db.profile.showTotal) and "%s: %d/%d" or "%s: %d"
 	element.text = format(formatString, FRIENDS, onlineFriends + onlineBNFriends, totalFriends + totalBNFriends)
 	--tooltip:Update()
 end

@@ -180,9 +180,8 @@ function element:UpdateGuild()
 		element.text = L["InfoGuild_NoGuild"]
 		return
 	end
-	local db = module:GetDB()
 	local totalNumGuild, guildNumOnline_, guildNumOnlineRemote = GetNumGuildMembers()
-	local formatString = (db.showTotal) and "%s: %d/%d" or "%s: %d"
+	local formatString = (module.db.profile.showTotal) and "%s: %d/%d" or "%s: %d"
 
 	element.text = format(formatString, GUILD, guildNumOnlineRemote, totalNumGuild)
 	element:UpdateInfotip()
@@ -270,7 +269,7 @@ function element.OnEnter(frame_)
 	local maxWidth, maxHeight
 	if IsInGuild() then
 		if infotip.noGuild then infotip.noGuild:Hide() end
-		local db = module:GetDB()
+		local db = module.db.profile
 
 		-- Show MOTD
 		local motd = element:CreateMOTD()

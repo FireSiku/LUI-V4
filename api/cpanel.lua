@@ -53,7 +53,7 @@ function module:AddonSupportIterator()
 	for name, mod_ in addonMod:IterateModules() do
 		args[name] = module:NewExecute(format(L["CPanel_AddonReset"], name), nil, nil,
 			function()
-				addonMod:GetDB("installed")[name] = nil
+				addonMod.db.Installed[name] = nil
 				addonMod:OnEnable()
 			end)
 	end

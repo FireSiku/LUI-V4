@@ -10,6 +10,7 @@
 local _, LUI = ...
 local module = LUI:NewModule("Auras")
 local L = LUI.L
+local db
 
 local headerStorage = {}
 
@@ -96,8 +97,7 @@ local function FormatTime(seconds)
 end
 
 function module:GetDebuffColor(debuffType)
-	local db = module:GetDB("Colors")
-	if db[debuffType] then
+	if db.Colors[debuffType] then
 		return module:RGB(debuffType)
 	else
 		return module:RGB("None")
@@ -146,7 +146,7 @@ end
 -- Turn into HeaderMixin?
 
 function Header:GetOption(name)
-	return module:GetDB(self.auraType)[name]
+	return db[self.auraType][name]
 end
 
 function Header:Update(event, ...)
@@ -324,6 +324,7 @@ end--]]
 
 function module:OnInitialize()
 	LUI:RegisterModule(module, true)
+	db = module.db.profile
 end
 
 function module:OnEnable()

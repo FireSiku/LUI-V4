@@ -8,6 +8,7 @@ local _, LUI = ...
 local module = LUI:NewModule("Tooltip", "AceHook-3.0")
 local Media = LibStub("LibSharedMedia-3.0")
 local L = LUI.L
+local db
 
 local _G = _G
 local pairs = pairs
@@ -91,12 +92,12 @@ local initialScale = {}
 
 module.defaults = {
 	profile = {
-		hideCombat = false,
-		hideCombatSkills = false,
-		hideCombatUnit = false,
-		hideUF = false,
-		hidePVP = true,
-		showSex = false,
+		HideCombat = false,
+		HideCombatSkills = false,
+		HideCombatUnit = false,
+		HideUF = false,
+		HidePVP = true,
+		ShowSex = false,
 		Cursor = false,
 		Point = "RIGHT",
 		Scale = 1,
@@ -104,10 +105,10 @@ module.defaults = {
 		Y = 0,
 		HealthFontSize = 12,
 		Textures = {
-			healthBar = "LUI_Minimalist",
-			backgroundTex = "Blizzard Dialog Background Dark",
-			borderTex = "Stripped_medium",
-			borderSize = 14,
+			HealthBar = "LUI_Minimalist",
+			BackgroundTex = "Blizzard Dialog Background Dark",
+			BorderTex = "Stripped_medium",
+			BorderSize = 14,
 		},
 		Colors = {
 			Background = { r = 0.19, g = 0.19, b = 0.19, a = 1, t = "Individual", },
@@ -163,11 +164,10 @@ local function GetTooltipUnit(frame)
 end
 
 function module:UpdateTooltipBackdrop()
-	local db = module:GetDB("Textures")
 	module.tooltipBackdrop = {
-		bgFile = Media:Fetch("background", db.backgroundTex),
-		edgeFile = Media:Fetch("border", db.borderTex),
-		edgeSize = db.borderSize, tile = false,
+		bgFile = Media:Fetch("background", db.Textures.BackgroundTex),
+		edgeFile = Media:Fetch("border", db.Textures.BorderTex),
+		edgeSize = db.Textures.BorderSize, tile = false,
 		insets = {left = 0, right = 0, top = 0, bottom = 0, }
 	}
 
@@ -214,7 +214,6 @@ end
 -- ####################################################################################################################
 
 function module:SetTooltip()
-	local db = module:GetDB()
 	module:SecureHook("GameTooltip_SetDefaultAnchor", function(frame, parent)
 		if db.Cursor then
 			frame:SetOwner(parent, "ANCHOR_CURSOR")
@@ -237,7 +236,6 @@ end
 -- luacheck: globals GameTooltipStatusBar
 function module:SetStatusHealthBar()
 	local health = GameTooltipStatusBar
-	local db = module:GetDB()
 
 	-- Save default data before replacing it (for reverting)
 	if not oldDefault.Health then
@@ -255,7 +253,7 @@ function module:SetStatusHealthBar()
 	health:SetHeight(6)
 	health:SetPoint("BOTTOMLEFT", health:GetParent(), "TOPLEFT", 2, 5)
 	health:SetPoint("BOTTOMRIGHT", health:GetParent(), "TOPRIGHT", -2, 5)
-	health:SetStatusBarTexture(Media:Fetch("statusbar", db.Textures.healthBar))
+	health:SetStatusBarTexture(Media:Fetch("statusbar", db.Textures.HealthBar))
 
 	-- Add health values.
 	health:SetScript("OnValueChanged", module.OnStatusBarValueChanged)
@@ -330,8 +328,7 @@ function module.OnStatusBarValueChanged(frame, value_)
 end
 
 function module:OnTooltipShow(frame)
-	local db = module:GetDB()
-	if db.hideCombat and InCombatLockdown() then
+	if db.HideCombat and InCombatLockdown() then
 		return frame:Hide()
 	end
 
@@ -346,8 +343,7 @@ end)
 
 -- luacheck: globals GameTooltipTextLeft1 GameTooltipTextLeft2
 function module:OnGameTooltipSetUnit(frame)
-	local db = module:GetDB()
-	if db.hideCombatUnit and InCombatLockdown() then
+	if db.HideCombatUnit and InCombatLockdown() then
 		return frame:Hide()
 	end
 
@@ -355,7 +351,7 @@ function module:OnGameTooltipSetUnit(frame)
 	if not unit then return frame:Hide() end
 
 	-- Hide tooltip on unitframes if that option is enabled
-	if frame:GetOwner() ~= UIParent and db.hideUF then
+	if frame:GetOwner() ~= UIParent and db.HideUF then
 		return frame:Hide()
 	end
 
@@ -404,7 +400,7 @@ function module:OnGameTooltipSetUnit(frame)
 				local levelString = (level > 0 and level) or "??"
 				local levelText = diffColor:WrapTextInColorCode(levelString)
 				local classText = unitColor:WrapTextInColorCode(localizedClass)
-				local sexString = (db.showSex) and LUI.GENDERS[sex].." " or ""
+				local sexString = (db.ShowSex) and LUI.GENDERS[sex].." " or ""
 				line:SetFormattedText("%s %s%s %s", levelText, sexString, race, classText)
 
 			-- Level line for creatures
@@ -421,7 +417,7 @@ function module:OnGameTooltipSetUnit(frame)
 				local classificationString = diffColor:WrapTextInColorCode(MOB_CLASSIFICATION[classification])
 				line:SetFormattedText("%s%s %s", levelText, classificationString, creatureType or "")
 			-- Remove the PVP line if the option is set
-			elseif line:GetText() == PVP_ENABLED and db.hidePVP then
+			elseif line:GetText() == PVP_ENABLED and db.HidePVP then
 				line:SetText()
 			end
 		end
@@ -436,8 +432,7 @@ function module:OnGameTooltipSetUnit(frame)
 end
 
 function module:HideCombatSkillTooltips(frame)
-	local db = module:GetDB()
-	if db.hideCombatSkills and InCombatLockdown() and not IsShiftKeyDown() then
+	if db.HideCombatSkills and InCombatLockdown() and not IsShiftKeyDown() then
 		frame:Hide()
 	end
 end
@@ -451,20 +446,19 @@ module.enableButton = true
 -- luacheck: push ignore
 function module:LoadOptions()
 
-	local function disableIfTooltipsHidden(info_)
-		local db = module:GetDB()
-		return db.hideCombat
+	local function disableIfTooltipsHidden()
+		return db.HideCombat
 	end
 
 	local options = {
 		Header = module:NewHeader(L["Tooltip_Name"], 1),
 		General = module:NewRootGroup(L["Settings"], 2, nil, nil, {
-			hideCombat = module:NewToggle(L["Tooltip_HideCombat_Name"], L["Tooltip_HideCombat_Desc"], 1),
-			hideCombatSkills = module:NewToggle(L["Tooltip_HideCombatSkills_Name"], L["Tooltip_HideCombatSkills_Desc"], 2, nil, nil, disableIfTooltipsHidden),
-			hideCombatUnit = module:NewToggle(L["Tooltip_HideCombatUnit_Name"], L["Tooltip_HideCombatUnit_Desc"], 2, nil, nil, disableIfTooltipsHidden),
-			hideUF = module:NewToggle(L["Tooltip_HideUF_Name"], L["Tooltip_HideUF_Desc"], 3),
-			hidePVP = module:NewToggle(L["Tooltip_HidePVP_Name"], L["Tooltip_HidePVP_Desc"], 4),
-			showSex = module:NewToggle(L["Tooltip_ShowSex_Name"], L["Tooltip_ShowSex_Desc"], 5),
+			HideCombat = module:NewToggle(L["Tooltip_HideCombat_Name"], L["Tooltip_HideCombat_Desc"], 1),
+			HideCombatSkills = module:NewToggle(L["Tooltip_HideCombatSkills_Name"], L["Tooltip_HideCombatSkills_Desc"], 2, nil, nil, disableIfTooltipsHidden),
+			HideCombatUnit = module:NewToggle(L["Tooltip_HideCombatUnit_Name"], L["Tooltip_HideCombatUnit_Desc"], 2, nil, nil, disableIfTooltipsHidden),
+			HideUF = module:NewToggle(L["Tooltip_HideUF_Name"], L["Tooltip_HideUF_Desc"], 3),
+			HidePVP = module:NewToggle(L["Tooltip_HidePVP_Name"], L["Tooltip_HidePVP_Desc"], 4),
+			ShowSex = module:NewToggle(L["Tooltip_ShowSex_Name"], L["Tooltip_ShowSex_Desc"], 5),
 			Scale = module:NewScale(L["Tooltip_Scale_Name"], L["Tooltip_Scale_Desc"], 6),
 		}),
 		Position = module:NewRootGroup(L["Position"], 3, nil, nil, {
@@ -474,12 +468,12 @@ function module:LoadOptions()
 		}),
 		Textures = module:NewGroup(L["Textures"], 3, nil, nil, {
 			Background = module:NewHeader(L["Background"], 1),
-			backgroundTex = module:NewTexBackground(L["Tooltip_BackgroundTex_Name"], L["BackgroundDesc"], 2, "UpdateTooltipBackdrop", "double"),
+			BackgroundTex = module:NewTexBackground(L["Tooltip_BackgroundTex_Name"], L["BackgroundDesc"], 2, "UpdateTooltipBackdrop", "double"),
 			Health = module:NewHeader(L["Health Bar"], 3),
-			healthBar = module:NewTexStatusBar(L["Tooltip_HealthBar_Name"], L["Tooltip_HealthBar_Desc"], 4, "SetStatusHealthBar", "double"),
+			HealthBar = module:NewTexStatusBar(L["Tooltip_HealthBar_Name"], L["Tooltip_HealthBar_Desc"], 4, "SetStatusHealthBar", "double"),
 			Border = module:NewHeader(L["Border"], 5),
-			borderTex = module:NewTexBorder(L["Tooltip_BorderTex_Name"], L["BorderDesc"], 6, "UpdateTooltipBackdrop", "double"),
-			borderSize = module:NewSlider(L["Tooltip_BorderSize_Name"], L["Tooltip_BorderSize_Desc"], 7, 1, 30, 1, nil, "UpdateTooltipBackdrop", "double"),
+			BorderTex = module:NewTexBorder(L["Tooltip_BorderTex_Name"], L["BorderDesc"], 6, "UpdateTooltipBackdrop", "double"),
+			BorderSize = module:NewSlider(L["Tooltip_BorderSize_Name"], L["Tooltip_BorderSize_Desc"], 7, 1, 30, 1, nil, "UpdateTooltipBackdrop", "double"),
 		}),
 		Colors = module:NewGroup(L["Colors"], 3, nil, nil, {
 			Guild = module:NewColor(GUILD, 1),
@@ -501,6 +495,7 @@ end
 
 function module:OnInitialize()
 	LUI:RegisterModule(module)
+	db = module.db.profile
 end
 
 function module:OnEnable()

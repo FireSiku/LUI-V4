@@ -204,7 +204,7 @@ end
 
 function element:ApplyBackdropColors()
 	local isModded = (modTooltip and modTooltip:IsEnabled()) and true or false
-	local colorDB = (isModded) and modTooltip:GetDB("Colors")
+	local colorDB = (isModded) and modTooltip.db.Colors
 	for _, infotip in pairs(infotipStorage) do
 		if isModded then
 			infotip:SetBackdropColor(colorDB.Background.r, colorDB.Background.g, colorDB.Background.b)

@@ -125,11 +125,10 @@ function element:UpdateTalents()
 end
 
 function element:UpdateSpec()
-	local db = module:GetDB()
 	local currentSpecID = GetSpecialization()
 	local currentSpec = specCache[currentSpecID]
 	local specName = (currentSpec) and currentSpec.name or L["InfoDualspec_NoSpec"]
-	if db.lootSpec and GetLootSpecialization() > 0 then
+	if module.db.profile.lootSpec and GetLootSpecialization() > 0 then
 		local _, lootSpec = GetSpecializationInfoByID(GetLootSpecialization())
 		element.text = format("%s (%s)", specName, lootSpec)
 	else

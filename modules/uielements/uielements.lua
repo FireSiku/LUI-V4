@@ -8,6 +8,7 @@
 
 local _, LUI = ...
 local module = LUI:NewModule("UI Elements", "AceHook-3.0")
+local db
 
 --local NUM_OBJECTIVE_HEADERS = 3
 
@@ -53,7 +54,6 @@ end
 
 local orderUI = false
 function module:SetHiddenFrames()
-	local db = module:GetDB()
 	-- Durability Frame
 	if db.DurabilityFrame.HideFrame then
 		ForceHide(DurabilityFrame)
@@ -87,15 +87,14 @@ function module:ChangeHeaderColor(header, r, g, b)
 end
 
 function module:SetObjectiveFrame()
-	local db = module:GetDB("ObjectiveTracker")
-	if db.HeaderColor then
+	if db.ObjectiveTracker.HeaderColor then
 		module:SecureHook("ObjectiveTracker_Initialize", function()
 			for i, v in pairs(ObjectiveTrackerFrame.MODULES) do
 				module:ChangeHeaderColor(v.Header, module:RGB(LUI.playerClass))
 			end
 		end)
 	end
-	if db.ManagePosition then
+	if db.ObjectiveTracker.ManagePosition then
 		module:SecureHook("ObjectiveTracker_Update", function()
 			ObjectiveTrackerFrame:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", db.OffsetX, db.OffsetY)
 		end)
@@ -117,7 +116,6 @@ end
 
 module.childGroups = "select"
 function module:LoadOptions()
-	local db = module:GetDB()
 	local function DisablePosition(info)
 		local parent = info[#info-1]
 		return not db[parent].ManagePosition
@@ -155,6 +153,7 @@ end
 
 function module:OnInitialize()
 	LUI:RegisterModule(module)
+	db = module.db.profile
 end
 
 function module:OnEnable()

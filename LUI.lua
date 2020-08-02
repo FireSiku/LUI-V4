@@ -10,6 +10,7 @@ LUI = LibStub("AceAddon-3.0"):NewAddon(LUI, addonName, "AceConsole-3.0", "AceEve
 LUI.L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 LUI:SetDefaultModuleLibraries("AceEvent-3.0")
 local L = LUI.L
+local db
 
 --For Testing Purposes Only
 _G["LUI"] = LUI
@@ -18,8 +19,7 @@ local ACD = LibStub("AceConfigDialog-3.0")
 
 --local strmatch = string.match
 local strgsub = string.gsub
-local format, type = format, type
-local ipairs, select = ipairs, select
+local format, type, select = format, type, select
 local InCombatLockdown = InCombatLockdown
 local GetAddOnMetadata = GetAddOnMetadata
 local IsAddOnLoaded = IsAddOnLoaded
@@ -98,25 +98,23 @@ LUI.blank = [[Interface\AddOns\LUI4\media\blank]]
 
 --- Check if LUI is installed.
 function LUI:CheckInstall()
-	local db = LUI:GetDB("installed")
 	--Check for the big install
-	if not db.LUI then LUI:OnInstall() end
+	if not db.Installed.LUI then LUI:OnInstall() end
 
 	for name, module in self:IterateModules() do
-		--module.db = self.db:RegisterNamespace(mName, module.defaults)
-		if (module:GetDB()) and (not db[name]) then
+		if (module.db and (not db.Installed[name])) then
 			--If there is a module OnInstall, call it.
 			if module.OnInstall and (type(module.OnInstall) == "function") then
 				local installed, err = module.OnInstall()
 				if installed then
-					db[name] = true -- Installed correctly
+					db.Installed[name] = true -- Installed correctly
 				elseif err then
 					-- Print Error, otherwise fails silently.
 					LUI:Print(format(L["Core_ModuleInstallFail_Format"],name,err))
 				end
 			--If not, assume the module has no install required and proceed.
 			else
-				db[name] = true
+				db.Installed[name] = true
 				-- Print for testing purposes while we setup all modules during development.
 				LUI:Print("Module "..name.." required no installation")
 			end
@@ -128,7 +126,7 @@ end
 function LUI:OnInstall()
 	self.db:SetProfile(format("%s - %s", LUI.playerName, LUI.playerRealm))
 	-- Got nothing to put here for now.
-	self.db.profile.installed.LUI = true
+	db.Installed.LUI = true
 	--Also placeholder print. Possibly?
 	LUI:Print(L["Core_InstallSucess"])
 end
@@ -295,7 +293,6 @@ end
 --Function that will create a namespace for each module.
 -- module - Ace Object from :NewModule
 function LUI:RegisterModule(module)
-	local db = LUI:GetDB()
 	local mName = module:GetName()
 
 	--If a module hasn't been installed yet and should be disabled by default, disable it.
@@ -345,10 +342,7 @@ function LUI:OnInitialize()
 	self.db.RegisterCallback(self, "OnProfileChanged", "Refresh")
 	self.db.RegisterCallback(self, "OnProfileCopied", "Refresh")
 	self.db.RegisterCallback(self, "OnProfileReset", "Refresh")
-
-	for k, v in pairs(self.db.profile.modules) do
-		LUI:Print("Init", k, v)
-	end
+	db = self.db.profile
 
 	--Setup Options:
 	LUI:EmbedModule(LUI)

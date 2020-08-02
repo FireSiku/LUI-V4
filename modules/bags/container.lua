@@ -19,6 +19,7 @@ local _, LUI = ...
 local module = LUI:NewModule("Bags", "AceHook-3.0")
 local Media = LibStub("LibSharedMedia-3.0")
 local L = LUI.L
+local db
 
 local format, pairs = format, pairs
 local GetContainerNumFreeSlots = GetContainerNumFreeSlots
@@ -657,7 +658,7 @@ function module:CreateNewContainer(name, obj)
 	end
 	--Add AceBucket to the Container to process bag updates.
 	LibStub("AceBucket-3.0"):Embed(frame)
-	frame.db = module:GetDB()
+	frame.db = db
 
 	--Set up scripts
 	frame:SetScript("OnShow", frame.OnShow)
@@ -707,7 +708,7 @@ function module:CreateSearchEditBox(parent)
 	local search = parent:CreateFontString(nil, "OVERLAY", "GameFonthighlightLarge")
 	local searchText = LUI:ColorText(SEARCH, "Search")
 
-	search:SetPoint("TOPLEFT", parent, self.db.Padding, -10)
+	search:SetPoint("TOPLEFT", parent, db.Padding, -10)
 	search:SetPoint("TOPRIGHT", -40, 0)
 	search:SetJustifyH("LEFT")
 	search:SetText(searchText)
@@ -769,7 +770,7 @@ function module:Refresh()
 end
 
 function module:RefreshBackdrops()
-	local db = module:GetDB("Textures")
+	local db = module.db.profile.Textures
 	-- Bag Backdrop
 	module.bagBackdrop = {
 		bgFile = Media:Fetch("background", db.BackgroundTex),
@@ -856,6 +857,7 @@ module.enableButton = true
 
 function module:OnInitialize()
 	LUI:RegisterModule(module)
+	db = module.db.profile
 end
 
 function module:OnEnable()

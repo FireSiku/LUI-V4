@@ -191,8 +191,7 @@ function element:UpdateClock()
 	if invitesPending then
 		element.text = L["InfoClock_InvitePending"]
 	else
-		local db = module:GetDB()
-		local timeFormat = (db.instanceDifficulty and instanceInfo) and "%s (%s%s)" or "%s"
+		local timeFormat = (module.db.profile.instanceDifficulty and instanceInfo) and "%s (%s%s)" or "%s"
 		element.text = format(timeFormat, element:GetTime(cvarLocal), instanceInfo or "", guildParty or "")
 	end
 	element:UpdateTooltip()
@@ -221,7 +220,7 @@ function element.OnTooltipShow(GameTooltip)
 	GameTooltip:AddDoubleLine(cvarLocal and TIMEMANAGER_TOOLTIP_REALMTIME or TIMEMANAGER_TOOLTIP_LOCALTIME,
 	                          element:GetTime(not cvarLocal))
 
-	local db = module:GetDB()
+	local db = module.db.profile
 	local oneraid -- Used so we dont display "Saved Raids:" unless you are saved to at least one.
 	if db.showSavedRaids then
 		for i = 1, GetNumSavedInstances() do

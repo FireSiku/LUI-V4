@@ -9,6 +9,7 @@
 local _, LUI = ...
 local module = LUI:NewModule("Colors")
 local L = LUI.L
+local db
 
 -- constants
 local SANCTUARY = SANCTUARY_TERRITORY:sub(2, -2)  -- Remove parenthesis.
@@ -110,7 +111,7 @@ module.defaults = {
 -- Return r, g, b for any color stored by the color api.
 -- If the color doesn't exists, return nil.
 local function GetColorRGB(colorName)
-	local color = module:GetDB("Colors")[colorName]
+	local color = db.Colors[colorName]
 	if color then
 		return color.r, color.g, color.b
 	end
@@ -121,7 +122,7 @@ end
 -- ####################################################################################################################
 
 function LUI:GetBGMultiplier()
-	return module:GetDB("Advanced").BackgroundMultiplier
+	return db.Advanced.BackgroundMultiplier
 end
 
 -- Utility function for other modules to fetch a color stored here.
@@ -346,6 +347,7 @@ end
 
 function module:OnInitialize()
 	LUI:RegisterModule(module)
+	db = module.db.profile
 end
 
 function module:OnEnable()

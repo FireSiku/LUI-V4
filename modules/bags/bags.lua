@@ -81,7 +81,7 @@ function Bags:HideTitleBar()
 end
 
 function Bags:CreateTitleBar()
-	local db = module:GetDB("Fonts")
+	local db = module.db.profile.Fonts
 	--TODO: Possibly change those two to use LUI FontStrings api
 	local gold = self:CreateFontString(nil, "ARTWORK", "GameFontHighlightLarge")
 	gold:SetJustifyH("RIGHT")

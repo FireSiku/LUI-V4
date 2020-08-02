@@ -5,6 +5,7 @@
 local _, LUI = ...
 local module = LUI:NewModule("Panels")
 local L = LUI.L
+local db
 
 -- ####################################################################################################################
 -- ##### Default Settings #############################################################################################
@@ -147,8 +148,6 @@ local LUI_TEX_DIR = "Interface\\AddOns\\LUI4\\media\\textures\\"
 -- ##### Panel Mixin ##################################################################################################
 -- ####################################################################################################################
 
--- Panel objects have a database point in self.db.
--- There is no profile scope, nor do they have a :GetDB() function.
 function PanelMixin:GetParent()
 	--TODO: Add support for LibWindow for proper texture scaling when not anchored.
 	if self.db.Anchored then
@@ -168,17 +167,16 @@ function PanelMixin:GetTexture()
 end
 
 function PanelMixin:GetTexCoord()
-	local db = self.db
-	--PH: Grab TexCoord valuess from db entries
-	local left, right, up, down = db.Left, db.Right, db.Up, db.Down
+	--PH: Grab TexCoord valuess from self.db.entries
+	local left, right, up, down = self.db.Left, self.db.Right, self.db.Up, self.db.Down
 
-	if LUI_TEXTURES_INFO[db.Texture] then
-		local coord = LUI_TEXTURES_INFO[db.Texture]
+	if LUI_TEXTURES_INFO[self.db.Texture] then
+		local coord = LUI_TEXTURES_INFO[self.db.Texture]
 		left, right, up, down = coord[1], coord[2], coord[3], coord[4]
 	end
 
-	local hFlip = db.HorizontalFlip
-	local vFlip = db.VerticalFlip
+	local hFlip = self.db.HorizontalFlip
+	local vFlip = self.db.VerticalFlip
 
 	if hFlip and vFlip then
 		--Flip Horizontally and Vertically
@@ -196,12 +194,11 @@ function PanelMixin:GetTexCoord()
 end
 
 function PanelMixin:Refresh()
-	local db = self.db
-	local parent = _G[db.Parent]
+	local parent = _G[self.db.Parent]
 	local r, g, b, a = module:RGBA(self.name)
 
-	self:SetPoint(db.Point, parent, db.RelativePoint, db.X, db.Y)
-	self:SetSize(db.Width, db.Height)
+	self:SetPoint(self.db.Point, parent, self.db.RelativePoint, self.db.X, self.db.Y)
+	self:SetSize(self.db.Width, self.db.Height)
 	self:SetParent(parent)
 	self:SetAlpha(a)
 
@@ -238,17 +235,14 @@ end
 
 function module:setPanels()
 	module.panelList = {}
-	local db = module:GetDB()
-	for k, v in pairs(db.Textures) do
-		table.insert(module.panelList, k)
+
+	for name, paneldb in pairs(db.Textures) do
+		local frame_ = module:CreateNewPanel(name, paneldb)
+		table.insert(module.panelList, name)
 	end
 	sort(module.panelList, function(a, b)
 		return db.Textures[a].Order < db.Textures[b].Order
 	end)
-
-	for name, mdb in pairs(db.Textures) do
-		local frame_ = module:CreateNewPanel(name, mdb)
-	end
 end
 
 -- ####################################################################################################################
@@ -352,7 +346,7 @@ function module:NewPanel(info)
 		return
 	end
 	
-	local panelDB = module:GetDB("Textures")[nameInput]
+	local panelDB = db.Textures[nameInput]
 	--Set the order so that, in theory, order values do not overlap.
 	panelDB.Order = #module.panelList+1
 	table.insert(module.panelList, nameInput)
@@ -373,8 +367,8 @@ function module:DeletePanel(info)
 	table.remove(module.panelList, panelSelect)
 	_G["LUIPanel_"..panelName]:Hide()
 
-	module:GetDB("Textures")[panelName] = nil
-
+	db.Textures[panelName] = nil
+	-- Get the parent node and remove panel options.
 	info.options.args[info[#info-1]].args[panelName] = nil
 	LUI:RefreshOptionsPanel()
 	module:ModPrint("Deleted panel:", panelName)
@@ -398,10 +392,9 @@ function module:LoadOptions()
 		                                    5, module.panelList, nil, panelSelectMeta),
 		DeletePanel = module:NewExecute(L["Panels_Options_DeletePanel"], nil, 6, "DeletePanel"),
 	}
-	local db = module:GetDB("Textures")
 	for i = 1, #module.panelList do
 		local panelName = module.panelList[i]
-		local panelDB = db[panelName]
+		local panelDB = db.Textures[panelName]
 		options[panelName] = module:NewPanelOptionGroup(panelName, panelDB.Order)
 	end
 
@@ -414,6 +407,7 @@ end
 
 function module:OnInitialize()
 	LUI:RegisterModule(module)
+	db = module.db.profile
 end
 
 function module:OnEnable()

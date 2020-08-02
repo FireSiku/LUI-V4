@@ -7,6 +7,7 @@
 local _, LUI = ...
 local module = LUI:NewModule("Addons")
 local L = LUI.L
+local db
 
 -- ####################################################################################################################
 -- ##### Default Settings #############################################################################################
@@ -25,8 +26,7 @@ module.defaults = {
 -- ####################################################################################################################
 
 function module:SetInstalled(name, bool)
-	local db = module:GetDB("installed")
-	db[name] = bool or true
+	db.Installed[name] = bool or true
 end
 
 -- ####################################################################################################################
@@ -36,8 +36,9 @@ end
 
 function module:OnInitialize()
 	LUI:RegisterModule(module)
+	db = module.db.profile
+
 	--Set EnabledState based on addons that are loaded.
-	
 	for name, element in module:IterateModules() do
 		if IsAddOnLoaded(name) then
 			element:SetEnabledState(true)
@@ -48,11 +49,10 @@ function module:OnInitialize()
 end
 
 function module:OnEnable()
-	local db = module:GetDB("installed")
 	--Todo: Redesign to use internal loop
 	for name, element in module:IterateModules() do
 		-- Explicit nil check because false should have a different result
-		if db[name] == nil then
+		if db.Installed[name] == nil then
 			StaticPopupDialogs["LUI_ADDON"..name] = {
 				text = format("LUI detected you installed %s and has preset configuration available."
 				               .. " Do you want LUI to apply these settings?", name),
