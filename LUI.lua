@@ -250,8 +250,8 @@ function LUI:ChatCommand(input)
 				cmdList.handler[mod][cmdList.commands[mod]](self, value)
 			end
 		else
-			-- Use Quick module menu function
-			self:Open()
+			-- Temp: Open WIP options.
+			self:NewOpen()
 		end
 	end
 end
