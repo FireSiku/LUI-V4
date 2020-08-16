@@ -249,8 +249,9 @@ function LUI:ChatCommand(input)
 				-- Call the function that will handle the command.
 				cmdList.handler[mod][cmdList.commands[mod]](self, value)
 			end
-		else
+		elseif not InCombatLockdown() then
 			-- Temp: Open WIP options.
+			LoadAddOn("LUI4Options")
 			self:NewOpen()
 		end
 	end

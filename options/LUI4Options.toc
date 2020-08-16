@@ -1,0 +1,23 @@
+## Interface: 80300
+## Version: 4.0
+## Title: LUI4Options
+## Author: Siku
+## Notes: Options Menu for LUI4
+## LoadOnDemand: 1
+## X-Website: https://www.wowlui.com
+
+LUI4Options.lua
+General.lua
+Colors.lua
+CPanel.lua
+ActionBars.lua
+Artwork.lua
+Auras.lua
+Bags.lua
+Chat.lua
+ExpBars.lua
+Infotexts.lua
+Minimap.lua
+Tooltip.lua
+UIElements.lua
+Unitframes.lua

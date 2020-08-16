@@ -3,17 +3,15 @@
 -- ####################################################################################################################
 -- ##### Setup and Locals #############################################################################################
 -- ####################################################################################################################
---local optName, Option = ...
-local _, LUI = ...
-local optName = "LUI4Options"
-local L = LUI.L
+local optName, Opt = ...
 
 ---@class Opt
-local Opt = LibStub("AceAddon-3.0"):NewAddon(optName, "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0")
+Opt = LibStub("AceAddon-3.0"):NewAddon(Opt, optName, "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0")
 local LSM = LibStub("LibSharedMedia-3.0")
 local ACD = LibStub("AceConfigDialog-3.0")
 
---local LUI = LibStub("AceAddon-3.0"):GetAddon("LUI")
+local LUI = LibStub("AceAddon-3.0"):GetAddon("LUI4")
+local L = LUI.L
 
 -- ####################################################################################################################
 -- ##### Utility Functions ############################################################################################
@@ -390,56 +388,16 @@ local options = {
 	set = "setter",
 	handler = LUI,
 	args = {
-		General = {
-			name = GENERAL,
-			order = 1,
-			type = "group",
-			childGroups = "tab",
-			args = {
-				Welcome = {
-					name = L["Core_Welcome"],
-					type = "group",
-					order = 1,
-					args = {
-						IntroText = {
-							name = L["Core_IntroText"],
-							order = 3,
-							type = "description",
-						},
-						VerText = {
-							name = format("%s: %s", GAME_VERSION_LABEL, GetAddOnMetadata("LUI4", "Version")),
-							order = 3,
-							type = "description",
-						},
-						RevText = {
-							name = format(L["Core_Revision_Format"], LUI.curseVersion or "???"),
-							order = 3,
-							type = "description",
-						},
-						TestText = {
-							name = "Test Toggle",
-							order = 3,
-							type = "toggle",
-							get = function(info)
-								LUI:Print("Adding to Virag")
-								--ViragDevTool_AddData(info, "AceInfo")
-								LUI:PrintTable(info.option)
-							end
-						},
-					},
-				},
-			},
-		},
 		Space = {
 			name = "",
-			order = 8,
+			order = 5,
 			type = "group",
 			disabled = true,
 			args = {},
 		},
 		Modules = {
 			name = L["Core_ModuleMenu"],
-			order = 9,
+			order = 6,
 			type = "group",
 			disabled = true,
 			args = {},

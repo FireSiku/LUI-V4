@@ -46,9 +46,6 @@ api\strings.lua
 api\cpanel.lua
 api\compat.lua
 
-# TEMPORARY LOAD NEW OPTIONS
-options\LUI4Options.lua
-
 # Load Core Modules
 modules\layout.lua
 modules\artwork.lua
