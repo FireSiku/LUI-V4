@@ -8,6 +8,7 @@ local _, LUI = ...
 local optName = "LUI4Options"
 local L = LUI.L
 
+---@class Opt
 local Opt = LibStub("AceAddon-3.0"):NewAddon(optName, "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0")
 local LSM = LibStub("LibSharedMedia-3.0")
 local ACD = LibStub("AceConfigDialog-3.0")
@@ -15,7 +16,7 @@ local ACD = LibStub("AceConfigDialog-3.0")
 --local LUI = LibStub("AceAddon-3.0"):GetAddon("LUI")
 
 -- ####################################################################################################################
--- ##### Utility Functions #############################################################################################
+-- ##### Utility Functions ############################################################################################
 -- ####################################################################################################################
 
 --- Infotable Shorthands
@@ -113,34 +114,92 @@ end
 -- ####################################################################################################################
 -- ##### Options: Helper Functions ####################################################################################
 -- ####################################################################################################################
+
+---@param name string|function
+---@param desc string|function
+---@param order number
+---@param childGroups string|"tree"|"tab"|"select"
+---@param disabled boolean|function
+---@param hidden boolean|function
+---@param get function
+---@param set function
 function Opt:Group(name, desc, order, childGroups, disabled, hidden, get, set)
 	return { type = "group", childGroups = childGroups, name = name, desc = desc, order = order, disabled = disabled, hidden = hidden, get = get, set = set, args = {} }
 end
 
-function Opt:Header(name, order, hidden, get, set)
-	return { type = "header", name = name, order = order, hidden = hidden, get = get, set = set }
+---@param name string|function
+---@param order number
+---@param hidden boolean|function
+function Opt:Header(name, order, hidden)
+	return { type = "header", name = name, order = order, hidden = hidden }
 end
 
+---@param name string|function
+---@param desc string|function
+---@param order number
+---@param alpha boolean
+---@param width string|"normal"|"half"|"double"|"full"
+---@param disabled boolean|function
+---@param hidden boolean|function
+---@param get function
+---@param set function
 function Opt:Color(name, desc, order, alpha, width, disabled, hidden, get, set)
 	return { type = "color", name = name, desc = desc, order = order, hasAlpha = alpha, width = width, disabled = disabled, hidden = hidden, get = get, set = set }
 end
 
+---@param name string|function
+---@param order number
+---@param width string|"normal"|"half"|"double"|"full"
 function Opt:Spacer(order, width)
 	return { name = "", type = "description", order = order, width = width }
 end
 
+---@param name string|function
+---@param order number
+---@param fontSize string|"small"|"medium"|"large"
+---@param image string|function
+---@param imageCoords table|TexCoord|function
+---@param imageWidth number
+---@param imageHeight number
+---@param width string|"normal"|"half"|"double"|"full"
+---@param hidden boolean|function
 function Opt:Desc(name, order, fontSize, image, imageCoords, imageWidth, imageHeight, width, hidden)
 	return { type = "description", name = name, order = order, fontSize = fontSize, image = image, imageCoords = imageCoords, imageWidth = imageWidth, imageHeight = imageHeight, width = width, hidden = hidden }
 end
 
+---@param name string|function
+---@param desc string|function
+---@param order number
+---@param tristate boolean
+---@param width string|"normal"|"half"|"double"|"full"
+---@param disabled boolean|function
+---@param hidden boolean|function
+---@param get function
+---@param set function
 function Opt:Toggle(name, desc, order, tristate, width, disabled, hidden, get, set)
 	return { type = "toggle", name = name, desc = desc, order = order, tristate = tristate, width = width, disabled = disabled, hidden = hidden, get = get, set = set }
 end
 
-function Opt:Execute(name, desc, order, func, width, disabled, hidden, get, set)
-	return { type = "execute", name = name, desc = desc, order = order, func = func, width = width, disabled = disabled, hidden = hidden, get = get, set = set }
+---@param name string|function
+---@param desc string|function
+---@param order number
+---@param func function
+---@param width string|"normal"|"half"|"double"|"full"
+---@param disabled boolean|function
+---@param hidden boolean|function
+function Opt:Execute(name, desc, order, func, width, disabled, hidden)
+	return { type = "execute", name = name, desc = desc, order = order, func = func, width = width, disabled = disabled, hidden = hidden }
 end
 
+---@param name string|function
+---@param desc string|function
+---@param order number
+---@param multiline boolean|number
+---@param width string|"normal"|"half"|"double"|"full"
+---@param disabled boolean|function
+---@param hidden boolean|function
+---@param get function
+---@param set function
 function Opt:Input(name, desc, order, multiline, width, disabled, hidden, validate, get, set)
 	return { type = "input", name = name, desc = desc, order = order, multiline = multiline, width = width, disabled = disabled, hidden = hidden, validate = validate, get = get, set = set }
 end
@@ -155,6 +214,15 @@ end
 	isPercent (boolean) - If true, will display 1.0 as 100%
 --]]
 
+---@param name string|function
+---@param desc string|function
+---@param order number
+---@param values table|"smin"|"smax"|"min"|"max"|"step"|"bigStep"|"isPercent"
+---@param width string|"normal"|"half"|"double"|"full"
+---@param disabled boolean|function
+---@param hidden boolean|function
+---@param get function
+---@param set function
 function Opt:Slider(name, desc, order, values, width, disabled, hidden, get, set)
 	local t = { type = "range", name = name, desc = desc, order = order, width = width, disabled = disabled, hidden = hidden, get = get, set = set }
 	for key, value in pairs(values) do
@@ -164,40 +232,104 @@ function Opt:Slider(name, desc, order, values, width, disabled, hidden, get, set
 	return t
 end
 
+---@param name string|function
+---@param desc string|function
+---@param order number
+---@param values table|function|"[key]=value table"|"Key is passed to Set, Value is text displayed"
+---@param width string|"normal"|"half"|"double"|"full"-
+---@param disabled boolean|function
+---@param hidden boolean|function
+---@param get function
+---@param set function
 function Opt:Select(name, desc, order, values, width, disabled, hidden, get, set)
 	return { type = "select", name = name, desc = desc, order = order, values = values, width = width, disabled = disabled, hidden = hidden, get = get, set = set }
 end
 
+---@param name string|function
+---@param desc string|function
+---@param order number
+---@param values table|function|"[key]=value table"|"Key is passed to Set, Value is text displayed"
+---@param width string|"normal"|"half"|"double"|"full"
+---@param disabled boolean|function
+---@param hidden boolean|function
+---@param get function
+---@param set function
 function Opt:MultiSelect(name, desc, order, values, width, disabled, hidden, get, set)
 	return { type = "multiselect", name = name, desc = desc, order = order, values = values, width = width, disabled = disabled, hidden = hidden, get = get, set = set }
 end
 
+---@param name string|function
+---@param desc string|function
+---@param order number
+---@param width string|"normal"|"half"|"double"|"full"
+---@param disabled boolean|function
+---@param hidden boolean|function
+---@param get function
+---@param set function
 function Opt:MediaBackground(name, desc, order, width, disabled, hidden, get, set)
 	return { type = "select", dialogControl = "LSM30_Background", name = name, desc = desc, order = order, width = width, disabled = disabled, hidden = hidden, get = get, set = set, values = function() return LSM:HashTable("background") end }
 end
 
+---@param name string|function
+---@param desc string|function
+---@param order number
+---@param width string|"normal"|"half"|"double"|"full"
+---@param disabled boolean|function
+---@param hidden boolean|function
+---@param get function
+---@param set function
 function Opt:MediaBorder(name, desc, order, width, disabled, hidden, get, set)
 	return { type = "select", dialogControl = "LSM30_Border", name = name, desc = desc, order = order, width = width, disabled = disabled, hidden = hidden, get = get, set = set, values = function() return LSM:HashTable("border") end }
 end
 
+---@param name string|function
+---@param desc string|function
+---@param order number
+---@param width string|"normal"|"half"|"double"|"full"
+---@param disabled boolean|function
+---@param hidden boolean|function
+---@param get function
+---@param set function
 function Opt:MediaStatusbar(name, desc, order, width, disabled, hidden, get, set)
 	return { type = "select", dialogControl = "LSM30_Statusbar", name = name, desc = desc, order = order, width = width, disabled = disabled, hidden = hidden, get = get, set = set, values = function() return LSM:HashTable("statusbar") end }
 end
 
+---@param name string|function
+---@param desc string|function
+---@param order number
+---@param width string|"normal"|"half"|"double"|"full"
+---@param disabled boolean|function
+---@param hidden boolean|function
+---@param get function
+---@param set function
 function Opt:MediaSound(name, desc, order, width, disabled, hidden, get, set)
 	return { type = "select", dialogControl = "LSM30_Sound", name = name, desc = desc, order = order, width = width, disabled = disabled, hidden = hidden, get = get, set = set, values = function() return LSM:HashTable("sound") end }
 end
 
+---@param name string|function
+---@param desc string|function
+---@param order number
+---@param width string|"normal"|"half"|"double"|"full"
+---@param disabled boolean|function
+---@param hidden boolean|function
+---@param get function
+---@param set function
 function Opt:MediaFont(name, desc, order, width, disabled, hidden, get, set)
 	return { type = "select", dialogControl = "LSM30_Font", name = name, desc = desc, order = order, width = width, disabled = disabled, hidden = hidden, get = get, set = set, values = function() return LSM:HashTable("font") end }
 end
 
--- Special Execute for the control panel
-function Opt:EnableButton(name, desc, order, enableFunc, func, width, disabled, hidden, get, set)
+--- Special Execute for the control panel
+---@param name string
+---@param desc string|function
+---@param order number
+---@param enableFunc function
+---@param func function
+---@param hidden boolean|function
+function Opt:EnableButton(name, desc, order, enableFunc, func, hidden)
 	local nameFunc = function()
 		return format("%s: %s", name, (enableFunc() and L["API_BtnEnabled"] or L["API_BtnDisabled"]))
 	end
-	return self:Execute(nameFunc, desc, order, func, width, disabled, hidden, get, set)
+	return self:Execute(nameFunc, desc, order, func, nil, nil, hidden)
 end
 
 -- ####################################################################################################################
@@ -314,6 +446,7 @@ local options = {
 		},
 	},
 }
+Opt.options = options
 
 -- ####################################################################################################################
 -- ##### Framework Functions ##########################################################################################
@@ -338,4 +471,6 @@ end
 function Opt:OnEnable()
 	LibStub("AceConfig-3.0"):RegisterOptionsTable(optName, options)
 	ACD:SetDefaultSize(optName, 900, 660)
+	options.args.Profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(LUI.db)
+	options.args.Profiles.order = 4
 end
