@@ -104,12 +104,10 @@ module.defaults = {
 		X = -150,
 		Y = 0,
 		HealthFontSize = 12,
-		Textures = {
-			HealthBar = "LUI_Minimalist",
-			BackgroundTex = "Blizzard Dialog Background Dark",
-			BorderTex = "Stripped_medium",
-			BorderSize = 14,
-		},
+		HealthBar = "LUI_Minimalist",
+		BgTexture = "Blizzard Dialog Background Dark",
+		BorderTexture = "Stripped_medium",
+		BorderSize = 14,
 		Colors = {
 			Background = { r = 0.19, g = 0.19, b = 0.19, a = 1, t = "Individual", },
 			Border =     { r = 0.3,  g = 0.3,  b = 0.3,  a = 1, t = "Individual", },
@@ -165,9 +163,9 @@ end
 
 function module:UpdateTooltipBackdrop()
 	module.tooltipBackdrop = {
-		bgFile = Media:Fetch("background", db.Textures.BackgroundTex),
-		edgeFile = Media:Fetch("border", db.Textures.BorderTex),
-		edgeSize = db.Textures.BorderSize, tile = false,
+		bgFile = Media:Fetch("background", db.BgTexture),
+		edgeFile = Media:Fetch("border", db.BorderTexture),
+		edgeSize = db.BorderSize, tile = false,
 		insets = {left = 0, right = 0, top = 0, bottom = 0, }
 	}
 
@@ -253,7 +251,7 @@ function module:SetStatusHealthBar()
 	health:SetHeight(6)
 	health:SetPoint("BOTTOMLEFT", health:GetParent(), "TOPLEFT", 2, 5)
 	health:SetPoint("BOTTOMRIGHT", health:GetParent(), "TOPRIGHT", -2, 5)
-	health:SetStatusBarTexture(Media:Fetch("statusbar", db.Textures.HealthBar))
+	health:SetStatusBarTexture(Media:Fetch("statusbar", db.HealthBar))
 
 	-- Add health values.
 	health:SetScript("OnValueChanged", module.OnStatusBarValueChanged)
@@ -468,11 +466,11 @@ function module:LoadOptions()
 		}),
 		Textures = module:NewGroup(L["Textures"], 3, nil, nil, {
 			Background = module:NewHeader(L["Background"], 1),
-			BackgroundTex = module:NewTexBackground(L["Tooltip_BackgroundTex_Name"], L["BackgroundDesc"], 2, "UpdateTooltipBackdrop", "double"),
+			BgTexture = module:NewTexBackground(L["Tooltip_BgTexture_Name"], L["BackgroundDesc"], 2, "UpdateTooltipBackdrop", "double"),
 			Health = module:NewHeader(L["Health Bar"], 3),
 			HealthBar = module:NewTexStatusBar(L["Tooltip_HealthBar_Name"], L["Tooltip_HealthBar_Desc"], 4, "SetStatusHealthBar", "double"),
 			Border = module:NewHeader(L["Border"], 5),
-			BorderTex = module:NewTexBorder(L["Tooltip_BorderTex_Name"], L["BorderDesc"], 6, "UpdateTooltipBackdrop", "double"),
+			BorderTexture = module:NewTexBorder(L["Tooltip_BorderTexture_Name"], L["BorderDesc"], 6, "UpdateTooltipBackdrop", "double"),
 			BorderSize = module:NewSlider(L["Tooltip_BorderSize_Name"], L["Tooltip_BorderSize_Desc"], 7, 1, 30, 1, nil, "UpdateTooltipBackdrop", "double"),
 		}),
 		Colors = module:NewGroup(L["Colors"], 3, nil, nil, {

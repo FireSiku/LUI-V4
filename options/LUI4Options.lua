@@ -9,6 +9,7 @@ local optName, Opt = ...
 Opt = LibStub("AceAddon-3.0"):NewAddon(Opt, optName, "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0")
 local LSM = LibStub("LibSharedMedia-3.0")
 local ACD = LibStub("AceConfigDialog-3.0")
+local ACR = LibStub("AceConfigRegistry-3.0")
 
 local LUI = LibStub("AceAddon-3.0"):GetAddon("LUI4")
 local L = LUI.L
@@ -58,8 +59,16 @@ function Opt.AddConfirm(option, confirm)
 	end
 end
 
+function Opt.IsModDisabled(info)
+	if info.handler and info.handler.IsEnabled then
+		return not info.handler:IsEnabled()
+	else
+		return false
+	end
+end
+
 -- Common Slider Values
-Opt.ScaleValues = {smin = 0.5, smax = 2, bigStep = 0.05, min = 0.25, max = 4, step = 0.01, isPercent = true}
+Opt.ScaleValues = {softMin = 0.5, softMax = 2, bigStep = 0.05, min = 0.25, max = 4, step = 0.01, isPercent = true}
 Opt.PercentValues = {min = 0, max = 1, step = 0.01, bigStep = 0.05, isPercent = true}
 
 -- ####################################################################################################################
@@ -88,8 +97,9 @@ function Opt.GetSet(db)
 end
 
 local function ShortNum(num) return format(num < 1 and "%.2f" or "%d", num) end
+
 --- Generate Get/Set functions for color options based on a database table.
---- # Additionally, if handler is defined, will attempt to call RefreshColors if it exists.
+--- Additionally, if handler is defined, will attempt to call RefreshColors if it exists.
 ---@param db AceDB
 ---@return function Get
 ---@return function Set
@@ -335,8 +345,8 @@ end
 -- ####################################################################################################################
 
 local function ColorMenuGetter(info)
-	local db = info.handler.profile.Colors
-	local c = db[info.option.name]
+	local db = info.handler.db.profile.Colors
+	local c = db[string.sub(info.option.name,0, -7)]
 	if info.type == "color" then
 		return c.r, c.g, c.b, c.a
 	elseif info.type == "select" then
@@ -348,7 +358,7 @@ end
 
 local function ColorMenuSetter(info, value, g, b, a)
 	local db = info.handler.db.profile.Colors
-	local c = db[info.option.name]
+	local c = db[string.sub(info.option.name,0, -7)]
 	if info.type == "color" then
 		c.r, c.g, c.b, c.a = value, g, b, a
 	elseif info.type == "select" then
@@ -359,22 +369,24 @@ local function ColorMenuSetter(info, value, g, b, a)
 end
 
 -- Generate a Color / Dropdown combo, the dropdown selection determines the color bypass. (Theme, Class, Spec, etc)
--- TODO: Show Alpha Slider when using Theme/Class Colors. 
+-- TODO: Show Alpha Slider when using Theme/Class Colors.
 function Opt:ColorMenu(parent, color, desc, order, disabled)
 	local hiddenFunc = function(info)
 		local db = info.handler.db.profile.Colors
+		
 		local c = db[color]
 		if info.type == "color" then
-			return c.t == "Individual"
-		elseif info.type == "range" then
 			return c.t ~= "Individual"
+		elseif info.type == "range" then
+			return c.t == "Individual"
 		end
 	end
 
-	local t = self:Select(color, desc, order, LUI.ColorTypes, nil, disabled, nil, ColorMenuGetter, ColorMenuSetter)
-	parent[color.."Picker"] = self:Color(color, desc, order+0.1, true, nil, disabled, hiddenFunc, ColorMenuGetter, ColorMenuSetter)
-	parent[color.."Slider"] = self:Percent(color, desc, order+0.1, nil, disabled, hiddenFunc, ColorMenuGetter, ColorMenuSetter)
+	local t = self:Select(color.." Color", desc, order, LUI.ColorTypes, nil, disabled, nil, ColorMenuGetter, ColorMenuSetter)
+	parent[color.."Picker"] = self:Color("Color", desc, order+0.1, true, nil, disabled, hiddenFunc, ColorMenuGetter, ColorMenuSetter)
+	parent[color.."Slider"] = self:Slider("Opacity", desc, order+0.1, Opt.PercentValues, nil, disabled, hiddenFunc, ColorMenuGetter, ColorMenuSetter)
 	parent[color.."Break"] = self:Spacer(order+0.2, "full")
+	ACR:NotifyChange(optName)
 	return t
 end
 -- ####################################################################################################################
@@ -428,7 +440,7 @@ end
 
 function Opt:OnEnable()
 	LibStub("AceConfig-3.0"):RegisterOptionsTable(optName, options)
-	ACD:SetDefaultSize(optName, 900, 660)
+	ACD:SetDefaultSize(optName, 920, 660)
 	options.args.Profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(LUI.db)
 	options.args.Profiles.order = 4
 end
