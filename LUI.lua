@@ -63,6 +63,9 @@ LUI.defaults = {
 		installed = {
 			["*"] = false,
 		},
+		Fonts = {
+			Master = { Name = "NotoSans-SCB", Size = 12, Flag = "OUTLINE", },
+		},
 	},
 }
 
@@ -330,6 +333,10 @@ end
 
 function LUI:OnEnable()
 	LUI:CheckInstall()
+
+	local font = db.Fonts.Master
+	LUI.MasterFont = CreateFont("LUIMasterFont")
+	LUI.MasterFont:SetFont(font.Name, font.Size, font.Flag)
 end
 
 function LUI:Refresh()

@@ -47,7 +47,7 @@ Opt.options.args.Tooltip.args = {
     Border = Opt:Color("Individual Color", nil, 16, true, nil, nil, nil, colorGet, colorSet),
     SpacerBD = Opt:Spacer(17, "full"),
     BgTexture = Opt:MediaBackground(L["Tooltip_BackgroundTex_Name"], L["BackgroundDesc"], 18, "double"),
-    BgColorType = Opt:Select("Border Color", nil, 19, LUI.ColorTypes, nil, nil, nil, function(info) return db.Colors.Background.t end, function(info, value) db.Colors.Background.t = value end),
+    BgColorType = Opt:Select("Background Color", nil, 19, LUI.ColorTypes, nil, nil, nil, function(info) return db.Colors.Background.t end, function(info, value) db.Colors.Background.t = value end),
     Background = Opt:Color("Individual Color", nil, 20, true, nil, nil, nil, colorGet, colorSet),
     --Background = Opt:ColorMenu(Tooltip, "Background", nil, 18),
     SpacerBG = Opt:Spacer(21, "full"),

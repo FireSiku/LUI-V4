@@ -60,7 +60,7 @@ module.defaults = {
 			Scale = 1,
 		},
 		Fonts = {
-			Minimap = { Name = "vibroceb", Size = 12, Flag = "OUTLINE", },
+			Text = { Name = "vibroceb", Size = 12, Flag = "OUTLINE", },
 		},
 		Colors = {
 			Minimap = { r = 0.21, g = 0.22, b = 0.23, a = 1, t = "Class", },
@@ -192,9 +192,9 @@ function module:SetMinimap()
 	minimapZone:SetPoint("TOPLEFT", Minimap, 2, -2)
 	minimapZone:SetPoint("TOPRIGHT",Minimap, -2. -2)
 
-	local minimapZoneText = module:SetFontString(minimapZone, "LUIMinimapZoneText", "Minimap", "Overlay", "CENTER", "MIDDLE")
+	local minimapZoneText = module:SetFontString(minimapZone, "LUIMinimapZoneText", "Text", "Overlay", "CENTER", "MIDDLE")
 	minimapZoneText:SetPoint("CENTER", 0, 0)
-	minimapZoneText:SetHeight(db.Fonts.Minimap.Size)
+	minimapZoneText:SetHeight(db.Fonts.Text.Size)
 	minimapZoneText:SetWidth(minimapZone:GetWidth()-6)	--Why 6?
 
 	--Add pvp coloring later. Make customizable.
@@ -207,7 +207,7 @@ function module:SetMinimap()
 	minimapCoord:SetSize(40, 20)
 	minimapCoord:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 4, 2)
 
-	local minimapCoordText = module:SetFontString(minimapCoord, "LUIMinimapCoordText", "Minimap", "Overlay", "LEFT", "MIDDLE")
+	local minimapCoordText = module:SetFontString(minimapCoord, "LUIMinimapCoordText", "Text", "Overlay", "LEFT", "MIDDLE")
 	minimapCoordText:SetPoint("LEFT", -1, 0)
 	minimapCoordText:SetText("00,00")
 
@@ -409,9 +409,9 @@ function module:LoadOptions()
 				type = "select",
 				dialogControl = "LSM30_Font",
 				values = AceGUIWidgetLSMlists.font,
-				get = function() return db.Fonts.Minimap.Name end,
+				get = function() return db.Fonts.Text.Name end,
 				set = function(info, Font)
-					db.Fonts.Minimap.Name = Font
+					db.Fonts.Text.Name = Font
 				end,
 				order = 11,
 			},

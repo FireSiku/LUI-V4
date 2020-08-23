@@ -19,4 +19,6 @@ General.Welcome.args = {
     IntroText = Opt:Desc(L["Core_IntroText"], 3),
     VerText = Opt:Desc(format("%s: %s", GAME_VERSION_LABEL, GetAddOnMetadata("LUI4", "Version")), 4),
     RevText = Opt:Desc(format(L["Core_Revision_Format"], LUI.curseVersion or "???"), 5),
+    Header = Opt:Header("General Settings", 10),
+    Master = Opt:FontMenu("Master Font", nil, 11),
 }

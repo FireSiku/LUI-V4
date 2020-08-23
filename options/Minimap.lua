@@ -4,13 +4,39 @@
 ---@type Opt
 local optName, Opt = ...
 local LUI = LibStub("AceAddon-3.0"):GetAddon("LUI4")
+local module = LUI:GetModule("Minimap")
+local db = module.db.profile
 local L = LUI.L
-local mod = LUI:GetModule("Minimap")
 
 -- ####################################################################################################################
 -- ##### Utility Functions ############################################################################################
 -- ####################################################################################################################
+local colorGet, colorSet = Opt.ColorGetSet(db.Colors)
 
-Opt.options.args.Minimap = Opt:Group("Minimap", nil, nil, "tab", true, nil, Opt.GetSet(mod.db.profile))
-Opt.options.args.Minimap.handler = mod
+-- ####################################################################################################################
+-- ##### Options Tables ###############################################################################################
+-- ####################################################################################################################
+
+Opt.options.args.Minimap = Opt:Group("Minimap", nil, nil, "tab", Opt.IsModDisabled, nil, Opt.GetSet(db))
+Opt.options.args.Minimap.handler = module
 local Minimap = Opt.options.args.Minimap.args
+
+Opt.options.args.Minimap.args = {
+    Header = Opt:Header(MINIMAP_LABEL, 1),
+    AlwaysShowText = Opt:Toggle(L["Minimap_AlwaysShowText_Name"], L["Minimap_AlwaysShowText_Desc"], 2),
+    ShowTextures = Opt:Toggle(L["Minimap_ShowTextures_Name"], L["Minimap_ShowTextures_Desc"], 3),
+    CoordPrecision = Opt:Slider(L["Minimap_CoordPrecision_Name"], L["Minimap_CoordPrecision_Desc"], 4, {min = 0, max = 2, step = 1}),
+    Spacer = Opt:Spacer(9, "full"),
+    MinimapColorType = Opt:Select("Minimap Color", nil, 10, LUI.ColorTypes, nil, nil, nil, function(info) return db.Colors.Minimap.t end, function(info, value) db.Colors.Minimap.t = value end),
+	Minimap = Opt:Color("Individual Color", nil, 11, true, nil, nil, nil, colorGet, colorSet),
+	Header2 = Opt:Header("Appearance", 12),
+	Text = Opt:FontMenu("Text Font", nil,  13)
+}
+
+--[[
+		Position = module:NewGroup(L["Position"], 3, nil, nil, {
+			Position = module:NewPosition(L["Position"], 1, true, "SetMinimapSize"),
+			Point = module:NewSelect(L["Anchor"], nil, 2, LUI.Points, nil, "SetMinimapSize"),
+			Scale = module:NewSlider(L["Minimap_Scale_Name"], L["Minimap_Scale_Desc"], 5, 0.5, 2.5, 0.25, true, "SetMinimapSize"),
+		}),
+]]

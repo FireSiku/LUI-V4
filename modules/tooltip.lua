@@ -466,11 +466,11 @@ function module:LoadOptions()
 		}),
 		Textures = module:NewGroup(L["Textures"], 3, nil, nil, {
 			Background = module:NewHeader(L["Background"], 1),
-			BgTexture = module:NewTexBackground(L["Tooltip_BgTexture_Name"], L["BackgroundDesc"], 2, "UpdateTooltipBackdrop", "double"),
+			BgTexture = module:NewTexBackground(L["Tooltip_BackgroundTex_Name"], L["BackgroundDesc"], 2, "UpdateTooltipBackdrop", "double"),
 			Health = module:NewHeader(L["Health Bar"], 3),
 			HealthBar = module:NewTexStatusBar(L["Tooltip_HealthBar_Name"], L["Tooltip_HealthBar_Desc"], 4, "SetStatusHealthBar", "double"),
 			Border = module:NewHeader(L["Border"], 5),
-			BorderTexture = module:NewTexBorder(L["Tooltip_BorderTexture_Name"], L["BorderDesc"], 6, "UpdateTooltipBackdrop", "double"),
+			BorderTexture = module:NewTexBorder(L["Tooltip_BorderTex_Name"], L["BorderDesc"], 6, "UpdateTooltipBackdrop", "double"),
 			BorderSize = module:NewSlider(L["Tooltip_BorderSize_Name"], L["Tooltip_BorderSize_Desc"], 7, 1, 30, 1, nil, "UpdateTooltipBackdrop", "double"),
 		}),
 		Colors = module:NewGroup(L["Colors"], 3, nil, nil, {

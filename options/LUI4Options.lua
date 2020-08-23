@@ -341,6 +341,37 @@ function Opt:EnableButton(name, desc, order, enableFunc, func, hidden)
 end
 
 -- ####################################################################################################################
+-- ##### Option Templates: Font Menu ##################################################################################
+-- ####################################################################################################################
+
+local function FontMenuGetter(info)
+	local db = info.handler.db.profile.Fonts
+	local font = info[#info-1]
+	local prop = info[#info]
+	
+	return db[font][prop]
+end
+
+local function FontMenuSetter(info, value)
+	local db = info.handler.db.profile.Fonts
+	local font = info[#info-1]
+	local prop = info[#info]
+	
+	db[font][prop] = value
+end
+
+local sizeValues = {min = 4, max = 72, step = 1, softMin = 8, softMax = 36}
+
+function Opt:FontMenu(name, desc, order, disabled, hidden)
+	local group = Opt:Group(name, desc, order, nil, disabled, hidden)
+	group.args.Size = Opt:Slider("Size", nil, 1, sizeValues, nil, disabled, hidden, FontMenuGetter, FontMenuSetter)
+	group.args.Name = Opt:MediaFont("Font", nil, 2, nil, disabled, hidden, FontMenuGetter, FontMenuSetter)
+	group.args.Flag = Opt:Select("Outline", nil, 3, LUI.FontFlags, nil, disabled, hidden, FontMenuGetter, FontMenuSetter)
+	group.inline = true
+	return group
+end
+
+-- ####################################################################################################################
 -- ##### Option Templates: Color Menu #################################################################################
 -- ####################################################################################################################
 
