@@ -194,7 +194,7 @@ end
 
 --Override the module iterator
 function module:IterateModules()
-	return pairs(elementStorage)
+	return pairs(elementFrames)
 end
 
 function module:IsPositionSet(name)

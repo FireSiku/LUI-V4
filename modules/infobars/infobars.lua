@@ -46,6 +46,8 @@ module.defaults = {
 		TextX = -2,
 		TextY = 0,
 		Spacing = 10,
+		ExpBarFill = "LUI_Gradient",
+		ExpBarBg = "LUI_Minimalist",
 		Colors = {
 			Experience = { r = 0.6,  g = 0.6,  b = 1,    a = 1,   t = "Class", },
 			Reputation = { r = 0.2,  g = 0.2,  b = 0.2,  a = 1,   t = "Class", },
@@ -54,10 +56,6 @@ module.defaults = {
 		},
 		Fonts = {
 			Text = { Name = "NotoSans-SCB", Size = 14, Flag = "NONE" },
-		},
-		StatusBars = {
-			ExpBar = "LUI_Gradient",
-			Background = "LUI_Minimalist",
 		},
 	},
 }
@@ -175,10 +173,10 @@ function module:CreateBar(name, dataMixin)
 	local bar = CreateFrame("StatusBar", name, UIParent)
 	bar:SetFrameStrata("HIGH")
 	bar:SetSize(db.Width, db.Height)
-	bar:SetStatusBarTexture(module:FetchStatusBar("ExpBar"))
+	bar:SetStatusBarTexture(module:FetchStatusBar("ExpBarFill"))
 
 	local bg = bar:CreateTexture(nil, "BORDER")
-	bg:SetTexture(module:FetchStatusBar("ExpBar"))
+	bg:SetTexture(module:FetchStatusBar("ExpBarFill"))
 	bg:SetAllPoints(bar)
 	bar.bg = bg
 
@@ -327,8 +325,8 @@ function module:Refresh()
 	module.anchor:SetPoint(db.Point, UIParent, db.RelativePoint, db.X, db.Y)
 	module.anchor:SetSize(db.Width, db.Height)
 	for bar in module:IterateMainBars() do
-		bar:SetStatusBarTexture(module:FetchStatusBar("ExpBar"))
-		bar.bg:SetTexture(module:FetchStatusBar("ExpBar"))
+		bar:SetStatusBarTexture(module:FetchStatusBar("ExpBarFill"))
+		bar.bg:SetTexture(module:FetchStatusBar("ExpBarFill"))
 		bar:UpdateTextVisibility()
 		bar:UpdateText()
 	end

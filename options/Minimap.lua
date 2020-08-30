@@ -19,9 +19,8 @@ local colorGet, colorSet = Opt.ColorGetSet(db.Colors)
 
 Opt.options.args.Minimap = Opt:Group("Minimap", nil, nil, "tab", Opt.IsModDisabled, nil, Opt.GetSet(db))
 Opt.options.args.Minimap.handler = module
-local Minimap = Opt.options.args.Minimap.args
 
-Opt.options.args.Minimap.args = {
+local Minimap = {
     Header = Opt:Header(MINIMAP_LABEL, 1),
     AlwaysShowText = Opt:Toggle(L["Minimap_AlwaysShowText_Name"], L["Minimap_AlwaysShowText_Desc"], 2),
     ShowTextures = Opt:Toggle(L["Minimap_ShowTextures_Name"], L["Minimap_ShowTextures_Desc"], 3),
@@ -33,6 +32,7 @@ Opt.options.args.Minimap.args = {
 	Text = Opt:FontMenu("Text Font", nil,  13)
 }
 
+Opt.options.args.Minimap.args = Minimap
 --[[
 		Position = module:NewGroup(L["Position"], 3, nil, nil, {
 			Position = module:NewPosition(L["Position"], 1, true, "SetMinimapSize"),

@@ -100,6 +100,8 @@ function ModuleMixin:FetchStatusBar(name)
 	local db = self:GetDB("StatusBars")
 	if db and db[name] then
 		return Media:Fetch("statusbar", db[name])
+	elseif self.db.profile[name] then
+		return Media:Fetch("statusbar", self.db.profile[name])
 	end
 end
 
@@ -108,6 +110,8 @@ function ModuleMixin:FetchBorder(name)
 	local db = self:GetDB("Borders")
 	if db and db[name] then
 		return Media:Fetch("border", db[name])
+	elseif self.db.profile[name] then
+		return Media:Fetch("border", self.db.profile[name])
 	end
 end
 
@@ -116,6 +120,8 @@ function ModuleMixin:FetchBackground(name)
 	local db = self:GetDB("Backgrounds")
 	if db and db[name] then
 		return Media:Fetch("background", db[name])
+	elseif self.db.profile[name] then
+		return Media:Fetch("background", self.db.profile[name])
 	end
 end
 

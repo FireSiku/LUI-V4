@@ -4,8 +4,9 @@
 ---@type Opt
 local optName, Opt = ...
 local LUI = LibStub("AceAddon-3.0"):GetAddon("LUI4")
+-- local module = LUI:GetModule("Chat")
+-- local db = module.db.profile
 local L = LUI.L
---local mod = LUI:GetModule("Chat")
 
 -- ####################################################################################################################
 -- ##### Utility Functions ############################################################################################
@@ -14,4 +15,8 @@ local L = LUI.L
 -- Opt.options.args.Chat = Opt:Group("Chat", nil, nil, "tab", true, nil, Opt.GetSet(mod.db.profile))
 Opt.options.args.Chat = Opt:Group("Chat", nil, nil, "tab", true)
 Opt.options.args.Chat.handler = nil
-local Chat = Opt.options.args.Chat.args
+local Chat = {
+
+}
+
+Opt.options.args.Chat.args = Chat

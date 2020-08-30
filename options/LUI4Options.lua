@@ -96,7 +96,7 @@ function Opt.GetSet(db)
 	return get, set
 end
 
-local function ShortNum(num) return format(num < 1 and "%.2f" or "%d", num) end
+local function ShortNum(num) return format(tonumber(num) < 1 and "%.2f" or "%d", tonumber(num)) end
 
 --- Generate Get/Set functions for color options based on a database table.
 --- Additionally, if handler is defined, will attempt to call RefreshColors if it exists.

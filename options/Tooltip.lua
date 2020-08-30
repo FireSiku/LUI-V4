@@ -11,6 +11,7 @@ local L = LUI.L
 -- ####################################################################################################################
 -- ##### Utility Functions ############################################################################################
 -- ####################################################################################################################
+local colorGet, colorSet = Opt.ColorGetSet(db.Colors)
 
 local function DisableIfTooltipsHidden()
     return db.HideCombat
@@ -22,10 +23,7 @@ end
 
 Opt.options.args.Tooltip = Opt:Group("Tooltip", nil, nil, "tab", Opt.IsModDisabled, nil, Opt.GetSet(db))
 Opt.options.args.Tooltip.handler = module
-local Tooltip = Opt.options.args.Tooltip.args
-local colorGet, colorSet = Opt.ColorGetSet(db.Colors)
-
-Opt.options.args.Tooltip.args = {
+local Tooltip = {
     Header = Opt:Header(L["Tooltip_Name"], 1),
     HideCombat = Opt:Toggle(L["Tooltip_HideCombat_Name"], L["Tooltip_HideCombat_Desc"], 2, nil, "double"),
 	HideCombatSkills = Opt:Toggle(L["Tooltip_HideCombatSkills_Name"], L["Tooltip_HideCombatSkills_Desc"], 3, nil, "double", DisableIfTooltipsHidden),
@@ -34,6 +32,10 @@ Opt.options.args.Tooltip.args = {
 	HidePVP = Opt:Toggle(L["Tooltip_HidePVP_Name"], L["Tooltip_HidePVP_Desc"], 6, nil, "double"),
     ShowSex = Opt:Toggle(L["Tooltip_ShowSex_Name"], L["Tooltip_ShowSex_Desc"], 7),
     Scale = Opt:Slider(L["Tooltip_Scale_Name"], L["Tooltip_Scale_Desc"], 8, Opt.ScaleValues),
+
+    -- Cursor = Opt:Toggle(L["Tooltip_Cursor_Name"], L["Tooltip_Cursor_Desc"], 1),
+	-- PosDesc = module:NewDesc(L["Tooltip_PosDesc"], 2),
+	-- Positions = module:NewPosition(L["Tooltip_Positions"], 3, true, true),
 
     AppHeader = Opt:Header("Appeareance", 10),
     HealthBar = Opt:MediaStatusbar(L["Tooltip_HealthBar_Name"], L["Tooltip_HealthBar_Desc"], 11),
@@ -53,11 +55,4 @@ Opt.options.args.Tooltip.args = {
     SpacerBG = Opt:Spacer(21, "full"),
 }
 
---[[
-	local options = {
-		Position = module:NewRootGroup(L["Position"], 3, nil, nil, {
-			Cursor = Opt:Toggle(L["Tooltip_Cursor_Name"], L["Tooltip_Cursor_Desc"], 1),
-			PosDesc = module:NewDesc(L["Tooltip_PosDesc"], 2),
-			Positions = module:NewPosition(L["Tooltip_Positions"], 3, true, true),
-		}),
-]]
+Opt.options.args.Tooltip.args = Tooltip

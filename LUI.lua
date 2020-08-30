@@ -57,10 +57,10 @@ LUI.defaults = {
 		Snippets = {
 		-- Siku TODO note: Snippet Engine. Dynamic creation and editing of LUIv3's Scripts.
 		},
-		modules = {
+		Modules = {
 			["*"] = true,
 		},
-		installed = {
+		Installed = {
 			["*"] = false,
 		},
 		Fonts = {
@@ -293,10 +293,10 @@ function LUI:RegisterModule(module)
 
 	--If a module hasn't been installed yet and should be disabled by default, disable it.
 	--Otherwise, modules are enabled by default, and db.modules[name] should be true.
-	if module.defaultDisabled and not db.installed[mName] then
-		db.modules[mName] = false
+	if module.defaultDisabled and not db.Installed[mName] then
+		db.Modules[mName] = false
 	end
-	module:SetEnabledState(db.modules[mName])
+	module:SetEnabledState(db.Modules[mName])
 
 	if module.defaults then
 		module.db = self.db:RegisterNamespace(mName, module.defaults)
