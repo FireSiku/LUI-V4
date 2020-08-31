@@ -28,8 +28,7 @@ local STANDING_EXALTED    = FACTION_STANDING_LABEL8
 -- ####################################################################################################################
 -- ##### Utility Functions ############################################################################################
 -- ####################################################################################################################
---May be moved to the API if we need to.
-	--List of localizedclass by englishClass
+--May be moved to the API if we need to. List of localizedclass by englishClass
 local classL = {}
 for i = 1, GetNumClasses() do
     local localizedClass, englishClass = GetClassInfo(i)
@@ -39,9 +38,8 @@ end
 -- ####################################################################################################################
 -- ##### Options Tables ###############################################################################################
 -- ####################################################################################################################
-
 Opt.options.args.Colors = Opt:Group("Colors", nil, 2, "tab", nil, nil, Opt.ColorGetSet(db.Colors))
-Opt.options.args.Colors.handler = mod
+Opt.options.args.Colors.handler = module
 local Colors = {
     Header = Opt:Header(COLORS, 1),
     Class = Opt:Group(L["Colors_Classes"], nil, 3),

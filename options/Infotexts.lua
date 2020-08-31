@@ -42,7 +42,7 @@ Infotext.General.args = {
 
 local count = 10
 for name, obj in module:IterateModules() do
-    Infotext.Settings.args[name] = InfoTextGroup(name, count + 1)
+    Infotext.Settings.args[name] = InfoTextGroup(name, count)
     count = count + 1
 end
 

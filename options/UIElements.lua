@@ -4,13 +4,22 @@
 ---@type Opt
 local optName, Opt = ...
 local LUI = LibStub("AceAddon-3.0"):GetAddon("LUI4")
+local module = LUI:GetModule("UI Elements")
+local db = module.db.profile
 local L = LUI.L
-local mod = LUI:GetModule("UI Elements")
 
 -- ####################################################################################################################
 -- ##### Utility Functions ############################################################################################
 -- ####################################################################################################################
 
-Opt.options.args.UIElements = Opt:Group("UI Elements", nil, nil, "tab", true, nil, Opt.GetSet(mod.db.profile))
-Opt.options.args.UIElements.handler = mod
-local UIElements = Opt.options.args.UIElements.args
+
+-- ####################################################################################################################
+-- ##### Options Tables ###############################################################################################
+-- ####################################################################################################################
+Opt.options.args.UIElements = Opt:Group("UI Elements", nil, nil, "tab", true, nil, Opt.GetSet(db))
+Opt.options.args.UIElements.handler = module
+local UIElements = {
+
+}
+
+Opt.options.args.UIElements.args = UIElements

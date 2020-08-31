@@ -12,11 +12,12 @@ local L = LUI.L
 -- ##### Utility Functions ############################################################################################
 -- ####################################################################################################################
 
+
 -- ####################################################################################################################
 -- ##### Options Table ################################################################################################
 -- ####################################################################################################################
-Opt.options.args.Bags = Opt:Group("Bags", nil, nil, "tab", true)
-Opt.options.args.Bags.handler = nil
+Opt.options.args.Bags = Opt:Group("Bags", nil, nil, "tab", true, nil, Opt.GetSet(db))
+Opt.options.args.Bags.handler = module
 local Bags = {
 
 }
@@ -25,8 +26,6 @@ Opt.options.args.Bags.args = Bags
 
 
 --[[
-
-
 function module:LoadOptions()
 	local options = {
 		Header = module:NewHeader(L["Bags_Name"], 1),
