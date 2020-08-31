@@ -8,7 +8,7 @@ local L = LUI.L
 local oUF = LUI.oUF
 local db
 
-local unitSpawns = { "player", "target", }
+module.unitSpawns = { "player", "target", }
 
 -- Defaults have been moved to their own file under unitframes/defaults.lua
 
@@ -296,8 +296,8 @@ function module:LoadOptions()
 		Header = module:NewHeader("Unitframes", 1),
 	}
 
-	for i = 1, #unitSpawns do
-		local unit = unitSpawns[i]
+	for i = 1, #module.unitSpawns do
+		local unit = module.unitSpawns[i]
 		options[unit] = module:NewUnitOptionGroup(unit, i+10)
 		--module:NewGroup(unit, i+10, "tab", nil, )
 	end
@@ -336,8 +336,8 @@ end
 
 function module:OnEnable()
 	module:SetOUFColors()
-	for i = 1, #unitSpawns do
-		local unit = unitSpawns[i]
+	for i = 1, #module.unitSpawns do
+		local unit = module.unitSpawns[i]
 		local db = db.Units[unit]
 		local spawn_ = SpawnUnit(unit, db.Point, db.X, db.Y)
 	end
