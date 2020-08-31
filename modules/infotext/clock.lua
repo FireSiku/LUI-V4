@@ -127,6 +127,8 @@ end
 
 local function GetLocalizedDifficulty(difficulty)
 	local diff = INSTANCE_DIFFICULTY_FORMAT[difficulty]
+	if not diff then return end
+	
 	local LString = format("InfoClock_Instance_%s", diff)
 	return L[LString], COLOR_CODES[diff]
 end
