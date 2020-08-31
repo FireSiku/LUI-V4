@@ -17,6 +17,7 @@ Bags.lua
 Chat.lua
 ExpBars.lua
 Infotexts.lua
+Micromenu.lua
 Minimap.lua
 Tooltip.lua
 UIElements.lua
