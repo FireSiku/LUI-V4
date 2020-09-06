@@ -48,6 +48,9 @@ enable-nolib-creation: no
 
 license-output: docs/License.txt
 
+move-folders:
+    LUI4/options: LUI4Options
+
 ignore:
   - docs/ToDo.txt
   
