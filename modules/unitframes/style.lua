@@ -113,9 +113,10 @@ function module.SetStyle(frame, unit, isSingle)
 
 	--Check for any unit-specific additions here
 	if unit == "player" then
+		module.backdropFrame = backdropFrame
 		module.SetClassPower(frame)
 	end
-	--TODO:AddClassPower Call
+	
 
 end
 

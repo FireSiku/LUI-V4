@@ -112,28 +112,55 @@ function module.SetClassBar(self)
 	local bgTexture = Media:Fetch("statusbar", db.TextureBG)
 	local barSize
     for i = 1, 10 do
-        local bar = CreateFrame('StatusBar', nil, self)
+        local bar = CreateFrame('StatusBar', nil, self.Health)
 
         -- Position and size.
         bar:SetSize(db.Width/10, db.Height)
 		if i == 1 then
-			bar:SetPoint("TOPLEFT", self, "TOPLEFT", 0, db.Height)
+			bar:SetPoint("TOPLEFT", self, "TOPLEFT", 0, db.Height + 2)
 		else
 			bar:SetPoint("TOPLEFT", classPower[i-1], "TOPRIGHT", db.Padding, 0)
 		end
+		bar:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background"})
 		bar:SetStatusBarTexture(barTexture)
-
+		
         classPower[i] = bar
 	end
 
-	function classPower.PostUpdate(self, cur, max, hasChanged, powerType)
-		if hasChanged then
-			local barSize = (db.Width - db.Padding * (max - 1)) / max
-			for i = 1, max do
-				self[i]:SetSize(barSize, db.Height)
+	function classPower.UpdateColor(element, powerType)
+		local color = element.__owner.colors.power[powerType]
+		local r, g, b = color[1], color[2], color[3]
+		for i = 1, #element do
+			local bar = element[i]
+			bar:SetStatusBarColor(r, g, b)
+			local mu = 0.4
+			bar:SetBackdropColor(r * mu, g * mu, b * mu)
+	
+			local bg = bar.bg
+			if(bg) then
+				local mu = bg.multiplier or 1
+				bg:SetVertexColor(r * mu, g * mu, b * mu)
 			end
 		end
-		LUI:Print(cur, max, hasChanged, powerType)
+	end
+
+	function classPower.PostUpdate(self, cur, max, hasChanged, powerType)
+		local barSize
+		LUI:Print(cur, max, hasChanged)
+		if hasChanged then
+			barSize = (db.Width - db.Padding * (max - 1)) / max
+		end
+		if not cur then
+			module.backdropFrame:SetPoint("TOPLEFT", self.__owner.Health, "TOPLEFT", -4, 4)
+		else
+			module.backdropFrame:SetPoint("TOPLEFT", self.__owner.ClassPower[1], "TOPLEFT", -4, 4)
+			for i = 1, max do
+				self[i]:Show()
+				if barSize then
+					self[i]:SetSize(barSize, db.Height)
+				end
+			end
+		end
 	end
 
     -- Register with oUF
