@@ -75,7 +75,7 @@ module.defaults = {
 		},
 		-- Fonts and Colors
 		Fonts = {
-			Bags = { Name = "NotoSans-SCB", Size = 12, } --Flag = "OUTLINE", },
+			Bags = { Name = "NotoSans-SCB", Size = 12, Flag = "OUTLINE", },
 		},
 		Colors = {
 			Search =         { r = 0.6,  g = 0.6,  b = 1,    a = 1,   t = "Class",      },

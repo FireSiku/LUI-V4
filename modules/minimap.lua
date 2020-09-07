@@ -60,7 +60,7 @@ module.defaults = {
 			Scale = 1,
 		},
 		Fonts = {
-			Text = { Name = "vibroceb", Size = 12, Flag = "OUTLINE", },
+			Text = { Name = "NotoSans-SCB", Size = 12, Flag = "OUTLINE", },
 		},
 		Colors = {
 			Minimap = { r = 0.21, g = 0.22, b = 0.23, a = 1, t = "Class", },

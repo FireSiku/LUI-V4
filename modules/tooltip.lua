@@ -115,7 +115,7 @@ module.defaults = {
 			MyGuild =    { r = 0,    g = 0.55, b = 1,                             },
 		},
 		Fonts = {
-			Health = { Name = "vibroceb", Size = 12, Flag = "OUTLINE", },
+			Health = { Name = "NotoSans-SCB", Size = 12, Flag = "OUTLINE", },
 		},
 	},
 }

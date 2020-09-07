@@ -7,10 +7,33 @@ local LUI = LibStub("AceAddon-3.0"):GetAddon("LUI4")
 local db = LUI.db.profile
 local L = LUI.L
 
+-- luacheck: globals GAME_VERSION_LABEL
+local GAME_VERSION_LABEL = GAME_VERSION_LABEL
+
 -- ####################################################################################################################
 -- ##### Utility Functions ############################################################################################
 -- ####################################################################################################################
-
+local function GetEditBoxText()
+    local t = {}
+    for name, value in pairs(_G) do
+        if type(value) == "table" and value.GetObjectType and not string.match(name, "Frame$") then
+            if value.IsForbidden and value:IsForbidden() then print(name.." Is Forbidden")
+            elseif value.GetParent and (value:GetParent() == nil or value:GetParent() == UIParent) then
+            --if string.match(name, "_COLORS?$") then
+            -- if not (string.match(name, "Frame$") or string.match(name, "C_") or string.match(name, "_COLORS?$")) and
+            -- not (string.match(name, "Mixin$") or string.match(name, "Util$")) then
+                table.insert(t, name)
+                --s = format('%s"%s", ', s, name)
+            end
+        end
+    end
+    table.sort(t)
+    local s = ""
+    for i = 1, #t do
+        s = format('%s"%s", ', s, t[i])
+    end
+    return s.."--"
+end
 
 -- ####################################################################################################################
 -- ##### Options Tables ###############################################################################################
@@ -26,4 +49,9 @@ General.Welcome.args = {
     RevText = Opt:Desc(format(L["Core_Revision_Format"], LUI.curseVersion or "???"), 5),
     Header = Opt:Header("General Settings", 10),
     Master = Opt:FontMenu("Master Font", nil, 11),
+}
+General.Dev = Opt:Group("Development", nil, 3, nil, nil, true)
+General.Dev.args = {
+    Desc = Opt:Desc("This tab shouldn't be visible, but if you do see it, pay this no mind.", 1),
+    Editbox = Opt:Input("Test", nil, 2, 20, "full", nil, nil, nil, GetEditBoxText)
 }

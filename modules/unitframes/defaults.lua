@@ -17,7 +17,7 @@ module.defaults = {
 	profile = {
 
 -- ####################################################################################################################
--- ##### Settings: General #############################################################################################
+-- ##### Settings: General ############################################################################################
 -- ####################################################################################################################
         Settings = {
         },
@@ -54,6 +54,10 @@ module.defaults = {
             },
 
             ["**"] = {
+                Fonts = {
+                    SpellText = { Name = "NotoSans-SCB", Size = 12, Flag = "OUTLINE", },
+                    TimeText =  { Name = "NotoSans-SCB", Size = 12, Flag = "OUTLINE", },
+                },
                 General = {
                     Enable = true,
                     Height = 20,
@@ -69,16 +73,12 @@ module.defaults = {
                 Text = {
                     Name = {
                         Enable = true,
-                        Font = "neuropol",
-                        Size = 13,
                         OffsetX = 5,
                         OffsetY = 1,
                     },
                     Time = {
                         Enable = true,
                         ShowMax = true,
-                        Font = "neuropol",
-                        Size = 13,
                         OffsetX = -5,
                         OffsetY = 1,
                     },
@@ -168,14 +168,14 @@ module.defaults = {
                     PowerMissing  = {  r = 1   , g = 1   , b = 1   , t = "Individual", },
                 },
                 Fonts = {
-                    NameText      = { Name = "Prototype", Size = 18, Flag = "NONE", },
-                    HealthText    = { Name = "Prototype", Size = 16, Flag = "NONE", },
-                    PowerText     = { Name = "Prototype", Size = 14, Flag = "NONE", },
-                    HealthPercent = { Name = "Prototype", Size = 14, Flag = "NONE", },
-                    PowerPercent  = { Name = "Prototype", Size = 12, Flag = "NONE", },
-                    HealthMissing = { Name = "Prototype", Size = 16, Flag = "NONE", },
-                    PowerMissing  = { Name = "Prototype", Size = 14, Flag = "NONE", },
-                    CombatText    = { Name = "Prototype", Size = 20, Flag = "NONE", },
+                    NameText      = { Name = "NotoSans-SCB", Size = 18, Flag = "OUTLINE", },
+                    HealthText    = { Name = "NotoSans-SCB", Size = 16, Flag = "OUTLINE", },
+                    PowerText     = { Name = "NotoSans-SCB", Size = 14, Flag = "OUTLINE", },
+                    HealthPercent = { Name = "NotoSans-SCB", Size = 14, Flag = "OUTLINE", },
+                    PowerPercent  = { Name = "NotoSans-SCB", Size = 12, Flag = "OUTLINE", },
+                    HealthMissing = { Name = "NotoSans-SCB", Size = 16, Flag = "OUTLINE", },
+                    PowerMissing  = { Name = "NotoSans-SCB", Size = 14, Flag = "OUTLINE", },
+                    CombatText    = { Name = "NotoSans-SCB", Size = 20, Flag = "OUTLINE", },
                 },
                 LootmasterIcon = { Enable = false, Size = 15, X = 16 , Y = 0, Point = "TOPLEFT" , },
                 LeaderIcon     = { Enable = false, Size = 17, X = 0  , Y = 0, Point = "TOPLEFT" , },
@@ -355,7 +355,7 @@ module.defaults = {
                     ClassPowerBar = { r = 1  , g = 1  , b = 1  , t = "Type", },
                 },
                 Fonts = {
-                    PvPTime =       { Name = "vibroceb",  Size = 12, Flag = "NONE",    },
+                    PvPTime = { Name = "NotoSans-SCB", Size = 12, Flag = "OUTLINE", },
                 },
                 CombatIcon     = { Enable = false,    Size = 27,    X = -15,    Y = -30,    Point = "BOTTOMLEFT",  },
                 RestingIcon    = { Enable = false,    Size = 27,    X = -12,    Y = 13,     Point = "TOPLEFT",     },
