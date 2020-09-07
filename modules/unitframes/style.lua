@@ -26,10 +26,8 @@ function module.SetStyle(frame, unit, isSingle)
 		frame:SetSize(frame.db.HealthBar.Width, frame.db.HealthBar.Height)
 	end
 
-	-- // Health Bar
+	-- // Health and Power Bars
 	module:SetHealth(frame)
-
-	-- // Power Bar
 	module:SetPower(frame)
 
 	-- // Frame Backdrop
@@ -40,7 +38,6 @@ function module.SetStyle(frame, unit, isSingle)
 		insets = { left = 3, right = 3, top = 3, bottom = 3, },
 	}
 	local backdropFrame = CreateFrame("Frame", nil, frame)
-	--Need to convert to :RGB()
 	backdropFrame:SetBackdrop(backdrop)
 	backdropFrame:SetBackdropColor(frame:RGB("Background"))
 	backdropFrame:SetBackdropBorderColor(frame:RGB("Border"))
@@ -115,7 +112,9 @@ function module.SetStyle(frame, unit, isSingle)
     end
 
 	--Check for any unit-specific additions here
-
+	if unit == "player" then
+		module.SetClassPower(frame)
+	end
 	--TODO:AddClassPower Call
 
 end

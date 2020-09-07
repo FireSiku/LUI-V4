@@ -9,6 +9,8 @@ local module = LUI:GetModule("Unitframes")
 local class = LUI.playerClass
 local db
 
+local Media = LibStub("LibSharedMedia-3.0")
+
 -- Spec constants
 local SPEC_MAGE_ARCANE = 1
 local SPEC_MONK_WINDWALKER = 3
@@ -90,20 +92,55 @@ end
 -- ##### Module Setup #################################################################################################
 -- ####################################################################################################################
 
--- For the entire file, self will be used to refer to the unitframe
--- as those functions are called from the style creation.
+-- For the entire file, self will be used to refer to the unitframe as those functions are called from the style creation.
 -- This function is the entry point of the file, it's where we determined if any bars need creation.
 function module.SetClassPower(self)
 	-- Use the same settings for ClassPower, Rune Bars and such.
-	db = self.db.Bars.ClassPower
+	db = self.db.ClassPowerBar
 
 	-- If a class has an entry in BASE_COUNT, it means it uses a ressource.
 	if BASE_COUNT[class] then
-		module.SetClassIcon(self)
+		module.SetClassBar(self)
 	elseif class == "DEATHKNIGHT" then
 		module.SetRuneBar(self)
 	end
 end
+
+function module.SetClassBar(self)
+	local classPower = {}
+	local barTexture = Media:Fetch("statusbar", db.Texture)
+	local bgTexture = Media:Fetch("statusbar", db.TextureBG)
+	local barSize
+    for i = 1, 10 do
+        local bar = CreateFrame('StatusBar', nil, self)
+
+        -- Position and size.
+        bar:SetSize(db.Width/10, db.Height)
+		if i == 1 then
+			bar:SetPoint("TOPLEFT", self, "TOPLEFT", 0, db.Height)
+		else
+			bar:SetPoint("TOPLEFT", classPower[i-1], "TOPRIGHT", db.Padding, 0)
+		end
+		bar:SetStatusBarTexture(barTexture)
+
+        classPower[i] = bar
+	end
+
+	function classPower.PostUpdate(self, cur, max, hasChanged, powerType)
+		if hasChanged then
+			local barSize = (db.Width - db.Padding * (max - 1)) / max
+			for i = 1, max do
+				self[i]:SetSize(barSize, db.Height)
+			end
+		end
+		LUI:Print(cur, max, hasChanged, powerType)
+	end
+
+    -- Register with oUF
+    self.ClassPower = classPower
+end
+
+
 
 -- classPower is a frame with two parts.
 -- The frame itself is used as a background and also as a parent for the textures.

@@ -62,7 +62,6 @@ end
 
 oUF.Tags.Methods['LUI:health'] = function(unit)
 	if(not UnitIsConnected(unit) or UnitIsDead(unit) or UnitIsGhost(unit)) then return end
-	--return siValue(UnitHealth(unit)) .. '/' .. siValue(UnitHealthMax(unit))
 	return ShortValue(UnitHealth(unit))
 end
 oUF.Tags.Methods['LUI:Absorb'] = function(unit)

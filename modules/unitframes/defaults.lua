@@ -86,7 +86,7 @@ module.defaults = {
                 Border = {
                     Texture = "glow",
                     Thickness = 4,
-                    Inset = {    left = 3,    right = 3,    top = 3,    bottom = 3,},
+                    Inset = { left = 3, right = 3, top = 3, bottom = 3,},
                 },
 
                 Shield = {
@@ -95,7 +95,7 @@ module.defaults = {
                     Border = false,
                     Texture = "glow",
                     Thickness = 4,
-                    Inset = {    left = 3,    right = 3,    top = 3,    bottom = 3,},
+                    Inset = { left = 3, right = 3, top = 3, bottom = 3,},
                 },
             },
             player = {
@@ -357,8 +357,8 @@ module.defaults = {
                 Fonts = {
                     PvPTime = { Name = "NotoSans-SCB", Size = 12, Flag = "OUTLINE", },
                 },
-                CombatIcon     = { Enable = false,    Size = 27,    X = -15,    Y = -30,    Point = "BOTTOMLEFT",  },
-                RestingIcon    = { Enable = false,    Size = 27,    X = -12,    Y = 13,     Point = "TOPLEFT",     },
+                CombatIcon  = { Enable = false, Size = 27, X = -15, Y = -30, Point = "BOTTOMLEFT", },
+                RestingIcon = { Enable = false, Size = 27, X = -12, Y = 13,  Point = "TOPLEFT",    },
                 HealthBar = {
                     Height = 30,
                     Width = 250,
@@ -401,7 +401,7 @@ module.defaults = {
                     RelativeHeight = 0.33,
                     Texture = "LUI_Gradient",
                     TextureBG = "LUI_Minimalist",
-                    Padding = 1,
+                    Padding = 2,
                     Lock = true,
                 },
                 Buffs = {
