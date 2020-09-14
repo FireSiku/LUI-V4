@@ -85,12 +85,11 @@ Media:Register("border", "Stripped_hard", [[Interface\Addons\LUI4\media\borders\
 Media:Register("border", "Stripped_medium", [[Interface\Addons\LUI4\media\borders\Stripped_medium.tga]])
 
 -- REGISTER STATUSBARS
-Media:Register("statusbar", "oUF LUI", [[Interface\AddOns\LUI4\media\statusbar\oUF_LUI.tga]])
-Media:Register("statusbar", "LUI_Gradient", [[Interface\AddOns\LUI4\media\statusbar\gradient.tga]])
-Media:Register("statusbar", "LUI_Minimalist", [[Interface\AddOns\LUI4\media\statusbar\Minimalist.tga]])
+Media:Register("statusbar", "Minimalist", [[Interface\AddOns\LUI4\media\statusbar\minimalist.tga]])
+Media:Register("statusbar", "Gradient", [[Interface\AddOns\LUI4\media\statusbar\gradient.tga]])
 Media:Register("statusbar", "Ruben", [[Interface\AddOns\LUI4\media\statusbar\Ruben.tga]])
 
-LUI.blank = [[Interface\AddOns\LUI4\media\blank]]
+LUI.blank = [[Interface\AddOns\LUI4\media\blank.tga]]
 
 -- ####################################################################################################################
 -- ##### Install Process ##############################################################################################

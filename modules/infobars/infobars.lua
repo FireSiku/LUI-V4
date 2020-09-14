@@ -46,8 +46,8 @@ module.defaults = {
 		TextX = -2,
 		TextY = 0,
 		Spacing = 10,
-		ExpBarFill = "LUI_Gradient",
-		ExpBarBg = "LUI_Minimalist",
+		ExpBarFill = "Gradient",
+		ExpBarBg = "Minimalist",
 		Colors = {
 			Experience = { r = 0.6,  g = 0.6,  b = 1,    a = 1,   t = "Class", },
 			Reputation = { r = 0.2,  g = 0.2,  b = 0.2,  a = 1,   t = "Class", },
