@@ -1785,7 +1785,7 @@ stds["WoW"] = {
 		"TargetFrameTextureFrame", "SpellButton1UnlearnedSlotFrame", "ChatFrame6ButtonFrame", "FriendsFrame",
 		"VoiceChatPromptActivateChannelGlowFrame", "MerchantItem1MoneyFrame", "ContainerFrame6MoneyFrame", "SpellButton6UnlearnedSlotFrame",
 		"OverrideActionBarLeaveFrame", "PartyMemberFrame1PetFrame", "MailFrame", "SendMailFrame",
-		"PlayerFrame", "ReadyCheckFrame", "ChatFrame10ButtonFrame", "SideDressUpFrame", "DRESSUP_FRAME"
+		"PlayerFrame", "ReadyCheckFrame", "ChatFrame10ButtonFrame", "SideDressUpFrame", "DRESSUP_FRAME",
 		"OverrideActionBarExpBarOverlayFrame", "ChatFrame7ButtonFrame", "PriestBarFrame", "CharacterSecondaryHandSlotFrame",
 		"ChatFrame3ButtonFrame", "MerchantItem10AltCurrencyFrame", "ChatFrame2ButtonFrame", "WardrobeOutfitFrame",
 		"LFGDungeonReadyDialogRandomInProgressFrame", "TicketStatusFrame", "FriendsListFrame", "MerchantItem3NameFrame",

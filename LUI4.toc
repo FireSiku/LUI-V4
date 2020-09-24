@@ -46,16 +46,28 @@ api\strings.lua
 api\cpanel.lua
 api\compat.lua
 
-# Load Core Modules
-modules\layout.lua
-modules\artwork.lua
+# Load Tooltip
+modules\tooltip\tooltip.lua
 
-# Load Single Modules
-modules\minimap.lua
-modules\tooltip.lua
-modules\micromenu.lua
-# modules\bars.lua
-modules\aura.xml
+# Load UI Elements
+modules\uielements\uielements.lua
+modules\uielements\colorpicker.lua
+
+# Load Micromenu
+modules\micromenu\micromenu.lua
+
+# Load Artwork
+modules\artwork\artwork.lua
+
+# Load Minimap & Worldmap
+modules\minimap\minimap.lua
+-
+# Load Buffs & Debuffs 
+modules\auras\aura.xml
+
+# Load ActionBars
+# modules\actionbars\bars.lua
+# modules\actionbars\cooldown.lua
 
 # Load Unitframes
 modules\unitframes\unitframes.lua
@@ -90,10 +102,6 @@ modules\infotext\dualspec.lua
 modules\infotext\gold.lua
 modules\infotext\guild.lua
 modules\infotext\friends.lua
-
-# Load UI Elements
-modules\uielements\uielements.lua
-modules\uielements\colorpicker.lua
 
 # Load Addon Support Files
 api\addons.lua
