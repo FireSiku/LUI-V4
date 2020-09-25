@@ -280,7 +280,7 @@ function module:SetMinimapFrames()
 	--Setting up values
 	local borderBackdrop = {
 		bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
-		edgeFile="Interface\\AddOns\\LUI4\\media\\statusbar\\glowTex.tga",
+		edgeFile="Interface\\AddOns\\LUI4\\media\\borders\\glow.tga",
 		tile=0, tileSize=0, edgeSize=7,
 		insets={left=0, right=0, top=0, bottom=0}
 	}
@@ -302,7 +302,7 @@ function module:SetMinimapFrames()
 	--Create Corner Textures (Tex1-Tex4)
 	local textureBackdrop = {
 		bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
-		edgeFile="Interface\\AddOns\\LUI4\\media\\statusbar\\glowTex.tga",
+		edgeFile="Interface\\AddOns\\LUI4\\media\\borders\\glow.tga",
 		tile=0, tileSize=0, edgeSize=6,
 		insets={left=3, right=3, top=3, bottom=3}
 	}
@@ -319,7 +319,7 @@ function module:SetMinimapFrames()
 	--Create Shadow Textures (Tex1-Tex4)
 	local shadowBackdrop = {
 		bgFile="Interface\\Tooltips\\UI-Tooltip-Background",
-		edgeFile="Interface\\AddOns\\LUI4\\media\\statusbar\\glowTex.tga",
+		edgeFile="Interface\\AddOns\\LUI4\\media\\borders\\glow.tga",
 		tile=0, tileSize=0, edgeSize=4,
 		insets={left=3, right=3, top=3, bottom=3}
 	}
