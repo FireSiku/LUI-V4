@@ -26,17 +26,6 @@ local OPTION_PANEL_HEIGHT = 660
 -- Name: info[#info]
 -- Table: info.option
 
---- Validate a number
--- @param info Ace3 info table
--- @number num
--- @return true if num is a number, nil otherwise
-local function IsNumber(info_, num) -- luacheck: ignore
-	if not num or not tonumber(num) then
-		return L["API_InputNumber"]
-	end
-	return true
-end
-
 --- Fetch the option's parent table
 -- @param info Ace3 info table
 -- @return The parent table
@@ -68,6 +57,17 @@ function Opt.IsModDisabled(info)
 	else
 		return false
 	end
+end
+
+--- AceOptions validate that num is a number.
+--- @param info InfoTable
+--- @param num any
+--- @return boolea|string
+function Opt.IsNumber(info, num)
+	if not num or not tonumber(num) then
+		return L["API_InputNumber"]
+	end
+	return true
 end
 
 -- Common Slider Values
@@ -213,6 +213,19 @@ end
 ---@param set function
 function Opt:Input(name, desc, order, multiline, width, disabled, hidden, validate, get, set)
 	return { type = "input", name = name, desc = desc, order = order, multiline = multiline, width = width, disabled = disabled, hidden = hidden, validate = validate, get = get, set = set }
+end
+
+---@param name string|function
+---@param desc string|function
+---@param order number
+---@param multiline boolean|number
+---@param width string|"normal"|"half"|"double"|"full"
+---@param disabled boolean|function
+---@param hidden boolean|function
+---@param get function
+---@param set function
+function Opt:InputNumber(name, desc, order, multiline, width, disabled, hidden, validate, get, set)
+	return { type = "input", name = name, desc = desc, order = order, multiline = multiline, width = width, disabled = disabled, hidden = hidden, validate = Opt.IsNumber, get = get, set = set }
 end
 
 --[[ slider values:

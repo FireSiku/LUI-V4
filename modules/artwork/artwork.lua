@@ -3,7 +3,7 @@
 -- ####################################################################################################################
 
 local _, LUI = ...
-local module = LUI:NewModule("Panels")
+local module = LUI:NewModule("Artwork")
 local L = LUI.L
 local db
 
@@ -106,23 +106,6 @@ module.defaults = {
 -- ####################################################################################################################
 -- ##### Constant Tables ##############################################################################################
 -- ####################################################################################################################
-
-local TEX_MODE_SELECT = {
-	L["Panels_TexMode_LUI"],
-	L["Panels_TexMode_CustomLUI"],
-	L["Panels_TexMode_Custom"],
-}
-
-local PRESET_LUI_TEXTURES = {
-	["left_border.tga"] = L["Panels_Tex_Border_Screen"],
-	["left_border_back.tga"] = L["Panels_Tex_Border_ScreenBack"],
-	["panel_solid.tga"] = L["Panels_Tex_Panel_Solid"] ,
-	["panel_corner.tga"] = L["Panels_Tex_Panel_Corner"],
-	["panel_center.tga"] = L["Panels_Tex_Panel_Center"],
-	["panel_corner_border.tga"] = L["Panels_Tex_Border_Corner"],
-	["panel_center_border.tga"] = L["Panels_Tex_Border_Center"],
-	["bar_top.tga"] = L["Panels_Tex_Bar_Top"],
-}
 
 -- Table to keep info about preset textures.
 -- First four are tex coords (Left, Right, Up, Down)
