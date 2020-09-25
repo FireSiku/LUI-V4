@@ -316,12 +316,6 @@ end
 
 module.enableButton = true
 
---[[function module:LoadOptions()
-	local options = {
-	}
-	return options
-end--]]
-
 function module:OnInitialize()
 	LUI:RegisterModule(module, true)
 	db = module.db.profile

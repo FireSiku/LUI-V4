@@ -14,6 +14,9 @@ local ACR = LibStub("AceConfigRegistry-3.0")
 local LUI = LibStub("AceAddon-3.0"):GetAddon("LUI4")
 local L = LUI.L
 
+local OPTION_PANEL_WIDTH = 920
+local OPTION_PANEL_HEIGHT = 660
+
 -- ####################################################################################################################
 -- ##### Utility Functions ############################################################################################
 -- ####################################################################################################################
@@ -471,7 +474,7 @@ end
 
 function Opt:OnEnable()
 	LibStub("AceConfig-3.0"):RegisterOptionsTable(optName, options)
-	ACD:SetDefaultSize(optName, 920, 660)
+	ACD:SetDefaultSize(optName, OPTION_PANEL_WIDTH, OPTION_PANEL_HEIGHT)
 	options.args.Profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(LUI.db)
 	options.args.Profiles.order = 4
 end

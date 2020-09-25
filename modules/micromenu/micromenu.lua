@@ -451,36 +451,6 @@ function module:Refresh()
 end
 
 -- ####################################################################################################################
--- ##### Options Menu #################################################################################################
--- ####################################################################################################################
-
-module.enableButton = true
-
-function module:LoadOptions()
-	local dropDirections = {
-		LEFT = L["Point_Left"],
-		RIGHT = L["Point_Right"],
-	}
-	local colorMatchHide = function() return db.ColorMatch end
-
-	local options = {
-		Header = module:NewHeader(L["Micro_Name"], 1),
-		HideShop = module:NewToggle("Hide Blizzard Store", nil, 2, "SetMicromenuAnchors"),
-		Spacing = module:NewSlider(L["Spacing"], L["MicroOptions_Spacing_Desc"], 3, -10, 10, 1, false, "SetMicromenuAnchors"),
-		PositionHeader = module:NewHeader(L["Position"], 4),
-		Position = module:NewPosition(L["Micro_Name"], 5, true, "SetMicromenuAnchors"),
-		Point = module:NewSelect(L["Anchor"], nil, 6, LUI.Points, nil, "SetMicromenuAnchors"),
-		Direction = module:NewSelect(L["MicroOptions_Direction_Name"], L["MicroOptions_Direction_Desc"],
-		                             7, dropDirections, nil, "SetMicromenuAnchors"),
-		ColorHeader = module:NewHeader(L["Colors"], 10),
-		ColorMatch = module:NewToggle(L["MicroOptions_ColorMatch_Name"], L["MicroOptions_ColorMatch_Desc"] , 11, "Refresh"),
-		Micromenu = module:NewColorMenu(L["Micro_Name"], 12, true, "Refresh"),
-		Background = module:NewColorMenu(L["Background"], 13, true, "Refresh", nil, nil, colorMatchHide),
-	}
-	return options
-end
-
--- ####################################################################################################################
 -- ##### Framework Events #############################################################################################
 -- ####################################################################################################################
 

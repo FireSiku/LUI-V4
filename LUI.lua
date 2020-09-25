@@ -28,9 +28,6 @@ local IsAddOnLoaded = IsAddOnLoaded
 local GAME_VERSION_LABEL = GAME_VERSION_LABEL
 local GENERAL = GENERAL
 
-local OPTION_PANEL_WIDTH = 775
-local OPTION_PANEL_HEIGHT = 550
-
 -- Some calls are used in half the modules and result never changes, store them for convenience.
 LUI.playerClass = select(2, UnitClass("player"))
 LUI.playerRace = select(2, UnitRace("player"))
@@ -146,103 +143,12 @@ local cmdList = {
 	},
 }
 
-function LUI:LoadOptions()
-
-	-- Only creates and load the options table in memory when needed. There's no need for a huge options table sitting
-    -- in  the memory of a user that only opens the options panel once every week.
-	if not LUI.options then
-
-		LUI.options = {
-			name = "LUI",
-			type = "group",
-			get = "getter",
-			set = "setter",
-			handler = LUI,
-			args = {
-				General = {
-					name = GENERAL,
-					order = 1,
-					type = "group",
-					childGroups = "tab",
-					args = {
-						Welcome = {
-							name = L["Core_Welcome"],
-							type = "group",
-							order = 1,
-							args = {
-								IntroText = LUI:NewDesc(L["Core_IntroText"],3),
-
-								VerText = LUI:NewDesc(format("%s: %s", GAME_VERSION_LABEL, GetAddOnMetadata(addonName, "Version")), 4),
-								RevText = LUI:NewDesc(format(L["Core_Revision_Format"], LUI.curseVersion or "???"), 5),
-							},
-						},
-					},
-				},
-				Space = {
-					name = "",
-					order = 8,
-					type = "group",
-					disabled = true,
-					args = {},
-				},
-				Modules = {
-					name = L["Core_ModuleMenu"],
-					order = 9,
-					type = "group",
-					disabled = true,
-					args = {},
-				},
-			},
-		}
-
-		LUI.options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(LUI.db)
-		LUI.options.args.profiles.order = 4
-
-		for modName, module in LUI:IterateModules() do
-			-- If a module related to an addon has an option table but the addon isnt loaded, do not load it in.
-			local ok = true
-			if module.addon and (not IsAddOnLoaded(module.addon)) then ok = false end
-			if module.LoadOptions and ok then
-				LUI:EmbedOptions(module)
-				LUI.options.args[modName] = {
-					type = "group",
-					handler = module,
-					name = module.optionsName or modName,
-					order = module.order or 10,
-					childGroups = module.childGroups or "tab",
-					disabled = function() return not module:IsEnabled() end,
-					args = module:LoadOptions(),
-					get = "RootGetter",
-					set = "RootSetter",
-				}
-			end
-		end
-	end
-
-	return LUI.options
-end
-
-local optionsLoaded = false
-function LUI:Open(force, ...)
-	if ACD.OpenFrames.LUI and not force then
-		ACD:Close(addonName)
-	else
-		-- Do not open options in combat unless already opened before.
-		-- TODO: Find a better way to word the arning.
-		if InCombatLockdown() and not optionsLoaded then
-			LUI:Print(L["Core_OpenOptionsFail"])
-		else
-			ACD:Open(addonName, nil, ...)
-			optionsLoaded = true
-		end
-	end
-end
-
 --TODO: Handle of chat command is a mess that need fixing.
 --Future: Make it so that modules can handle chat command through /lui [moduleName] [setting] [value]
 function LUI:ChatCommand(input)
 	if not input or input:trim() == "" then
-		self:Open()
+		LoadAddOn("LUI4Options")
+		self:NewOpen()
 	else
 		local mod, cmd = self:GetArgs(input, 2)
 		local value = strgsub(input, mod, ""):trim()
@@ -250,11 +156,9 @@ function LUI:ChatCommand(input)
 			if (cmdList.commands[mod]) then
 				-- Call the function that will handle the command.
 				cmdList.handler[mod][cmdList.commands[mod]](self, value)
+			else
+				self:NewOpen()
 			end
-		elseif not InCombatLockdown() then
-			-- Temp: Open WIP options.
-			LoadAddOn("LUI4Options")
-			self:NewOpen()
 		end
 	end
 end
@@ -321,12 +225,7 @@ function LUI:OnInitialize()
 	self.db.RegisterCallback(self, "OnProfileReset", "Refresh")
 	db = self.db.profile
 
-	--Setup Options:
 	LUI:EmbedModule(LUI)
-	LUI:EmbedOptions(LUI)
-	LibStub("AceConfig-3.0"):RegisterOptionsTable(addonName, self.LoadOptions)
-	ACD:SetDefaultSize(addonName, OPTION_PANEL_WIDTH, OPTION_PANEL_HEIGHT)
-
 	self:RegisterChatCommand("lui", "ChatCommand")
 end
 

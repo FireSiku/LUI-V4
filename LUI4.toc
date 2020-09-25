@@ -40,10 +40,8 @@ api\oUF\oUF.xml
 # Load API files
 api\utils.lua
 api\modapi.lua
-api\options.lua
 api\colors.lua
 api\strings.lua
-api\cpanel.lua
 api\compat.lua
 
 # Load Tooltip
@@ -61,7 +59,7 @@ modules\artwork\artwork.lua
 
 # Load Minimap & Worldmap
 modules\minimap\minimap.lua
--
+
 # Load Buffs & Debuffs 
 modules\auras\aura.xml
 
@@ -104,5 +102,5 @@ modules\infotext\guild.lua
 modules\infotext\friends.lua
 
 # Load Addon Support Files
-api\addons.lua
+addons\addons.lua
 # addons\bartender4.lua

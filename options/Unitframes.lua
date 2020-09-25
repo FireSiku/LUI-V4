@@ -96,8 +96,15 @@ local function NewUnitOptionGroup(unit, order)
     unitOptions.args.CombatText = Opt:Group("Combat Text", nil, 8, nil, nil, nil, Opt.GetSet(db.Units[unit].CombatText))
     unitOptions.args.CombatText.args.sillyDesc = Opt:Desc("Settings will go here", 1)
 
-    unitOptions.args.Portrait = Opt:Group("Name Text", nil, 9, nil, nil, nil, Opt.GetSet(db.Units[unit].Portait))
-    unitOptions.args.Portrait.args.sillyDesc = Opt:Desc("Settings will go here", 1)
+    unitOptions.args.Portrait = Opt:Group("Portrait", nil, 9, nil, nil, nil, Opt.GetSet(db.Units[unit].Portait))
+    unitOptions.args.ClassPowerBar.args = {
+        Width = Opt:Input("Width", nil, 2),
+        Height = Opt:Input("Height", nil, 3),
+        X = Opt:Input("X Value", nil, 4),
+        Y = Opt:Input("Y Value", nil, 5),
+        --Point = Opt:Select(L["Anchor"], nil, 6, LUI.Points),
+        Alpha = Opt:Slider("Alpha", nil, 7, Opt.PercentValues),
+    }
 
     unitOptions.args.Buffs = Opt:Group("Buffs", nil, 10, nil, nil, nil, Opt.GetSet(db.Units[unit].Buffs))
     unitOptions.args.Buffs.args = {

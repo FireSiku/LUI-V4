@@ -47,3 +47,43 @@ for name, obj in module:IterateModules() do
 end
 
 Opt.options.args.Infotext.args = Infotext
+
+--[[
+	function element:LoadOptions()
+	local function MilitaryTime(info_, value)
+		--Set
+		if type(value) == "boolean" then
+			SetCVar(CVAR_MILITARY, value and 1 or 0, true)
+			element:UpdateCVar()
+		--Get
+		else
+			return cvarMilitary
+		end
+	end
+	local function LocalTime(info_, value)
+		--Set
+		if type(value) == "boolean" then
+			SetCVar(CVAR_LOCAL, value and 1 or 0, true)
+			element:UpdateCVar()
+		--Get
+		else
+			return cvarLocal
+		end
+	end
+	local militaryMeta = { get = MilitaryTime, set = MilitaryTime }
+	local localMeta = { get = LocalTime, set = LocalTime }
+
+	local options = {
+		setClock24h = element:NewToggle(TIMEMANAGER_24HOURMODE, nil, 1, militaryMeta, "normal"),
+		setClockLocal = element:NewToggle(TIMEMANAGER_LOCALTIME, nil, 2, localMeta, "normal"),
+		instanceDifficulty = element:NewToggle(L["InfoClock_InstanceDifficulty_Name"],
+		                                       L["InfoClock_InstanceDifficulty_Desc"], 3, "UpdateClock"),
+		showSavedRaids = element:NewToggle(L["InfoClock_ShowSavedRaids_Name"],
+		                                   L["InfoClock_ShowSavedRaids_Desc"], 5, "UpdateTooltip"),
+		showWorldBosses = element:NewToggle(L["InfoClock_ShowWorldBosses_Name"],
+		                                    L["InfoClock_ShowWorldBosses_Desc"], 6, "UpdateTooltip"),
+
+	}
+	return options
+end
+]]
