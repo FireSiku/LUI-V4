@@ -44,10 +44,22 @@ local function IsCustomTexCoordsHidden(info)
 	return PRESET_LUI_TEXTURES[db.Textures[info[#info-1]].Texture]
 end
 
+local function DeleteNewPanel(info)
+	local panelName = info[#info-1]
+	tDeleteItem(module.panelList, panelName)
+	_G["LUIPanel_"..panelName]:Hide()
+
+	db.Textures[panelName] = nil
+	db.Colors[panelName] = nil
+	-- Get the parent node and remove panel options.
+	Opt.options.args.Artwork.args.Custom.args[panelName] = nil
+	Opt:RefreshOptionsPanel()
+	module:ModPrint("Deleted panel:", panelName)
+end
+
 local function CreatePanelGroup(name)
 	local texDB = db.Textures[name]
 	local group = Opt:Group(name, nil, 10, nil, nil, nil, Opt.GetSet(texDB))
-	LUI:Print(group)
 	group.args = {
 		TextureHeader = Opt:Header(L["Texture"], 1),
 		--ImageDesc = Opt:Desc("", 2, nil, GetOptionImageTexture, GetOptionTexCoords, 256, 128),
@@ -76,6 +88,7 @@ local function CreatePanelGroup(name)
 		RelativePoint = Opt:Select(L["Anchor"], nil, 22, LUI.Points),
 		LineBreak3 = Opt:Spacer(23),
 		--Position = Opt:Position(L["Position"], 24, true),
+		DeletePanel = Opt:Execute("Delete Panel", nil, 30, DeleteNewPanel)
 	}
 	return group
 end
@@ -95,25 +108,11 @@ local function CreateNewPanel(info)
 	module:CreateNewPanel(nameInput, panelDB)
 
 	-- Update options
-	LUI:Print("Name: ", nameInput)
-	info.options.args[ info[#info-1] ].args[nameInput] = CreatePanelGroup(nameInput)
-	LUI:RefreshOptionsPanel()
+	Opt.options.args.Artwork.args.Custom.args[nameInput] = CreatePanelGroup(nameInput)
+	Opt:RefreshOptionsPanel()
 
 	module:ModPrint("Created new panel:", nameInput)
 end
-
--- local function DeleteNewPanel(info)
--- 	local panelName = module.panelList[panelSelect]
--- 	if not panelName then return end
--- 	table.remove(module.panelList, panelSelect)
--- 	_G["LUIPanel_"..panelName]:Hide()
-
--- 	db.Textures[panelName] = nil
--- 	-- Get the parent node and remove panel options.
--- 	info.options.args[ info[#info-1] ].args[panelName] = nil
--- 	LUI:RefreshOptionsPanel()
--- 	module:ModPrint("Deleted panel:", panelName)
--- end
 
 -- ####################################################################################################################
 -- ##### Options Table ################################################################################################
@@ -126,9 +125,9 @@ local Artwork = {
 	Builtin = Opt:Group("LUI Panels", nil, 3, "tree", nil, true),
 }
 
-Artwork.Custom.args.NewDesc = Opt:Desc("Create New Panel:", 1, nil, nil, nil, nil, nil, "normal")
+Artwork.Custom.args.NewDesc = Opt:Desc("    Add Custom Panels:", 1, "medium", nil, nil, nil, nil, "normal")
 Artwork.Custom.args.NameInput = Opt:Input("Panel Name", nil, 2, nil, nil, nil, nil, nil, function() return nameInput or "" end, function(_, value) nameInput = value end)
-Artwork.Custom.args.NewPanel = Opt:Execute("Create", nil, 3, CreateNewPanel, nil, IsNewPanelDisabled)
+Artwork.Custom.args.NewPanel = Opt:Execute("Create Panel", nil, 3, CreateNewPanel, nil, IsNewPanelDisabled)
 for i = 1, #module.panelList do
 	local name = module.panelList[i]
 	Artwork.Custom.args[name] = CreatePanelGroup(name)

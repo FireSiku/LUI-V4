@@ -70,6 +70,10 @@ function Opt.IsNumber(info, num)
 	return true
 end
 
+function Opt:RefreshOptionsPanel()
+	ACR:NotifyChange(optName)
+end
+
 -- Common Slider Values
 Opt.ScaleValues = {softMin = 0.5, softMax = 2, bigStep = 0.05, min = 0.25, max = 4, step = 0.01, isPercent = true}
 Opt.PercentValues = {min = 0, max = 1, step = 0.01, bigStep = 0.05, isPercent = true}
