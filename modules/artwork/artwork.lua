@@ -89,6 +89,7 @@ module.defaults = {
 				Order = 100,
 				X = 0,
 				Y = 0,
+				Scale = 1,
 				Left = 0,
 				Right = 1,
 				Up = 0,
@@ -120,9 +121,7 @@ local LUI_TEXTURES_INFO = {
 }
 
 --Table to hold all panels frames.
-local setPanels = {}
---Mixin Object for panels.
-local PanelMixin = {}
+local _panels = {}
 
 -- LUI Textures Directory
 local LUI_TEX_DIR = "Interface\\AddOns\\LUI4\\media\\textures\\"
@@ -130,6 +129,7 @@ local LUI_TEX_DIR = "Interface\\AddOns\\LUI4\\media\\textures\\"
 -- ####################################################################################################################
 -- ##### Panel Mixin ##################################################################################################
 -- ####################################################################################################################
+local PanelMixin = {}
 
 function PanelMixin:GetParent()
 	--TODO: Add support for LibWindow for proper texture scaling when not anchored.
@@ -180,8 +180,10 @@ function PanelMixin:Refresh()
 	local parent = _G[self.db.Parent]
 	local r, g, b, a = module:RGBA(self.name)
 
-	self:SetPoint(self.db.Point, parent, self.db.RelativePoint, self.db.X, self.db.Y)
+	--self:SetPoint(self.db.Point, parent, self.db.RelativePoint, self.db.X, self.db.Y)
 	self:SetSize(self.db.Width, self.db.Height)
+	LUI:RegisterConfig(self, self.db)
+	LUI:RestorePosition(self)
 	self:SetParent(parent)
 	self:SetAlpha(a)
 
@@ -198,19 +200,20 @@ end
 
 function module:CreateNewPanel(name, db)
 	local panel = CreateFrame("Frame", "LUIPanel_"..name, UIParent)
+	LUI:RegisterConfig(panel, db)
+	LUI:RestorePosition(panel)
+	-- LUI:MakeDraggable(panel)
+	-- panel:EnableMouse(true)
+	Mixin(panel, PanelMixin)
 
 	local tex = panel:CreateTexture(nil, "BACKGROUND")
-	tex:SetPoint("TOPLEFT", panel, "TOPLEFT")
 	tex:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT")
-	setPanels[name] = panel
+	tex:SetPoint("TOPLEFT", panel, "TOPLEFT")
+	
+	_panels[name] = panel
 	panel.name = name
 	panel.tex = tex
 	panel.db = db
-
-	--Add the mixin
-	for k, v in pairs(PanelMixin) do
-		panel[k] = v
-	end
 
 	panel:Refresh()
 	return panel
@@ -220,12 +223,22 @@ function module:setPanels()
 	module.panelList = {}
 
 	for name, paneldb in pairs(db.Textures) do
-		local frame_ = module:CreateNewPanel(name, paneldb)
+		local frame = module:CreateNewPanel(name, paneldb)
 		table.insert(module.panelList, name)
 	end
 	sort(module.panelList, function(a, b)
 		return db.Textures[a].Order < db.Textures[b].Order
 	end)
+end
+
+function module:GetPanelByName(name)
+	return _panels[name]
+end
+
+function module:Refresh()
+	for name, panel in pairs(_panels) do
+		panel:Refresh()
+	end
 end
 
 -- ####################################################################################################################

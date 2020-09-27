@@ -98,6 +98,9 @@ function Opt.GetSet(db)
 			value = tonumber(value)
 		end
 		db[info[#info]] = value
+		if info.handler.Refresh then
+			info.handler:Refresh()
+		end
 	end
 	
 	return get, set

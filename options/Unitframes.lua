@@ -14,7 +14,7 @@ local L = LUI.L
 local sizeValues = {softMin = 8, softMax = 64, min = 4, max = 255, step = 1}
 local spacingValues = {softMin = -10, softMax = 10, step = 1}
 local auraCountValues = {min = 1, max = 64, softMax = 36, step = 1}
-
+local fontValues = {min = 4, max = 72, step = 1, softMin = 8, softMax = 36}
 
 -- ####################################################################################################################
 -- ##### Options Tables ###############################################################################################
@@ -23,6 +23,63 @@ Opt.options.args.Unitframes = Opt:Group("Unitframes", nil, nil, "tab")
 Opt.options.args.Unitframes.handler = module
 
 Opt.options.args.Unitframes.args.Header = Opt:Header("Unitframes", 1)
+
+local function UnitFontMenuGetter(info)
+    local unit = info[2]
+    local fontName = info[3]
+	local db = info.handler.db.profile.Units[unit].Fonts
+	local prop = info[#info]
+	
+	return db[fontName][prop]
+end
+
+local function UnitFontMenuSetter(info, value)
+	local unit = info[2]
+    local fontName = info[3]
+	local db = info.handler.db.profile.Units[unit].Fonts
+	local prop = info[#info]
+
+	db[fontName][prop] = value
+end
+
+local function UnitFontMenu(name, desc, order, disabled, hidden)
+    local group = Opt:Group(name, desc, order, nil, disabled, hidden)
+	group.args.Size = Opt:Slider("Size", nil, 1, sizeValues, nil, disabled, hidden, UnitFontMenuGetter, UnitFontMenuSetter)
+	group.args.Name = Opt:MediaFont("Font", nil, 2, nil, disabled, hidden, UnitFontMenuGetter, UnitFontMenuSetter)
+	group.args.Flag = Opt:Select("Outline", nil, 3, LUI.FontFlags, nil, disabled, hidden, UnitFontMenuGetter, UnitFontMenuSetter)
+	group.inline = true
+	return group
+end
+
+
+local function GenerateBarGroup(name, order, get, set)
+    local group = Opt:Group(name, nil, order, nil, nil, nil, get, set)
+    group.args = {
+        Enabled = Opt:Toggle("Enabled", nil, 1, nil, "full"),
+        Width = Opt:Input("Width", nil, 2),
+        Height = Opt:Input("Height", nil, 3),
+        X = Opt:Input("X Value", nil, 4),
+        Y = Opt:Input("Y Value", nil, 5),
+        Point = Opt:Select(L["Anchor"], nil, 6, LUI.Points),
+        Texture = Opt:MediaStatusbar("Bar Texture", nil, 7),
+        TextureBG = Opt:MediaStatusbar("Background Texture", nil, 8),
+        Smooth = Opt:Toggle("Smooth Gradient", nil, 9),
+    }
+    return group
+end
+
+local function GenerateTextGroup(name, order, get, set)
+    local group = Opt:Group(name, nil, order, nil, nil, nil, get, set)
+    group.args = {
+        Enabled = Opt:Toggle("Enabled", nil, 1),
+        X = Opt:Input("X Value", nil, 4),
+        Y = Opt:Input("Y Value", nil, 5),
+        Point = Opt:Select(L["Anchor"], nil, 6, LUI.Points),
+        RelativePoint = Opt:Select("Attach To", nil, 7, LUI.Points),
+        Font = UnitFontMenu("Text Font", nil, 20)
+    }
+    return group
+end
 
 local function GenerateIconGroup(name, order, get, set)
     local group = Opt:Group(name, nil, order, nil, nil, nil, get, set)
@@ -58,46 +115,21 @@ local function NewUnitOptionGroup(unit, order)
         TextureBG = Opt:MediaStatusbar("Background Texture", nil, 6),
     }
 
-    unitOptions.args.PowerBar = Opt:Group("Power Bar", nil, 2, nil, nil, nil, Opt.GetSet(db.Units[unit].PowerBar))
-    unitOptions.args.PowerBar.args = {
-        Width = Opt:Input("Width", nil, 2),
-        Height = Opt:Input("Height", nil, 3),
-        X = Opt:Input("X Value", nil, 4),
-        Y = Opt:Input("Y Value", nil, 5),
-        --Point = Opt:Select(L["Anchor"], nil, 6, LUI.Points),
-        Texture = Opt:MediaStatusbar("Bar Texture", nil, 7),
-        TextureBG = Opt:MediaStatusbar("Background Texture", nil, 8),
-    }
+    unitOptions.args.PowerBar = GenerateBarGroup("Power Bar", 3, Opt.GetSet(db.Units[unit].PowerBar))
+    unitOptions.args.AbsorbBar = GenerateBarGroup("Absorb Bar", 4, Opt.GetSet(db.Units[unit].AborbBar))
+    unitOptions.args.ClassPowerBar = GenerateBarGroup("Class Power Bar", 5, Opt.GetSet(db.Units[unit].ClassPowerBar))
+    unitOptions.args.ClassPowerBar.args.Smooth = nil
+    unitOptions.args.ClassPowerBar.args.Point = nil
+    unitOptions.args.AltManaBar = GenerateBarGroup("Additional Power Bar", 6, Opt.GetSet(db.Units[unit].AltManaBar))
 
-    unitOptions.args.AbsorbBar = Opt:Group("Absorb Bar", nil, 3, nil, nil, nil, Opt.GetSet(db.Units[unit].AbsorbBar))
-    unitOptions.args.AbsorbBar.args.sillyDesc = Opt:Desc("Settings will go here", 1)
-
-    unitOptions.args.ClassPowerBar = Opt:Group("Class Power Bar", nil, 4, nil, nil, nil, Opt.GetSet(db.Units[unit].ClassPowerBar))
-    unitOptions.args.ClassPowerBar.args = {
-        Width = Opt:Input("Width", nil, 2),
-        Height = Opt:Input("Height", nil, 3),
-        X = Opt:Input("X Value", nil, 4),
-        Y = Opt:Input("Y Value", nil, 5),
-        --Point = Opt:Select(L["Anchor"], nil, 6, LUI.Points),
-        Texture = Opt:MediaStatusbar("Bar Texture", nil, 7),
-        TextureBG = Opt:MediaStatusbar("Background Texture", nil, 8),
-    }
-
-    unitOptions.args.NameText = Opt:Group("Name Text", nil, 5, nil, nil, nil, Opt.GetSet(db.Units[unit].NameText))
-    unitOptions.args.NameText.args.sillyDesc = Opt:Desc("Settings will go here", 1)
-
+    unitOptions.args.NameText = GenerateTextGroup("Name Text", 7, Opt.GetSet(db.Units[unit].NameText))
+    unitOptions.args.HealthText = GenerateTextGroup("Health Text", 8, Opt.GetSet(db.Units[unit].HealthText))
+    unitOptions.args.PowerText = GenerateTextGroup("Power Text", 9, Opt.GetSet(db.Units[unit].PowerText))
+    unitOptions.args.CombatText = GenerateTextGroup("Combat Text", 10, Opt.GetSet(db.Units[unit].CombatText))
     -- Use a single entry to handle Value, Percent and Missing?
-    unitOptions.args.HealthText = Opt:Group("Health Text", nil, 6, nil, nil, nil, Opt.GetSet(db.Units[unit].HealthText))
-    unitOptions.args.HealthText.args.sillyDesc = Opt:Desc("Settings will go here", 1)
 
-    unitOptions.args.PowerText = Opt:Group("Power Text", nil, 7, nil, nil, nil, Opt.GetSet(db.Units[unit].PowerText))
-    unitOptions.args.PowerText.args.sillyDesc = Opt:Desc("Settings will go here", 1)
-
-    unitOptions.args.CombatText = Opt:Group("Combat Text", nil, 8, nil, nil, nil, Opt.GetSet(db.Units[unit].CombatText))
-    unitOptions.args.CombatText.args.sillyDesc = Opt:Desc("Settings will go here", 1)
-
-    unitOptions.args.Portrait = Opt:Group("Portrait", nil, 9, nil, nil, nil, Opt.GetSet(db.Units[unit].Portait))
-    unitOptions.args.ClassPowerBar.args = {
+    unitOptions.args.Portrait = Opt:Group("Portrait", nil, 11, nil, nil, nil, Opt.GetSet(db.Units[unit].Portait))
+    unitOptions.args.Portrait.args = {
         Width = Opt:Input("Width", nil, 2),
         Height = Opt:Input("Height", nil, 3),
         X = Opt:Input("X Value", nil, 4),
@@ -106,7 +138,7 @@ local function NewUnitOptionGroup(unit, order)
         Alpha = Opt:Slider("Alpha", nil, 7, Opt.PercentValues),
     }
 
-    unitOptions.args.Buffs = Opt:Group("Buffs", nil, 10, nil, nil, nil, Opt.GetSet(db.Units[unit].Buffs))
+    unitOptions.args.Buffs = Opt:Group("Buffs", nil, 12, nil, nil, nil, Opt.GetSet(db.Units[unit].Buffs))
     unitOptions.args.Buffs.args = {
         NYI = Opt:Desc("Auras Not Yet Implemented", 0.5),
         ColorByType = Opt:Toggle("Color By Type", nil, 1),
@@ -124,7 +156,7 @@ local function NewUnitOptionGroup(unit, order)
         Spacing = Opt:Slider("Spacing", nil, 12, spacingValues),
         Num = Opt:Slider("Amount of Buffs", nil, 13, auraCountValues),
     }
-    unitOptions.args.Debuffs = Opt:Group("Debuffs", nil, 10, nil, nil, nil, Opt.GetSet(db.Units[unit].Debuffs))
+    unitOptions.args.Debuffs = Opt:Group("Debuffs", nil, 13, nil, nil, nil, Opt.GetSet(db.Units[unit].Debuffs))
     unitOptions.args.Debuffs.args = {
         NYI = Opt:Desc("Auras Not Yet Implemented", 0.5),
         ColorByType = Opt:Toggle("Color By Type", nil, 1),
