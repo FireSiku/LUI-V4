@@ -172,3 +172,24 @@ function LUI:HighlightBorder(frame)
 	frame:SetBackdropColor(0,0,0,0)
 	frame:SetBackdropBorderColor(1,1,0,1)
 end
+
+-- ####################################################################################################################
+-- ##### Scaling Functions ############################################################################################
+-- ####################################################################################################################
+-- UI Scale is normalized to a height of 768px regardless of actual screen resolution.
+-- As a result of how WoW handles UI coordinates, having an improperly set UI scale may result in various glitches with interface addons.
+-- For instance, a one pixel wide border on a frame may have a varying width depending on the frame's position and size.
+-- To rectify this behaviour, you should set your UI scale so that your screen height matches with the UI coordinates.
+
+local mult = 1
+function LUI:UpdateScaleMultiplier()
+	local screenHeight = string.match(GetCVar("gxWindowedResolution"), "%d+x(%d+)")
+	local uiScale = UIParent:GetScale()
+	mult = 768 / screenHeight / uiScale
+end
+
+function LUI.Scale(x)
+	return mult * floor(x / mult + 0.5)
+end
+
+LUI:RegisterEvent("UI_SCALE_CHANGED", "UpdateScaleMultiplier")
