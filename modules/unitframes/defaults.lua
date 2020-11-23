@@ -221,6 +221,18 @@ module.defaults = {
                     BGInvert = false,
                     Smooth = true,
                 },
+                AbsorbBar = {
+                    Enable = true,
+                    Height = 10,
+                    Width = 250,
+                    X = 0,
+                    Y = -2,
+                    Texture = "Minimalist",
+                    TextureBG = "Minimalist",
+                    BGAlpha = 1,
+                    BGInvert = false,
+                    Smooth = true,
+                },
                 Buffs = {
                     Enable = true,
                     ColorByType = false,
@@ -386,7 +398,7 @@ module.defaults = {
                     Height = 8,
                     Width = 249,
                     Texture = "Minimalist",
-                    Padding = 1,
+                    Padding = 2,
                     Lock = true,
                 },
                 ClassPowerBar = {
