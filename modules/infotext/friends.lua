@@ -11,17 +11,15 @@ local L = LUI.L
 
 -- local copies
 local format = format
+local C_FriendList, C_PartyInfo = C_FriendList, C_PartyInfo
 local FriendsFrame_BattlenetInvite = FriendsFrame_BattlenetInvite
 local BNet_GetClientTexture = BNet_GetClientTexture
 local ToggleFriendsFrame = ToggleFriendsFrame
 local BNFeaturesEnabled = BNFeaturesEnabled
 local StaticPopup_Show = StaticPopup_Show
 local BNGetNumFriends = BNGetNumFriends
-local GetNumFriends = GetNumFriends
-local RemoveFriend = RemoveFriend
 local BNConnected = BNConnected
 local SetItemRef = SetItemRef
-local InviteUnit = InviteUnit
 local BNGetInfo = BNGetInfo
 
 -- constants
@@ -428,7 +426,13 @@ function element:CreateFriend(index)
 	return friend
 end
 
-function element:GetFriendStatusString(status)
+function element:GetFriendStatusString(info)
+	local status = ""
+	if info.dnd then
+		status = CHAT_FLAG_DND
+	elseif info.afk then
+		status = CHAT_FLAG_AFK
+	end
 	return module:ColorText(status, "Status")
 end
 
@@ -448,23 +452,24 @@ function element:DisplayFriends()
 	local classIconWidth, nameColumnWidth, levelColumnWidth = 0, 0, 0
 	local zoneColumnWidth, noteColumnWidth = 0, 0
 	for i = 1, onlineFriends do
-		local name, level, class, zone, _, status, note = GetFriendInfo(i)
-		local statusString = element:GetFriendStatusString(status)
+		--local name, level, class, zone, _, status, note = GetFriendInfo(i)
+		local info = C_FriendList.GetFriendInfo(i)
+		local statusString = element:GetFriendStatusString(info)
 		--GetFriendInfo returns a localized class name, we need a token to work with.
-		class = LUI:GetTokenFromClassName(class)
+		local class = LUI:GetTokenFromClassName(info.className)
 		local friend = element:CreateFriend(i)
 
 		-- Name Column
-		friend.unit = name
-		friend.name:SetText(statusString..name)
+		friend.unit = info.name
+		friend.name:SetText(statusString..info.name)
 		friend.name:SetTextColor(element:RGB(class))
 		friend:SetClassIcon(friend.class, class)
 
-		friend.level:SetText(level)
-		friend.level:SetTextColor(LUI:GetDifficultyColor(level))
+		friend.level:SetText(info.level)
+		friend.level:SetTextColor(LUI:GetDifficultyColor(info.level))
 
-		friend.zone:SetText(zone)
-		friend.note:SetText(note or "-")
+		friend.zone:SetText(info.area)
+		friend.note:SetText(info.notes or "-")
 
 		nameColumnWidth  = max(nameColumnWidth,  friend.name:GetStringWidth())
 		levelColumnWidth = max(levelColumnWidth, friend.level:GetStringWidth())
@@ -495,12 +500,12 @@ end
 
 function element.OnFriendButtonClick(friend, button)
 	if IsAltKeyDown() then
-		InviteUnit(friend.unit)
+		C_PartyInfo.InviteUnit(friend.unit)
 	elseif IsControlKeyDown() then
 		FriendsFrame.NotesID = friend.index
 		StaticPopup_Show("SET_FRIENDNOTE", friend.unit)
 	elseif button == "MiddleButton" then
-		RemoveFriend(friend.unit)
+		C_FriendList.RemoveFriend(friend.unit)
 	elseif button == "LeftButton" then
 		local playerLink = format(PLAYER_LINK_FORMAT, friend.unit)
 		local playerHyperText = format(PLAYER_HYPERLINK_FORMAT, friend.unit)
@@ -523,7 +528,7 @@ function element:FriendlistUpdate()
 	--Make sure we don't query the server more than once per update time.
 	element:ResetUpdateTimer()
 
-	totalFriends, onlineFriends = GetNumFriends()
+	totalFriends, onlineFriends = C_FriendList.GetNumFriends(), C_FriendList.GetNumOnlineFriends()
 	totalBNFriends, onlineBNFriends = BNGetNumFriends()
 	element:UpdateFriends()
 end
@@ -549,7 +554,7 @@ end
 -- ####################################################################################################################
 
 function element.OnEnter(frame_)
-	ShowFriends()
+	C_FriendList.ShowFriends()
 	if not infotip then element:BuildTooltip() end
 
 	-- // BNFriends Code Here
@@ -631,9 +636,9 @@ end
 -- ####################################################################################################################
 
 function element:OnCreate()
-	element:AddUpdate(ShowFriends, FRIENDS_UPDATE_TIME)
+	element:AddUpdate(C_FriendList.ShowFriends, FRIENDS_UPDATE_TIME)
 	element:RegisterEvent("FRIENDLIST_UPDATE", "FriendlistUpdate")
-	ShowFriends()
+	C_FriendList.ShowFriends()
 
 	element:RegisterEvent("BN_CONNECTED", "UpdateFriends")
 	element:RegisterEvent("BN_DISCONNECTED", "UpdateFriends")

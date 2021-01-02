@@ -215,7 +215,7 @@ function module:NewInfotip(infotext)
 	local name = infotext:GetName()
 	local parent = infotext:GetFrame()
 
-	local newtip = CreateFrame("Frame",format("LUIInfo_%sInfotip", name), parent)
+	local newtip = CreateFrame("Frame",format("LUIInfo_%sInfotip", name), parent, "BackdropTemplate")
 	infotipStorage[name] = newtip
 	newtip.infotext = infotext
 	for k, v in pairs(InfotipMixin) do

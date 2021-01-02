@@ -129,8 +129,14 @@ module.defaults = {
 function module:RevertTooltipBackdrop()
 	for i = 1, #TOOLTIPS_LIST do
 		local tooltipName = TOOLTIPS_LIST[i]
-		_G[tooltipName]:SetBackdrop(oldDefault[tooltipName])
-		_G[tooltipName]:SetScale(1)
+		local tooltip = _G[tooltipName]
+		-- if not tooltip.SetBackdrop then
+		-- 	Mixin(tooltip, BackdropTemplateMixin)
+		-- end
+		if tooltip and oldDefault[tooltipName] then
+			tooltip:SetBackdrop(oldDefault[tooltipName])
+			tooltip:SetScale(1)
+		end
 	end
 end
 
@@ -173,7 +179,10 @@ function module:UpdateTooltipBackdrop()
 		local tooltipName = TOOLTIPS_LIST[i]
 		local tooltip = _G[tooltipName]
 		--Make sure the tooltip exists.
-		if tooltip then
+		if tooltip and tooltip.SetBackdrop then
+			-- if not tooltip.SetBackdrop then
+			-- 	Mixin(tooltip, BackdropTemplateMixin)
+			-- end
 			-- Store the original backdrop so we can revert.
 			-- Make sure we don't overwrite it if we update the tooltips again later.
 			if not oldDefault[tooltipName] then
@@ -297,7 +306,7 @@ function module:UpdateBackdropColors()
 end
 
 -- ####################################################################################################################
--- ##### Module Hooks and Scripts #############################################################################################
+-- ##### Module Hooks and Scripts #####################################################################################
 -- ####################################################################################################################
 
 function module.OnStatusBarValueChanged(frame, value_)

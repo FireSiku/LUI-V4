@@ -291,7 +291,7 @@ function module:SetMinimapFrames()
 	local texPoint = { "BOTTOMLEFT", "BOTTOMRIGHT", "TOPRIGHT", "TOPLEFT" }
 
 	--Create Border
-	local minimapBorder = CreateFrame("Frame", "LUIMinimapBorder", Minimap)
+	local minimapBorder = CreateFrame("Frame", "LUIMinimapBorder", Minimap, "BackdropTemplate")
 	minimapBorder:SetSize(143,143)
 	minimapBorder:SetFrameStrata("BACKGROUND")
 	minimapBorder:SetPoint("CENTER", Minimap, "CENTER", 0, 0)
@@ -307,7 +307,7 @@ function module:SetMinimapFrames()
 		insets={left=3, right=3, top=3, bottom=3}
 	}
 	for i = 1, 4 do
-		local minimapTex = CreateFrame("Frame", "LUIMinimapTexture"..i, Minimap)
+		local minimapTex = CreateFrame("Frame", "LUIMinimapTexture"..i, Minimap, "BackdropTemplate")
 		minimapTex:SetSize(50,50)
 		minimapTex:SetFrameStrata("BACKGROUND")
 		minimapTex:SetPoint(texPoint[i], Minimap, texPoint[i], texOffX[i], texOffY[i])
@@ -324,7 +324,7 @@ function module:SetMinimapFrames()
 		insets={left=3, right=3, top=3, bottom=3}
 	}
 	for i = 5, 8 do
-		local minimapTex = CreateFrame("Frame", "LUIMinimapTexture"..i, Minimap)
+		local minimapTex = CreateFrame("Frame", "LUIMinimapTexture"..i, Minimap, "BackdropTemplate")
 		minimapTex:SetSize(56,56)
 		minimapTex:SetFrameStrata("BACKGROUND")
 		minimapTex:SetPoint(texPoint[i-4], Minimap, texPoint[i-4], texOffX[i], texOffY[i])

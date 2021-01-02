@@ -153,7 +153,7 @@ local function SetInfoPanels()
 		topAnchor:SetFrameStrata("HIGH")
 		topAnchor:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, -1)
 
-		local topPanelTex = CreateFrame("Frame", "LUIInfotext_topPanel", topAnchor)
+		local topPanelTex = CreateFrame("Frame", "LUIInfotext_topPanel", topAnchor, "BackdropTemplate")
 		topPanelTex:SetSize(32, 32)
 		topPanelTex:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 8)
 		topPanelTex:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", 0, 8)

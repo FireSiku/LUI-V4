@@ -246,40 +246,40 @@ local microDefinitions = {
 -- ####################################################################################################################
 
 -- Function to attach the alert frame to point to micromenu buttons
-function module:HookAlertFrame(name, anchor)
-	local r, g, b, a = module:RGBA("Micromenu")
-	local alertFrame      = _G[name.."MicroButtonAlert"]
-	local alertFrameBg    = _G[name.."MicroButtonAlertBg"]
-	local alertFrameArrow = _G[name.."MicroButtonAlertArrow"]
-	local alertFrameGlow  = _G[name.."MicroButtonAlertGlow"]
+-- function module:HookAlertFrame(name, anchor)
+-- 	local r, g, b, a = module:RGBA("Micromenu")
+-- 	local alertFrame      = _G[name.."MicroButtonAlert"]
+-- 	local alertFrameBg    = _G[name.."MicroButtonAlertBg"]
+-- 	local alertFrameArrow = _G[name.."MicroButtonAlertArrow"]
+-- 	local alertFrameGlow  = _G[name.."MicroButtonAlertGlow"]
 
-	alertFrame:ClearAllPoints()
-	alertFrame:SetPoint("TOP", anchor, "BOTTOM", 0, -12)
-	alertFrameBg:SetGradientAlpha("VERTICAL", r/4, g/4, b/4, 1, 0, 0, 0, 1)
-	alertFrameArrow:ClearAllPoints()
-	alertFrameArrow:SetPoint("BOTTOM", alertFrame, "TOP", 0, -10)
-	alertFrameArrow:SetDesaturated(true)
-	alertFrameArrow:SetVertexColor(r, g, b, a * ALERT_ALPHA_MULT)
-	alertFrameGlow:SetVertexColor(r, g, b, a * ALERT_ALPHA_MULT)
-	alertFrameGlow:SetDesaturated(true)
-	alertFrameGlow:ClearAllPoints()
-	alertFrameGlow:SetAllPoints(alertFrameArrow)
-	module:SetAlertFrameColors(name)
-end
+-- 	alertFrame:ClearAllPoints()
+-- 	alertFrame:SetPoint("TOP", anchor, "BOTTOM", 0, -12)
+-- 	alertFrameBg:SetGradientAlpha("VERTICAL", r/4, g/4, b/4, 1, 0, 0, 0, 1)
+-- 	alertFrameArrow:ClearAllPoints()
+-- 	alertFrameArrow:SetPoint("BOTTOM", alertFrame, "TOP", 0, -10)
+-- 	alertFrameArrow:SetDesaturated(true)
+-- 	alertFrameArrow:SetVertexColor(r, g, b, a * ALERT_ALPHA_MULT)
+-- 	alertFrameGlow:SetVertexColor(r, g, b, a * ALERT_ALPHA_MULT)
+-- 	alertFrameGlow:SetDesaturated(true)
+-- 	alertFrameGlow:ClearAllPoints()
+-- 	alertFrameGlow:SetAllPoints(alertFrameArrow)
+-- 	module:SetAlertFrameColors(name)
+-- end
 
--- Function to change the color of an alert frame to match micromenu.
-local gAlertGlows = {"TopLeft", "TopRight", "BottomLeft", "BottomRight", "Top", "Bottom", "Left", "Right"}
-function module:SetAlertFrameColors(name)
-	local r, g, b, a = module:RGBA("Micromenu")
-	_G[name.."MicroButtonAlertBg"]:SetGradientAlpha("VERTICAL", r/4, g/4, b/4, 1, 0, 0, 0, 1)
-	_G[name.."MicroButtonAlertArrow"]:SetVertexColor(r, g, b, a * ALERT_ALPHA_MULT)
-	_G[name.."MicroButtonAlertGlow"]:SetVertexColor(r, g, b, a * ALERT_ALPHA_MULT)
-	for i = 1, #gAlertGlows do
-		local tex = _G[name.."MicroButtonAlertGlow"..gAlertGlows[i]]
-		tex:SetDesaturated(true)
-		tex:SetVertexColor(r, g, b)
-	end
-end
+-- -- Function to change the color of an alert frame to match micromenu.
+-- local gAlertGlows = {"TopLeft", "TopRight", "BottomLeft", "BottomRight", "Top", "Bottom", "Left", "Right"}
+-- function module:SetAlertFrameColors(name)
+-- 	local r, g, b, a = module:RGBA("Micromenu")
+-- 	_G[name.."MicroButtonAlertBg"]:SetGradientAlpha("VERTICAL", r/4, g/4, b/4, 1, 0, 0, 0, 1)
+-- 	_G[name.."MicroButtonAlertArrow"]:SetVertexColor(r, g, b, a * ALERT_ALPHA_MULT)
+-- 	_G[name.."MicroButtonAlertGlow"]:SetVertexColor(r, g, b, a * ALERT_ALPHA_MULT)
+-- 	for i = 1, #gAlertGlows do
+-- 		local tex = _G[name.."MicroButtonAlertGlow"..gAlertGlows[i]]
+-- 		tex:SetDesaturated(true)
+-- 		tex:SetVertexColor(r, g, b)
+-- 	end
+-- end
 
 function module:TogglePanel(panel)
 	if panel:IsShown() then
@@ -337,7 +337,7 @@ function module:NewMicroButton(buttonData)
 	button.tex:SetVertexColor(r, g, b)
 
 	-- Make a button for the clickable area of the texture with black background.
-	button.clicker = CreateFrame("Button", nil, button)
+	button.clicker = CreateFrame("Button", nil, button, "BackdropTemplate")
 	button.clicker:SetSize(TEXTURE_CLICK_WIDTH , TEXTURE_CLICK_HEIGHT)
 	button.clicker:RegisterForClicks("AnyUp")
 	button.clicker:SetBackdrop(MicroButtonClickerMixin.clickerBackdrop)
@@ -354,9 +354,9 @@ function module:NewMicroButton(buttonData)
 	if button.OnUpdate then
 		button.clicker:SetScript("OnUpdate", button.OnUpdate)
 	end
-	if button.alertFrame then
-		module:HookAlertFrame(button.alertFrame, button)
-	end
+	-- if button.alertFrame then
+	-- 	module:HookAlertFrame(button.alertFrame, button)
+	-- end
 	if button.isWide then
 		local width = (button.isWide == "Right" and RIGHT_TEXTURE_SIZE_WIDTH) or LEFT_TEXTURE_SIZE_WIDTH
 		button:SetWidth(width)
@@ -410,7 +410,7 @@ function module:SetMicromenu()
 	-- micromenu_button seems to points to the background behind the buttons.
 
 	--Create Micromenu background
-	local background = CreateFrame("Frame", "LUIMicromenu_Background", UIParent)
+	local background = CreateFrame("Frame", "LUIMicromenu_Background", UIParent, "BackdropTemplate")
 	background:SetBackdrop({
 		bgFile = BACKGROUND_TEXTURE_PATH,
 		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
@@ -436,9 +436,9 @@ end
 
 function module:Refresh()
 	module:SetMicromenuAnchors()
-	module:SetAlertFrameColors("EJ")
-	module:SetAlertFrameColors("Talent")
-	module:SetAlertFrameColors("Collections")
+	-- module:SetAlertFrameColors("EJ")
+	-- module:SetAlertFrameColors("Talent")
+	-- module:SetAlertFrameColors("Collections")
 
 	module.background:SetBackdropColor(module:RGBA((db.ColorMatch) and "Micromenu" or "Background"))
 	local r, g, b, a_ = module:RGBA("Micromenu")

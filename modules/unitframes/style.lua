@@ -37,7 +37,7 @@ function module.SetStyle(frame, unit, isSingle)
 		edgeSize = frame.db.Backdrop.EdgeSize,
 		insets = { left = 3, right = 3, top = 3, bottom = 3, },
 	}
-	local backdropFrame = CreateFrame("Frame", nil, frame)
+	local backdropFrame = CreateFrame("Frame", nil, frame, "BackdropTemplate")
 	backdropFrame:SetBackdrop(backdrop)
 	backdropFrame:SetBackdropColor(frame:RGB("Background"))
 	backdropFrame:SetBackdropBorderColor(frame:RGB("Border"))

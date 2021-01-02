@@ -16,9 +16,8 @@ local pairs = pairs
 ---@class LUIModule
 local ModuleMixin = {}
 
---- Embed the ModuleMixin into target object. $
+--- Embed the ModuleMixin into target object.
 --- Note: This is done automatically for modules created with :NewModule()
----@param target table
 function LUI:EmbedModule(target)
 	for k, v in pairs(ModuleMixin) do
 		target[k] = v
@@ -126,9 +125,9 @@ function ModuleMixin:FetchBackground(name)
 end
 
 --- Function that creates a backdrop table for use with SetBackdrop and keeps a copy around based on name.
---- * When function is called on an existing backdrop, update it and return it.
---- * If Tile or Insets options aren't found in the DB, they can be optionally be set through parameters.
---- * Requires a DB.Backdrop entry based on name.
+-- * When function is called on an existing backdrop, update it and return it.
+-- * If Tile or Insets options aren't found in the DB, they can be optionally be set through parameters.
+-- * Requires a DB.Backdrop entry based on name.
 ---@param name string
 ---@param tile boolean @ True = Tile, False = Stretch
 ---@param tileSize number @ Size of each tiled copy of bgFile
@@ -168,6 +167,7 @@ end
 
 --- Function that fetch and set Backdrop, along with setting color and border color.
 function ModuleMixin:UpdateFrameBackdrop(name, frame, ...)
+	self:FetchBackdrop()
 	local backdrop = self:FetchBackdrop(name, ...)
 
 	frame:SetBackdrop(backdrop)
@@ -201,7 +201,7 @@ function ModuleMixin:RefreshFontString(fs, mFont)
 end
 
 --- Returns the profile database table.
---- @param subTable string|nil @Optional: Return the requested subtable if found. Otherwise return the module's db.
+--- -@param subTable string|nil @ Optional: Return the requested subtable if found. Otherwise return the module's db.
 --- @return AceDB
 function ModuleMixin:GetDB(subTable)
 	local db

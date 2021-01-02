@@ -23,7 +23,6 @@ local SHORT_REPUTATION_NAMES = {
 local ReputationDataMixin = module:CreateNewDataMixin("Reputation")
 
 ReputationDataMixin.BAR_EVENTS = {
-	"LFG_BONUS_FACTION_ID_UPDATED",
 	"QUEST_LOG_UPDATE",
 	"UPDATE_FACTION",
 }

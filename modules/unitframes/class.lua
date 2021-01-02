@@ -163,7 +163,7 @@ end
 -- Issue: While oUF's classIcon will deal with the visibility of the textures,
 -- it does not take the background into account.
 function module.SetClassIcon(self)
-	local classPower = CreateFrame("Frame", nil, self)
+	local classPower = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	classPower:SetFrameStrata("BACKGROUND")
 	classPower:SetBackdrop({
 		bgFile = "Interface/Tooltips/UI-Tooltip-Background",
