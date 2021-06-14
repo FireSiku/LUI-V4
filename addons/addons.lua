@@ -15,7 +15,7 @@ local db
 
 module.defaults = {
 	profile = {
-		installed = {
+		Installed = {
 			["*"] = false,
 		},
 	},

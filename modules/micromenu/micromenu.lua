@@ -95,7 +95,7 @@ local microDefinitions = {
 		OnClick = function(self, btn)
 			if btn == "RightButton" then
 				--LUI Option Panel
-				LUI:Open()
+				LUI:NewOpen()
 			else
 				--WoW Option Panel
 				module:TogglePanel(GameMenuFrame)

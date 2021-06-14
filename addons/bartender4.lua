@@ -4,7 +4,7 @@
 
 local _, LUI = ...
 local module = LUI:GetModule("Addons")
-local element = module:NewElement("Bartender4")
+local element = module:NewModule("Bartender4")
 local L = LUI.L
 
 -- ####################################################################################################################
