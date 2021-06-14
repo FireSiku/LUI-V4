@@ -26,6 +26,7 @@ local SetItemRef = SetItemRef
 local IsInGuild = IsInGuild
 
 -- constants
+-- luacheck: globals GuildFrame ERR_GUILD_PLAYER_NOT_IN_GUILD REMOTE_CHAT
 local ERR_GUILD_PLAYER_NOT_IN_GUILD = ERR_GUILD_PLAYER_NOT_IN_GUILD
 local CHAT_FLAG_AFK = CHAT_FLAG_AFK
 local CHAT_FLAG_DND = CHAT_FLAG_DND

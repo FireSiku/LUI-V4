@@ -343,6 +343,7 @@ function module:OnEnable()
 	module:RegisterLDBCallback("LibDataBroker_DataObjectCreated", "DataObjectCreated")
 end
 
+-- luacheck: ignore
 function module:OnDisable()
 	LUIInfotext_topAnchor:Hide()
 	LUIInfotext_bottomAnchor:Hide()

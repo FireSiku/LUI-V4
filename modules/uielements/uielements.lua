@@ -12,6 +12,7 @@ local db
 
 --local NUM_OBJECTIVE_HEADERS = 3
 
+-- luacheck: globals DurabilityFrame OrderHallCommandBar ObjectiveTrackerFrame
 --local origInfo = {}
 
 -- ####################################################################################################################

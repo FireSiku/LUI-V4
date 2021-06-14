@@ -11,8 +11,8 @@ local module = LUI:NewModule("Minimap")
 local L = LUI.L
 local db
 
--- luacheck: globals Minimap MinimapZoomIn MinimapZoomOut GarrisonLandingPageMinimapButton MiniMapTrackingDropDown
--- luacheck: globals LUIMinimapZone LUIMinimapCoord LUIMinimapBorder
+-- luacheck: globals MinimapZoomIn MinimapZoomOut GarrisonLandingPageMinimapButton MiniMapTrackingDropDown
+-- luacheck: globals LUIMinimapZone LUIMinimapCoord LUIMinimapBorder Minimap_OnClick
 
 -- Constants
 local MINIMAP_LABEL = MINIMAP_LABEL

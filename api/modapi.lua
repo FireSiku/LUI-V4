@@ -177,14 +177,14 @@ end
 
 --- Quickly Setup a FontString widget
 ---@param frame Frame
----@param gName string
----@param mFont fontName
+---@param name string
+---@param mFont FontName
 ---@param layer FrameLayer|nil @ Layer font should be drawn in. Defaults to ARTWORK
 ---@param hJustify boolean|nil
 ---@param vJustify boolean|nil
 ---@return FontString
-function ModuleMixin:SetFontString(frame, gName, mFont, layer, hJustify, vJustify)
-	local fs = frame:CreateFontString(gName, layer)
+function ModuleMixin:SetFontString(frame, name, mFont, layer, hJustify, vJustify)
+	local fs = frame:CreateFontString(name, layer)
 	local db = self:GetDB("Fonts")
 	local font = db[mFont]
 	fs:SetFont(Media:Fetch("font", font.Name), font.Size, font.Flag)

@@ -10,6 +10,7 @@ local element = module:NewElement("Dualspec", "AceEvent-3.0")
 local L = LUI.L
 
 -- local copies
+-- luacheck: globals PlayerTalentFrame_Refresh
 local select, format, tconcat = select, format, table.concat
 local strsplit = string.split
 local PanelTemplates_GetSelectedTab = PanelTemplates_GetSelectedTab
@@ -27,12 +28,14 @@ local ShowUIPanel = ShowUIPanel
 local HideUIPanel = HideUIPanel
 
 -- constants
+-- luacheck: push ignore
 local LOOT_SPECIALIZATION_DEFAULT = strsplit("(", LOOT_SPECIALIZATION_DEFAULT):trim()
 local SELECT_LOOT_SPECIALIZATION = SELECT_LOOT_SPECIALIZATION
 local NUM_TALENT_COLUMNS = NUM_TALENT_COLUMNS
 local LEVEL_UP_DUALSPEC = LEVEL_UP_DUALSPEC
 local MAX_SPECS -- Set this during OnCreate
 local TALENT_DELIMITER = ""
+-- luacheck: pop
 
 -- locals
 local specCache = {}  -- Keep information about specs.

@@ -9,6 +9,7 @@ local db = module.db.profile
 local L = LUI.L
 
 -- constants
+-- luacheck: push ignore
 local SANCTUARY = SANCTUARY_TERRITORY:sub(2, -2)  -- Remove parenthesis.
 local FACTION_ALLIANCE = FACTION_ALLIANCE
 local FACTION_HORDE = FACTION_HORDE
@@ -24,6 +25,7 @@ local STANDING_FRIENDLY   = FACTION_STANDING_LABEL5
 local STANDING_HONORED    = FACTION_STANDING_LABEL6
 local STANDING_REVERED    = FACTION_STANDING_LABEL7
 local STANDING_EXALTED    = FACTION_STANDING_LABEL8
+-- luacheck: pop
 
 -- ####################################################################################################################
 -- ##### Utility Functions ############################################################################################
@@ -47,6 +49,7 @@ local Colors = {
     Misc = Opt:Group(MISCELLANEOUS, nil, 5),
 }
 
+--luacheck: push ignore
 Colors.Class.args = {
     ClassHeader = Opt:Header(L["Colors_Classes"], 2),
     DEATHKNIGHT = Opt:Color(classL["DEATHKNIGHT"], nil, 2),
@@ -97,6 +100,7 @@ Colors.Factions.args = {
     Standing7 = Opt:Color(STANDING_REVERED,    nil, 11),
     Standing8 = Opt:Color(STANDING_EXALTED,    nil, 12),
 }
+-- luacheck: pop
 
 Colors.Misc.args = {
     GradientHeader = Opt:Header(L["Colors_Gradients"], 1),

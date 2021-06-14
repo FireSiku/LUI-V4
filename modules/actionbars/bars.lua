@@ -11,6 +11,8 @@ local module = LUI:NewModule("Bars")
 module.conflicts = "Bartender4"
 local L = LUI.L
 
+-- luacheck: globals MultiBarLeft MultiBarRight MultiBarBottomLeft MultiBarBottomRight MainMenuBarArtFrame
+
 -- ####################################################################################################################
 -- ##### Default Settings #############################################################################################
 -- ####################################################################################################################
@@ -73,7 +75,7 @@ function module:SetBars()
 	end
 	local ActionBar5 = CreateFrame("Frame", "ActionBar5", UIParent)
 	ActionBar5:SetSize(500, 38)
-	ActionBar5:SetPoint("BOTTOMLEFT", ActionButton1, "TOPLEFT")
+	ActionBar5:SetPoint("BOTTOMLEFT", ActionBar1, "TOPLEFT")
 	MultiBarBottomLeft:SetParent(ActionBar5)
 	MultiBarBottomLeft:SetAllPoints(ActionBar5)
 

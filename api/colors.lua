@@ -12,6 +12,7 @@ local L = LUI.L
 local db
 
 -- constants
+-- luacheck: push ignore
 local SANCTUARY = SANCTUARY_TERRITORY:sub(2, -2)  -- Remove parenthesis.
 local FACTION_ALLIANCE = FACTION_ALLIANCE
 local FACTION_HORDE = FACTION_HORDE
@@ -26,6 +27,7 @@ local STANDING_FRIENDLY   = FACTION_STANDING_LABEL5
 local STANDING_HONORED    = FACTION_STANDING_LABEL6
 local STANDING_REVERED    = FACTION_STANDING_LABEL7
 local STANDING_EXALTED    = FACTION_STANDING_LABEL8
+-- luacheck: pop
 
 -- ####################################################################################################################
 -- ##### Default Settings #############################################################################################
@@ -111,6 +113,7 @@ module.defaults = {
 --- Return r, g, b for any color stored by the color api.
 --- If the color doesn't exists, return nil
 --- @param colorName string
+---@return R number, G number, B number
 local function GetColorRGB(colorName)
 	local color = db.Colors[colorName]
 	if color then
@@ -170,9 +173,9 @@ function LUI:GetFactionColor(faction)
 end
 
 --- Return r, g, b based on reaction of unit towards another unit.
---- If a second unit isnt given, assume player.
 ---@param unit UnitId
----@param otherUnit UnitId
+---@param otherUnit UnitId? @ Assume "player" if missing
+---@return R, G, B
 function LUI:GetReactionColor(unit, otherUnit)
 	local reaction = UnitReaction(unit, otherUnit or "player")
 	local colorName = format("Standing%d", reaction)
@@ -190,6 +193,7 @@ end
 function LUI:GetDifficultyColor(level)
 	local color = GetQuestDifficultyColor(level)
 	return color.r, color.g, color.b
+	
 end
 
 -- ####################################################################################################################

@@ -27,6 +27,7 @@ local CreateFrame = CreateFrame
 
 -- Constants
 --local BACKPACK_TOOLTIP = BACKPACK_TOOLTIP
+-- luacheck: globals BankFrame TEXTURE_ITEM_QUEST_BORDER TEXTURE_ITEM_QUEST_BANG NEW_ITEM_ATLAS_BY_QUALITY
 
 local BUTTON_SLOT_TEMPLATE = "ItemButtonTemplate"
 local BAG_UPDATE_TIME = 0.05

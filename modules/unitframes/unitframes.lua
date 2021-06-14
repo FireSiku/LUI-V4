@@ -9,6 +9,7 @@ local oUF = LUI.oUF
 local db
 
 module.unitSpawns = { "player", "target", }
+-- luacheck: globals UnitFrame_OnEnter UnitFrame_OnLeave
 
 -- Defaults have been moved to their own file under unitframes/defaults.lua
 

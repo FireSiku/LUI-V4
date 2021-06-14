@@ -13,6 +13,7 @@ local REAGENTS_SLOT_TEMPLATE = "ReagentBankItemButtonGenericTemplate"
 local REAGENTS_SLOT_NAME_FORMAT = "LUIReagent_Item%d_%d"
 local REAGENTS_DEPOSIT_SOUND = SOUNDKIT.IG_MAINMENU_OPTION
 local REAGENTS_DEPOSIT_ICON = 413587 -- Mobile Banking Icon
+--luacheck: globals REAGENTBANK_DEPOSIT REAGENTBANK_PURCHASE_TEXT REAGENT_BANK BANKSLOTPURCHASE
 
 -- ####################################################################################################################
 -- ##### Container Object #############################################################################################

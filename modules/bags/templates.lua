@@ -9,6 +9,10 @@ local CLEANUP_TEXTURE_ATLAS = "bags-button-autosort-up"
 local CLEANUP_TEXTURE = "Interface\\ContainerFrame\\Bags"
 local CLEANUP_SOUND = SOUNDKIT.UI_BAG_SORTING_01
 
+--luacheck: globals BAG_CLEANUP_BAGS BAG_CLEANUP_BANK BAG_CLEANUP_REAGENT_BANK
+--luacheck: globals PaperDollItemSlotButton_OnEvent PaperDollItemSlotButton_OnShow PaperDollItemSlotButton_OnHide
+--luacheck: globals BagSlotButton_OnEnter BankFrameItemButton_OnEnter BankFrameItemButtonBag_OnClick
+
 -- ####################################################################################################################
 -- ##### Templates: BagBar Slot Button ################################################################################
 -- ####################################################################################################################

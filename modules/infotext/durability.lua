@@ -21,6 +21,7 @@ local ARMOR = ARMOR
 local itemDurability = {} --Holds the changing information based on slot.
 local sortedItems = {} -- Sorting table for itemDurability
 
+-- luacheck: push ignore
 -- Contains Constant Information about equipment.
 local EQUIP_SLOTS = {
 	[(INVTYPE_HEAD)] = 1,
@@ -34,6 +35,7 @@ local EQUIP_SLOTS = {
 	[(INVTYPE_WEAPONMAINHAND)] = 16,
 	[(INVTYPE_WEAPONOFFHAND)] = 17,
 }
+-- luacheck: pop
 
 -- ####################################################################################################################
 -- ##### Default Settings #############################################################################################
