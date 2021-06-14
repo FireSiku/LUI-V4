@@ -851,7 +851,7 @@ function module:OnEnable()
 	BankFrame:UnregisterAllEvents()
 
 	-- Reagents
-	module:CreateNewContainer("Reagent", Reagent)
+	module:CreateNewContainer("Reagent", module.BankReagentContainer)
 	tinsert(UISpecialFrames, "LUIReagent")
 	module:RegisterEvent("PLAYERREAGENTBANKSLOTS_CHANGED", module.BankReagentContainer.BankSlotsUpdate)
 
