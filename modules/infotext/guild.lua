@@ -16,12 +16,10 @@ local SetGuildRosterSelection = SetGuildRosterSelection
 local GetGuildRosterMOTD = GetGuildRosterMOTD
 local GetNumGuildMembers = GetNumGuildMembers
 local GetGuildRosterInfo = GetGuildRosterInfo
-local CanEditOfficerNote = CanEditOfficerNote
 local CanEditPublicNote = CanEditPublicNote
 local StaticPopup_Show = StaticPopup_Show
 local ShowUIPanel = ShowUIPanel
 local HideUIPanel = HideUIPanel
-local GuildRoster = GuildRoster
 local SetItemRef = SetItemRef
 local IsInGuild = IsInGuild
 
@@ -143,7 +141,7 @@ end
 -- ####################################################################################################################
 
 local function ShowGuild()
-	if IsInGuild() then GuildRoster() end
+	if IsInGuild() then C_GuildInfo.GuildRoster() end
 end
 
 function element:GetStatusString(status, isMobile)
@@ -212,7 +210,7 @@ function element.OnGuildButtonClick(member, button)
 		if button == "LeftButton" and CanEditPublicNote() then
 			SetGuildRosterSelection(member.guildIndex)
 			StaticPopup_Show("SET_GUILDPLAYERNOTE")
-		elseif button == "RightButton" and CanEditOfficerNote() then
+		elseif button == "RightButton" and C_GuildInfo.CanEditOfficerNote() then
 			SetGuildRosterSelection(member.guildIndex)
 			StaticPopup_Show("SET_GUILDOFFICERNOTE")
 		end
