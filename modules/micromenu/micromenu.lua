@@ -3,7 +3,8 @@
 -- ####################################################################################################################
 
 local _, LUI = ...
-local module = LUI:NewModule("Micromenu")
+local module = LUI:NewModule("Micromenu", "AceEvent-3.0")
+local ACD = LibStub("AceConfigDialog-3.0")
 local L = LUI.L
 local db
 
@@ -11,17 +12,16 @@ local format = format
 
 -- Local variables
 local microStorage = {}
+local addonLoadedCallbacks = {}
 
 -- List of buttons, starting from the right.
 local microList = {
-	"Bags",  -- Setting should be first, but textures not ready yet
 	"Settings",
-	-- "Bags",
+	"Bags",
 	"Store",
 	"Collections",
-	"LFG",
 	"EJ",
-	"PVP",
+	"LFG",
 	"Guild",
 	"Quests",
 	"Achievements",
@@ -31,10 +31,10 @@ local microList = {
 }
 
 -- Constants
-local TEXTURE_PATH_FORMAT = "Interface\\AddOns\\LUI4\\media\\textures\\micro_%s.tga"
-local BACKGROUND_TEXTURE_PATH = "Interface\\AddOns\\LUI4\\media\\textures\\micro_background.tga"
-local RIGHT_TEXTURE_SIZE_WIDTH = 46
-local LEFT_TEXTURE_SIZE_WIDTH = 48
+local TEXTURE_PATH_FORMAT = "Interface\\AddOns\\LUI4\\media\\textures\\micromenu\\micro_%s.tga"
+local BACKGROUND_TEXTURE_PATH = "Interface\\AddOns\\LUI4\\media\\textures\\micromenu\\micro_background.tga"
+local FIRST_TEXTURE_SIZE_WIDTH = 46
+local LAST_TEXTURE_SIZE_WIDTH = 48
 local TEXTURE_SIZE_HEIGHT = 28
 local TEXTURE_SIZE_WIDTH = 33
 local ALERT_ALPHA_MULT = 0.7
@@ -48,8 +48,7 @@ local TEXTURE_CLICK_WIDTH = 27
 
 -- Level Requirements
 local TALENT_LEVEL_REQ = 10
-local PVP_LEVEL_REQ = 10
-local LFG_LEVEL_REQ = 15
+local LFG_LEVEL_REQ = 10
 
 -- ####################################################################################################################
 -- ##### Default Settings #############################################################################################
@@ -57,7 +56,18 @@ local LFG_LEVEL_REQ = 15
 
 module.defaults = {
 	profile = {
-		HideShop = false,
+		HideSettings = false,
+		HideBags = false,
+		HideStore = false,
+		HideCollections = false,
+		HideEJ = false,
+		HideLFG = false,
+		HideGuild = false,
+		HideQuests = false,
+		HideAchievements = false,
+		HideTalents = false,
+		HideSpellbook = false,
+		HidePlayer = false,
 		ColorMatch = true,
 		Spacing = 1,
 		Point = "TOPRIGHT",
@@ -76,48 +86,38 @@ module.defaults = {
 -- ####################################################################################################################
 
 local microDefinitions = {
-
-	{ -- [2] Currently 1 due to workaround.
-		name = "Bags",
-		title = L["Bags_Name"],
-		any = L["MicroBags_Any"],
-		isWide = "Right",
-		OnClick = function(self, btn_)
-			ToggleAllBags()
-		end,
-	},
-
 	{ -- [1]
 		name = "Settings",
 		title = L["Options"],
 		left = L["MicroSettings_Left"],
 		right = L["MicroSettings_Right"],
+		state = "ConsolidatedOptionsFrame",
 		OnClick = function(self, btn)
 			if btn == "RightButton" then
 				--LUI Option Panel
-				LUI:Open()
+				LUI:OpenOptions()
 			else
 				--WoW Option Panel
 				module:TogglePanel(GameMenuFrame)
 			end
 		end,
-		--TODO: Lets not use hungry OnUpdate handlers for the Clicker's alpha.
-		--      Make a function to easily hook frames OnShow/OnHide
-		--Due to LUI Options having no name, we cant use a simple hook, to remove when we find elegant fix.
-		-- OnUpdate = function(self)
-		-- 	if self.Hover then return end
-		-- 	if GameMenuFrame:IsShown() or LibStub("AceConfigDialog-3.0").OpenFrames.LUI then
-		-- 		self:SetAlpha(1)
-		-- 	else
-		-- 		self:SetAlpha(0)
-		-- 	end
-		-- end
+	},
+
+	{ -- [2]
+		name = "Bags",
+		title = L["Bags_Name"],
+		any = L["MicroBags_Any"],
+		state = "ConsolidatedBagFrame",
+		OnClick = function(self, btn_)
+			ToggleAllBags()
+		end,
 	},
 
 	{ -- [3]
 		name = "Store",
 		title = L["MicroStore_Name"],
 		any = L["MicroStore_Any"],
+		state = "StoreFrame",
 		OnClick = function(self, btn_)
 			ToggleStoreUI()
 		end,
@@ -128,113 +128,106 @@ local microDefinitions = {
 		alertFrame = "Collections",
 		title = L["MicroCollect_Name"],
 		any = L["MicroCollect_Any"],
+		state = "CollectionsJournal",
+		addon = "Blizzard_CollectionsJournal",
 		OnClick = function(self, btn_)
 			ToggleCollectionsJournal()
 		end,
 	},
 
-	-- This button could use some updating. Right click opening Premade Groups for example.
 	{ -- [5]
-		name = "LFG",
-		level = LFG_LEVEL_REQ,
-		title = L["MicroLFG_Name"],
-		left = L["MicroLFG_Left"],
-		right = L["MicroLFG_Right"],
-		OnClick = function(self, btn)
-			if btn == "RightButton" then
-				ToggleRaidBrowser() --Raid Browser
-			else
-				ToggleLFDParentFrame() --Dungeon Finder
-			end
-		end,
-	},
-
-	{ -- [6]
 		name = "EJ",
 		alertFrame = "EJ",
 		title = L["MicroEJ_Name"],
 		any = L["MicroEJ_Any"],
+		state = "EncounterJournal",
+		addon = "Blizzard_EncounterJournal",
 		OnClick = function(self, btn_)
 			ToggleEncounterJournal()
 		end,
 	},
 
-	--This could be set up much nicer. Possibly add Premade PVP Group to right click
-	{ -- [7]
-		name = "PVP",
-		level = PVP_LEVEL_REQ,
-		title = L["MicroPVP_Name"],
-		any = L["MicroPVP_Any"],
-		OnClick = function(self, btn_)
-			TogglePVPUI()
-		end,
-	},
-
-	{ -- [8]
-		name = "Guild",
-		title = L["MicroGuild_Name"],
-		left = L["MicroGuild_Left"],
-		right = L["MicroGuild_Right"],
-		--luacheck: globals LookingForGuildFrame
+	{ -- [6]
+		name = "LFG",
+		level = LFG_LEVEL_REQ,
+		title = L["MicroLFG_Name"],
+		left = L["MicroLFG_Left"],
+		right = L["MicroLFG_Right"],
+		state = "PVEFrame",
 		OnClick = function(self, btn)
 			if btn == "RightButton" then
-				ToggleFriendsFrame()
+				TogglePVPUI()
 			else
-				--Those panels may not be loaded before we call them, so deal with that.
-				if IsInGuild() then
-					ToggleGuildFrame()
-				else
-					LookingForGuildFrame_LoadUI()
-					module:TogglePanel(LookingForGuildFrame)
-				end
+				ToggleLFDParentFrame()
 			end
 		end,
 	},
 
-	{ -- [9]
-		name = "Quests",
-		title = L["MicroQuest_Name"],
-		any = L["MicroQuest_Any"],
-		OnClick = function(self, btn_)
-			module:TogglePanel(WorldMapFrame)
+	{ -- [7]
+		name = "Guild",
+		title = L["MicroGuild_Name"],
+		left = L["MicroGuild_Left"],
+		right = L["MicroGuild_Right"],
+		state = "ConsolidatedSocialFrame",
+		OnClick = function(self, btn)
+			if btn == "RightButton" then
+				ToggleFriendsFrame()
+			else
+				ToggleGuildFrame()
+			end
 		end,
 	},
 
-	{ -- [10]
+	{ -- [8]
+		name = "Quests",
+		title = L["MicroQuest_Name"],
+		any = L["MicroQuest_Any"],
+		state = "WorldMapFrame",
+		OnClick = function(self, btn_)
+			ToggleWorldMap()
+		end,
+	},
+
+	{ -- [9]
 		name = "Achievements",
 		title = L["MicroAch_Name"],
 		any = L["MicroAch_Any"],
+		state = "AchievementFrame",
+		addon = "Blizzard_AchievementUI",
 		OnClick = function(self, btn_)
 			ToggleAchievementFrame()
 		end,
 	},
 
-	{ -- [11]
+	{ -- [10]
 		name = "Talents",
 		alertFrame = "Talent",
 		level = TALENT_LEVEL_REQ,
 		title = L["MicroTalents_Name"],
 		any = L["MicroTalents_Any"],
+		state = "PlayerTalentFrame",
+		addon = "Blizzard_TalentUI",
 		OnClick = function(self, btn_)
-			TalentFrame_LoadUI()
-			module:TogglePanel(PlayerTalentFrame)
+			ToggleTalentFrame()
 		end,
 	},
 
-	{ -- [12]
+	{ -- [11]
 		name = "Spellbook",
 		title = L["MicroSpell_Name"],
 		any = L["MicroSpell_Any"],
+		state = "SpellBookFrame",
 		OnClick = function(self, btn_)
 			module:TogglePanel(SpellBookFrame)
 		end,
 	},
 
-	{ -- [13]
+	{ -- [12]
 		name = "Player",
 		isWide = "Left",
 		title = L["MicroPlayer_Name"],
 		any = L["MicroPlayer_Any"],
+		state = "CharacterFrame",
 		OnClick = function(self, btn_)
 			module:TogglePanel(CharacterFrame)
 		end,
@@ -289,6 +282,35 @@ function module:TogglePanel(panel)
 	end
 end
 
+function module:GetDirectionalTexCoord(atlas)
+	local left, right, top, bottom = LUI:GetCoordAtlas(atlas)
+
+	if db.Direction == "LEFT" then
+		return right, left, top, bottom
+	end
+
+	return left, right, top, bottom
+end
+
+--- Updates the micromenu clicker alpha based on frames being shown and hidden
+--- Works well and looks OK
+-- @param button The actual micromenu button object
+-- @param object The object to hook and use as state update reference
+function module:ClickerStateUpdateHandler(button, object)
+	local objectToHook = _G[object]
+	-- Just in case
+	if not objectToHook then return end
+
+	local function UpdateState()
+		button.Opened = (objectToHook:IsShown() and true or false)
+		button.clicker:SetAlpha((button.Opened or button.clicker.Hover) and 1 or 0)
+	end
+
+	-- Hook Show and Hide to trigger an update
+	hooksecurefunc(objectToHook, "Show", UpdateState)
+	hooksecurefunc(objectToHook, "Hide", UpdateState)
+end
+
 -- ####################################################################################################################
 -- ##### MicroButton Creation #########################################################################################
 -- ####################################################################################################################
@@ -311,7 +333,7 @@ function MicroButtonClickerMixin:OnEnter()
 end
 
 function MicroButtonClickerMixin:OnLeave()
-	self:SetAlpha(0)
+	self:SetAlpha(self:GetParent().Opened and 1 or 0)
 	self.Hover = nil
 	GameTooltip:Hide()
 end
@@ -330,11 +352,19 @@ function module:NewMicroButton(buttonData)
 	button:SetSize(TEXTURE_SIZE_WIDTH, TEXTURE_SIZE_HEIGHT)
 	Mixin(button, buttonData)
 
-	button.tex = button:CreateTexture(nil, "ARTWORK")
-	button.tex:SetAllPoints()
-	button.tex:SetTexture(format(TEXTURE_PATH_FORMAT,strlower(name)))
-	button.tex:SetTexCoord(LUI:GetCoordAtlas("MicroBtn_Default"))
-	button.tex:SetVertexColor(r, g, b)
+	-- Make an icon for the button
+	button.icon = button:CreateTexture(nil, "ARTWORK")
+	button.icon:SetPoint("CENTER", 0, 0)
+	button.icon:SetTexture(format(TEXTURE_PATH_FORMAT, strlower(name)))
+	button.icon:SetTexCoord(LUI:GetCoordAtlas("MicroBtn_Icon"))
+	button.icon:SetVertexColor(r, g, b)
+
+	-- Make a border for the button
+	button.border = button:CreateTexture(nil, "ARTWORK")
+	button.border:SetAllPoints()
+	button.border:SetTexture(format(TEXTURE_PATH_FORMAT, "border"))
+	button.border:SetTexCoord(LUI:GetCoordAtlas("MicroBtn_Default"))
+	button.border:SetVertexColor(r, g, b)
 
 	-- Make a button for the clickable area of the texture with black background.
 	button.clicker = CreateFrame("Button", nil, button, "BackdropTemplate")
@@ -344,25 +374,30 @@ function module:NewMicroButton(buttonData)
 	button.clicker:SetPoint("CENTER", button, "CENTER", -1, 0)
 	button.clicker:SetBackdropColor(0, 0, 0, 1)
 	button.clicker:SetAlpha(0)
-	--Push down the clicker frame so it doesn't go above the texture.
+	-- Push down the clicker frame so it doesn't go above the texture.
 	button.clicker:SetFrameLevel(button:GetFrameLevel()-1)
 
 	-- Handle some definition-based info
 	if button.OnClick then
 		button.clicker:SetScript("OnClick", button.OnClick)
 	end
-	if button.OnUpdate then
-		button.clicker:SetScript("OnUpdate", button.OnUpdate)
+	-- This is a bit of a mess and can probably be modified
+	if button.state then
+		if button.addon then
+			if not IsAddOnLoaded(button.addon) then
+				addonLoadedCallbacks[button.addon] = function() 
+					module:ClickerStateUpdateHandler(button, button.state)
+				end
+			else
+				module:ClickerStateUpdateHandler(button, button.state)
+			end
+		else
+			module:ClickerStateUpdateHandler(button, button.state)
+		end
 	end
 	-- if button.alertFrame then
 	-- 	module:HookAlertFrame(button.alertFrame, button)
 	-- end
-	if button.isWide then
-		local width = (button.isWide == "Right" and RIGHT_TEXTURE_SIZE_WIDTH) or LEFT_TEXTURE_SIZE_WIDTH
-		button:SetWidth(width)
-		button.clicker:SetSize(WIDE_TEXTURE_CLICK_WIDTH , WIDE_TEXTURE_CLICK_HEIGHT)
-		button.tex:SetTexCoord(LUI:GetCoordAtlas("MicroBtn_"..button.isWide))
-	end
 
 	button.clicker:SetScript("OnEnter", MicroButtonClickerMixin.OnEnter)
 	button.clicker:SetScript("OnLeave", MicroButtonClickerMixin.OnLeave)
@@ -373,43 +408,185 @@ end
 -- ##### Module Setup #################################################################################################
 -- ####################################################################################################################
 
-function module:SetMicromenuAnchors()
-	-- TODO: Have a more defined system for hiding buttons.
-	if db.HideShop then
-		microStorage[3]:Hide()
-	else
-		microStorage[3]:Show()
-	end
+--- Consolidates all the possible options frames into one for easy hooking
+function module:ConsolidateOptionsFrames()
+	local optionsFrames = CreateFrame("Frame", "ConsolidatedOptionsFrame", UIParent)
 
-	local firstAnchor, previousAnchor
-	for i = 1, #microStorage do
-		local button = microStorage[i]
-		button:ClearAllPoints()
-		if i == 1 then
-			button:SetPoint(db.Point, UIParent, db.Point, db.X, db.Y)
-			firstAnchor = button
-			previousAnchor = button
-		elseif not button:IsShown() then
-			-- Do Nothing
+	local function UpdateState()
+		-- When one of the hooked frames are shown or hidden, check if any frame
+		-- is currently open and update consolidated state
+		if GameMenuFrame:IsShown() or ACD.OpenFrames["LUI4Options"] then
+			optionsFrames:Show()
 		else
-			--We do some arithmetic on the db.Spacing so that users dont get confused.
-			--Users will expect positive Spacing numbers to be better, instead of looking at it like an Offset.
-			button:SetPoint(db.Direction, previousAnchor, LUI.Opposites[db.Direction], -(db.Spacing-2), 0)
-			previousAnchor = button
+			optionsFrames:Hide()
 		end
 	end
 
-	local point = "TOP"..db.Direction
+	-- The GameMenuFrame is easy enough
+	hooksecurefunc(GameMenuFrame, "Show", UpdateState)
+	hooksecurefunc(GameMenuFrame, "Hide", UpdateState)
+
+	-- We can use ACD to hook Open, which is fired when any options frame is opened
+	if ACD then
+		hooksecurefunc(ACD, "Open", function()
+			-- We get the LUI options frame, if its there
+			optionsFrame = ACD.OpenFrames["LUI4Options"]
+			if optionsFrame then
+				-- Register a callback for when the frame is closed
+				hooksecurefunc(optionsFrame, "Hide", UpdateState)
+				-- Invoke update for this opening
+				UpdateState()
+			end
+		end)
+	end
+end
+
+--- Consolidates all the social frames into one for easy hooking
+function module:ConsolidateSocialFrames()
+	local socialFrames = CreateFrame("Frame", "ConsolidatedSocialFrame", UIParent)
+
+	-- When one of the hooked frames are shown or hidden, check if any frame
+	-- is currently open and update consolidated state
+	local function UpdateState()
+		if FriendsFrame:IsShown() or (CommunitiesFrame and CommunitiesFrame:IsShown()) then
+			socialFrames:Show()
+		else
+			socialFrames:Hide()
+		end
+	end
+
+	-- Hook OnShow and OnHide from the friends frame
+	FriendsFrame:HookScript("OnShow", UpdateState)
+	FriendsFrame:HookScript("OnHide", UpdateState)
+
+	-- Hook OnShow and OnHide from the communities frame once its available
+	addonLoadedCallbacks["Blizzard_Communities"] = function()
+		CommunitiesFrame:HookScript("OnShow", UpdateState)
+		CommunitiesFrame:HookScript("OnHide", UpdateState)
+	end
+end
+
+--- Consolidates all the possible bag frames into one for easy hooking
+function module:ConsolidateBagFrames()
+	local bagFrames = CreateFrame("Frame", "ConsolidatedBagFrame", UIParent)
+
+	-- AddOn support
+	local addonBagFrame
+	-- ENABLE ONCE MODULE IS DONE
+	-- if LUI:GetModule("Bags").db.profile.Enable then
+	-- 	addonBagFrame = LUIBags
+	-- else
+	if IsAddOnLoaded("Stuffing") then
+		addonBagFrame = StuffingFrameBags
+	elseif IsAddOnLoaded("Bagnon") then
+		addonBagFrame = BagnonFrameinventory
+	elseif IsAddOnLoaded("ArkInventory") then
+		addonBagFrame = ARKINV_Frame1
+	elseif IsAddOnLoaded("OneBag") then
+		addonBagFrame = OneBagFrame
+	else
+		addonBagFrame = nil
+	end
+
+	-- When one of the hooked frames are shown or hidden, check if any frame
+	-- is currently open and update consolidated state
+	local function UpdateState()
+		if (addonBagFrame and addonBagFrame:IsShown()) or IsBagOpen(0) or IsBagOpen(1) or IsBagOpen(2) or IsBagOpen(3) or IsBagOpen(4) then
+			bagFrames:Show()
+		else
+			bagFrames:Hide()
+		end
+	end
+
+	-- Hook OnShow and OnHide from the default UI bag frames
+	for i = 1, 5 do
+		_G["ContainerFrame"..i]:HookScript("OnShow", UpdateState)
+		_G["ContainerFrame"..i]:HookScript("OnHide", UpdateState)
+	end
+
+	-- Hook OnShow and OnHide from any addon bag frame
+	if addonBagFrame then
+		addonBagFrame:HookScript("OnShow", UpdateState)
+		addonBagFrame:HookScript("OnHide", UpdateState)
+	end
+end
+
+function module:SetMicromenuAnchors()
+	local firstAnchor, previousAnchor
+
+	-- Need to invert this depending on direction, or it will increase one and shrink the other
+	local buttonSpacing = (db.Direction == "LEFT" and (db.Spacing - 2)) or -(db.Spacing - 2)
+
+	-- Due to the visual appearance of the borders, a fully centered icon will look badly placed
+	-- in the smaller buttons, so need a a little offset
+	local iconXOffset = (db.Direction == "LEFT") and 1 or -1
+
+	-- Iterate through all the created micromenu buttons
+	for i = 1, #microStorage do
+		-- Local reference to button, and clear its point
+		local button = microStorage[i]
+		button:ClearAllPoints()
+
+		-- Update its state based on db options
+		if db[("Hide")..button.name] then
+			button:Hide()
+		else
+			button:Show()
+		end
+
+		-- Only continue if the button is shown
+		if button:IsShown() then
+			-- We are dealing with the first button
+			if not firstAnchor then
+				-- The first button should use the first texture width, wide size, and the first texture coords
+				button:SetPoint(db.Point, UIParent, db.Point, db.X, db.Y)
+				button:SetWidth(FIRST_TEXTURE_SIZE_WIDTH)
+				button.clicker:SetWidth(WIDE_TEXTURE_CLICK_WIDTH)
+				button.border:SetTexCoord(module:GetDirectionalTexCoord("MicroBtn_First"))
+				button.icon:ClearAllPoints()
+				button.icon:SetPoint("CENTER", 0, 0)
+				firstAnchor = button
+				previousAnchor = button
+			-- We are dealing with a middle button
+			else
+				-- The middle button should use the normal texture width, size, and the default texture coords
+				button:SetPoint(db.Direction, previousAnchor, LUI.Opposites[db.Direction], buttonSpacing, 0)
+				button:SetWidth(TEXTURE_SIZE_WIDTH)
+				button.clicker:SetWidth(TEXTURE_CLICK_WIDTH)
+				button.border:SetTexCoord(module:GetDirectionalTexCoord("MicroBtn_Default"))
+				button.icon:ClearAllPoints()
+				button.icon:SetPoint("CENTER", iconXOffset, 0)
+				previousAnchor = button
+			end
+		end
+	end
+
+	-- In order to update the last button, we need to iterate from the back of the list,
+	-- check for the first shown button that we find and update accordingly
+	-- Maybe this can also be dealt with another way
+	for i = #microStorage, 1, -1 do
+		local button = microStorage[i]
+		if button:IsShown() then
+			button:SetWidth(LAST_TEXTURE_SIZE_WIDTH)
+			button.clicker:SetWidth(WIDE_TEXTURE_CLICK_WIDTH)
+			button.border:SetTexCoord(module:GetDirectionalTexCoord("MicroBtn_Last"))
+			button.icon:ClearAllPoints()
+			button.icon:SetPoint("CENTER", 0, 0)
+			return
+		end
+	end
+
 	module.background:ClearAllPoints()
+	-- In case all the buttons are hidden in the options
+	if not firstAnchor then return end
+
+	local point = "TOP"..db.Direction
 	module.background:SetPoint(point, firstAnchor, point)
 	module.background:SetPoint(LUI.Opposites[point], previousAnchor, LUI.Opposites[point])
 end
 
 function module:SetMicromenu()
-	-- Note: V3 micromenu_anchor refers to the arrow that open/close the menu. NOT an actual anchor point.
-	-- micromenu_button seems to points to the background behind the buttons.
-
-	--Create Micromenu background
+	-- Create Micromenu background
 	local background = CreateFrame("Frame", "LUIMicromenu_Background", UIParent, "BackdropTemplate")
 	background:SetBackdrop({
 		bgFile = BACKGROUND_TEXTURE_PATH,
@@ -422,12 +599,21 @@ function module:SetMicromenu()
 	background:SetBackdropBorderColor(0, 0, 0, 0)
 	module.background = background
 
-	--Create Micromenu buttons
+	-- Create Micromenu buttons
 	for i = 1, #microDefinitions do
 		table.insert(microStorage, module:NewMicroButton(microDefinitions[i]))
 	end
 
 	module:SetMicromenuAnchors()
+end
+
+--- Fires the stored functions for the frame hooks
+-- Doing it this way instead of loading the required addons in OnEnable
+function module:OnEvent(_, addon)
+	if addonLoadedCallbacks[addon] then
+		addonLoadedCallbacks[addon]()
+		addonLoadedCallbacks[addon] = nil
+	end
 end
 
 -- ####################################################################################################################
@@ -460,6 +646,15 @@ function module:OnInitialize()
 end
 
 function module:OnEnable()
+	-- We use the OnEvent function to fire functions required for the clicker state handlers
+	module:RegisterEvent("ADDON_LOADED", "OnEvent")
+
+	-- We consolidate some frames into one for easy hooking and less spaghetti
+	module:ConsolidateOptionsFrames()
+	module:ConsolidateSocialFrames()
+	module:ConsolidateBagFrames()
+
+	-- Finally we set up the actual micromenu
 	module:SetMicromenu()
 end
 

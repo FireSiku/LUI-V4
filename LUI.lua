@@ -143,12 +143,19 @@ local cmdList = {
 	},
 }
 
+function LUI:OpenOptions()
+	if not IsAddOnLoaded("LUI4Options") then
+		LoadAddOn("LUI4Options")
+	end
+
+	self:NewOpen()
+end
+
 --TODO: Handle of chat command is a mess that need fixing.
 --Future: Make it so that modules can handle chat command through /lui [moduleName] [setting] [value]
 function LUI:ChatCommand(input)
 	if not input or input:trim() == "" then
-		LoadAddOn("LUI4Options")
-		self:NewOpen()
+		self:OpenOptions()
 	else
 		local mod, cmd = self:GetArgs(input, 2)
 		local value = strgsub(input, mod, ""):trim()
@@ -157,7 +164,7 @@ function LUI:ChatCommand(input)
 				-- Call the function that will handle the command.
 				cmdList.handler[mod][cmdList.commands[mod]](self, value)
 			else
-				self:NewOpen()
+				self:OpenOptions()
 			end
 		end
 	end
