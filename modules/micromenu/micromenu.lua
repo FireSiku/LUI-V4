@@ -298,17 +298,21 @@ end
 -- @param object The object to hook and use as state update reference
 function module:ClickerStateUpdateHandler(button, object)
 	local objectToHook = _G[object]
-	-- Just in case
 	if not objectToHook then return end
 
-	local function UpdateState()
-		button.Opened = (objectToHook:IsShown() and true or false)
-		button.clicker:SetAlpha((button.Opened or button.clicker.Hover) and 1 or 0)
+	local function OnShow()
+		button.Opened = true
+		button.clicker:SetAlpha(1)
+	end
+
+	local function OnHide()
+		button.Opened = false
+		button.clicker:SetAlpha(button.clicker.Hover and 1 or 0)
 	end
 
 	-- Hook Show and Hide to trigger an update
-	hooksecurefunc(objectToHook, "Show", UpdateState)
-	hooksecurefunc(objectToHook, "Hide", UpdateState)
+	hooksecurefunc(objectToHook, "Show", OnShow)
+	hooksecurefunc(objectToHook, "Hide", OnHide)
 end
 
 -- ####################################################################################################################

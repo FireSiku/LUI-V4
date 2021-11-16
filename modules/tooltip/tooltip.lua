@@ -40,11 +40,14 @@ local DEAD = DEAD
 local TOOLTIPS_LIST = {
 	"GameTooltip",
 	"ItemRefTooltip",
+	"EmbeddedItemTooltip",
 	"ItemRefShoppingTooltip1",
 	"ItemRefShoppingTooltip2",
 	"ShoppingTooltip1",
-	"WorldMapTooltip",
 	"ShoppingTooltip2",
+	"LibDBIconTooltip",
+	"EncounterJournalTooltip",
+	"WorldMapTooltip",
 	"FriendsTooltip",
 	"TicketStatusFrameButton",
 	"DropDownList1MenuBackdrop",
@@ -69,6 +72,7 @@ local TOOLTIPS_LIST = {
 	"GarrisonMissionMechanicFollowerCounterTooltip",
 	"ContributionTooltip",
 	"ContributionBuffTooltip",
+	"AceConfigDialogTooltip",
 }
 
 -- Need Localization
@@ -103,7 +107,6 @@ module.defaults = {
 		Scale = 1,
 		X = -150,
 		Y = 0,
-		HealthFontSize = 12,
 		HealthBar = "Minimalist",
 		BgTexture = "Blizzard Dialog Background Dark",
 		BorderTexture = "Stripped_medium",
@@ -130,14 +133,23 @@ function module:RevertTooltipBackdrop()
 	for i = 1, #TOOLTIPS_LIST do
 		local tooltipName = TOOLTIPS_LIST[i]
 		local tooltip = _G[tooltipName]
-		-- if not tooltip.SetBackdrop then
-		-- 	Mixin(tooltip, BackdropTemplateMixin)
-		-- end
-		if tooltip and oldDefault[tooltipName] then
-			tooltip:SetBackdrop(oldDefault[tooltipName])
-			tooltip:SetScale(1)
+
+		if tooltip then
+			tooltip:SetBackdrop(nil)
+			if tooltip.NineSlice then tooltip.NineSlice:SetAlpha(1) end
+			tooltip:SetScale(initialScale[tooltipName] or 1)
 		end
 	end
+
+	-- This tooltip has no name, need to fetch and manually invoke
+	-- It is the tooltip that appears when hovering the campaign at the top of the questlog
+	local campaignFrame = QuestMapLog_GetCampaignTooltip()
+	campaignFrame:SetBackdrop(nil)
+	campaignFrame.NineSlice:SetAlpha(1)
+	campaignFrame:SetScale(1)
+
+	-- Ticket frame's NineSlice is hidden behind another property
+	TicketStatusFrameButton.Background.NineSlice:SetAlpha(1)
 end
 
 function module:RevertHealthBar()
@@ -167,7 +179,9 @@ local function GetTooltipUnit(frame)
 	return unit
 end
 
-function module:UpdateTooltipBackdrop()
+function module:UpdateTooltipBackdrop(frame)
+	if not frame then return end
+
 	module.tooltipBackdrop = {
 		bgFile = Media:Fetch("background", db.BgTexture),
 		edgeFile = Media:Fetch("border", db.BorderTexture),
@@ -175,27 +189,8 @@ function module:UpdateTooltipBackdrop()
 		insets = {left = 0, right = 0, top = 0, bottom = 0, }
 	}
 
-	for i = 1, #TOOLTIPS_LIST do
-		local tooltipName = TOOLTIPS_LIST[i]
-		local tooltip = _G[tooltipName]
-		--Make sure the tooltip exists.
-		if tooltip and tooltip.SetBackdrop then
-			-- if not tooltip.SetBackdrop then
-			-- 	Mixin(tooltip, BackdropTemplateMixin)
-			-- end
-			-- Store the original backdrop so we can revert.
-			-- Make sure we don't overwrite it if we update the tooltips again later.
-			if not oldDefault[tooltipName] then
-				oldDefault[tooltipName] = tooltip:GetBackdrop()
-				initialScale[tooltipName] = tooltip:GetScale()
-			end
-			tooltip:SetBackdrop(module.tooltipBackdrop)
-			if not module:IsHooked(tooltip, "OnShow") then
-				module:HookScript(tooltip, "OnShow", "OnTooltipShow")
-			end
-		else
-			--module:Mod(tooltipName.." Not Found")
-		end
+	if frame.SetBackdrop then
+		frame:SetBackdrop(module.tooltipBackdrop)
 	end
 end
 
@@ -220,24 +215,47 @@ end
 -- ##### Module Setup #################################################################################################
 -- ####################################################################################################################
 
-function module:SetTooltip()
-	module:SecureHook("GameTooltip_SetDefaultAnchor", function(frame, parent)
-		if db.Cursor then
-			frame:SetOwner(parent, "ANCHOR_CURSOR")
-		else
-			frame:SetOwner(parent, "ANCHOR_NONE")
-			frame:ClearAllPoints()
-			frame:SetPoint(db.Point, UIParent, db.X, db.Y)
+function module:SetTooltip(tooltip, name)
+	-- Hide the textures
+	if tooltip.NineSlice then
+		tooltip.NineSlice:SetAlpha(0)
+	end
+
+	-- Add backdrop functionality
+	if not tooltip.SetBackdrop then
+		Mixin(tooltip, BackdropTemplateMixin)
+	end
+
+	-- Store initial scale for future reference
+	if name and not initialScale[name] then
+		initialScale[name] = tooltip:GetScale()
+	end
+
+	-- Hook its OnShow
+	if not module:IsHooked(tooltip, "OnShow") then
+		module:HookScript(tooltip, "OnShow", "OnTooltipShow")
+	end
+end
+
+function module:SetTooltips()
+	-- Iterate through the list of tooltips we want to alter
+	for i = 1, #TOOLTIPS_LIST do
+		local tooltipName = TOOLTIPS_LIST[i]
+		local tooltip = _G[tooltipName]
+
+		if tooltip then
+			module:SetTooltip(tooltip, tooltipName)
 		end
-	end)
+	end
 
-	module:SetStatusHealthBar()
-	module:HookScript(GameTooltip, "OnTooltipSetUnit", "OnGameTooltipSetUnit")
+	-- This tooltip has no name, need to fetch and manually invoke
+	-- It is the tooltip that appears when hovering the campaign at the top of the questlog
+	module:SetTooltip(QuestMapLog_GetCampaignTooltip())
 
-	--Hide ability tooltips if option is enabled
-	module:SecureHook(GameTooltip, "SetAction", "HideCombatSkillTooltips")
-	module:SecureHook(GameTooltip, "SetPetAction", "HideCombatSkillTooltips")
-	module:SecureHook(GameTooltip, "SetShapeshift", "HideCombatSkillTooltips")
+	-- Ticket frame's NineSlice is hidden behind another property
+	TicketStatusFrameButton.Background.NineSlice:SetAlpha(0)
+
+	-- Yet to solve the StoreTooltip, if possible
 end
 
 -- luacheck: globals GameTooltipStatusBar
@@ -340,13 +358,15 @@ function module:OnTooltipShow(frame)
 	end
 
 	--If a frame has a smaller scale than normal for any reasons, make sure that's respected.
-	frame:SetScale(initialScale[frame:GetName()] * db.Scale)
-	frame:SetBackdrop(module.tooltipBackdrop)
+	if initialScale[frame:GetName()] then
+		frame:SetScale(initialScale[frame:GetName()] * db.Scale)
+	else
+		frame:SetScale(db.Scale)
+	end
+
+	module:UpdateTooltipBackdrop(frame)
 	module:SetBorderColor(frame)
 end
-module:SecureHook("GameTooltip_UpdateStyle", function(frame)
-	module:OnTooltipShow(frame)
-end)
 
 -- luacheck: globals GameTooltipTextLeft1 GameTooltipTextLeft2
 function module:OnGameTooltipSetUnit(frame)
@@ -358,7 +378,7 @@ function module:OnGameTooltipSetUnit(frame)
 	if not unit then return frame:Hide() end
 
 	-- Hide tooltip on unitframes if that option is enabled
-	if frame:GetOwner() ~= UIParent and db.HideUF then
+	if frame:GetOwner() == UIParent and db.HideUF then
 		return frame:Hide()
 	end
 
@@ -448,19 +468,45 @@ end
 -- ##### Framework Events #############################################################################################
 -- ####################################################################################################################
 
+module.enableButton = true
+
 function module:OnInitialize()
 	LUI:RegisterModule(module)
 	db = module.db.profile
 end
 
 function module:OnEnable()
-	module:UpdateTooltipBackdrop()
-	module:SetTooltip()
+	module:SetTooltips()
 
 	-- Many tooltips are found in Blizzard LoadOnDemand addons
-	module:RegisterEvent("ADDON_LOADED", "UpdateTooltipBackdrop")
+	module:RegisterEvent("ADDON_LOADED", "SetTooltips")
+
+	module:SecureHook("GameTooltip_SetDefaultAnchor", function(frame, parent)
+		if db.Cursor then
+			frame:SetOwner(parent, "ANCHOR_CURSOR")
+		else
+			frame:SetOwner(parent, "ANCHOR_NONE")
+			frame:ClearAllPoints()
+			frame:SetPoint(db.Point, UIParent, db.X, db.Y)
+		end
+	end)
+
+	module:SecureHook("SharedTooltip_SetBackdropStyle", module.UpdateTooltipBackdrop)
+
+	module:SetStatusHealthBar()
+	module:HookScript(GameTooltip, "OnTooltipSetUnit", "OnGameTooltipSetUnit")
+
+	module:SecureHook("GameTooltip_UpdateStyle", function(frame)
+		module:OnTooltipShow(frame)
+	end)
+
+	--Hide ability tooltips if option is enabled
+	module:SecureHook(GameTooltip, "SetAction", "HideCombatSkillTooltips")
+	module:SecureHook(GameTooltip, "SetPetAction", "HideCombatSkillTooltips")
+	module:SecureHook(GameTooltip, "SetShapeshift", "HideCombatSkillTooltips")
 
 	--TODO: Move Elsewhere
+	-- Most likely will be part of the UIElements Module
 	TicketStatusFrame:ClearAllPoints()
 	TicketStatusFrame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -175, -70)
 end

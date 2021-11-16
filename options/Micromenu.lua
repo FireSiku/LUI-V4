@@ -24,8 +24,11 @@ Opt.options.args.Micromenu = Opt:Group("Micromenu", nil, nil, "tab", Opt.IsModDi
 Opt.options.args.Micromenu.handler = module
 
 local Micromenu = {
+	-- General
     Header = Opt:Header(L["Micro_Name"], 1),
 	Spacing = Opt:Slider(L["Spacing"], L["MicroOptions_Spacing_Desc"], 2, { min = -10, max = 10, step = 1}),
+
+	-- Buttons
 	ButtonsHeader = Opt:Header(L["Buttons"], 3),
 	HidePlayer = Opt:Toggle(L["MicroOptions_Player"], nil, 4),
 	HideSpellbook = Opt:Toggle(L["MicroOptions_Spellbook"], nil, 5),
@@ -39,11 +42,15 @@ local Micromenu = {
 	HideStore = Opt:Toggle(L["MicroOptions_Store"], nil, 13),
 	HideBags = Opt:Toggle(L["MicroOptions_Bags"], nil, 14),
 	HideSettings = Opt:Toggle(L["MicroOptions_Settings"], nil, 15),
+
+	-- Position
     PositionHeader = Opt:Header(L["Position"], 16),
-    X = Opt:Input(L["API_XValue_Name"], nil, 17),
-    Y = Opt:Input(L["API_YValue_Name"], nil, 18),
+    X = Opt:Input(L["API_XValue_Name"], format(L["API_XValue_Desc"], L["Micro_Name"]), 17),
+    Y = Opt:Input(L["API_YValue_Name"], format(L["API_YValue_Desc"], L["Micro_Name"]), 18),
 	Point = Opt:Select(L["Anchor"], nil,  19, LUI.Points),
 	Direction = Opt:Select(L["MicroOptions_Direction_Name"], L["MicroOptions_Direction_Desc"], 20, dropDirections),
+
+	-- Colors
 	ColorHeader = Opt:Header(L["Colors"], 21),
     Micromenu = Opt:Color(L["Micro_Name"], nil, 22, true, nil, nil, nil, colorGet, colorSet),
     Background = Opt:Color(L["Background"], nil, 23, true, nil, nil, nil, colorGet, colorSet),

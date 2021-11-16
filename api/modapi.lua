@@ -242,7 +242,7 @@ function ModuleMixin:Toggle()
 	else
 		LUI:DisableModule(name)
 	end
-	LUI.db.profile.modules[name] = state
+	LUI.db.profile.Modules[name] = state
 end
 
 --- Merge given table into module.defaults if it exists. Support all AceDB types
