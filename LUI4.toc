@@ -103,4 +103,4 @@ modules\infotext\friends.lua
 
 # Load Addon Support Files
 addons\addons.lua
-# addons\bartender4.lua
+addons\bartender4.lua

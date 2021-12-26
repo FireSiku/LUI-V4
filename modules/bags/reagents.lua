@@ -131,4 +131,4 @@ function Reagent:CreateUnlockInfo()
 	self.unlockButton = button
 end
 
-module.BankReagentContainer = Reagents
+module.BankReagentContainer = Reagent
