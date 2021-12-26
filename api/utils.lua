@@ -19,8 +19,6 @@ local GetFunctionCPUUsage = GetFunctionCPUUsage
 local MAX_AVG_ENTRIES = 10000
 local MS_PER_SECOND = 1000
 
--- local variables
-
 -- ####################################################################################################################
 -- ##### TexCoord Atlas API ###########################################################################################
 -- ####################################################################################################################
@@ -28,10 +26,11 @@ local MS_PER_SECOND = 1000
 -- Instead of having TexCoords Constants peppered amongst various files, keep them all centralized in here.
 -- TexCoords are calculated such as 2/64 means 2 pixels to the left of a 64px file.
 local gTexCoordAtlas = {
-	MicroBtn_Default = { 15/64, 48/64, 2/32, 30/32 },
-	MicroBtn_Right =   {  1/64, 47/64, 2/32, 30/32 },
-	MicroBtn_Left =    {  1/64, 49/64, 2/32, 30/32 },
-	CleanUp =          {  4/28, 24/28, 3/26, 22/26 },
+	MicroBtn_Default = { 125/256, 159/256, 2/32, 30/32 },
+	MicroBtn_First 	 = { 1/256, 47/256, 2/32, 30/32 },
+	MicroBtn_Last 	 = { 62/256, 111/256, 2/32, 30/32 },
+	MicroBtn_Icon	 = { 0/32, 32/32, 0/32, 32/32 },
+	CleanUp 		 = { 4/28, 24/28, 3/26, 22/26 },
 }
 
 --Returns TexCoords based on the given string that matches the table above
@@ -159,7 +158,8 @@ end
 -- ##### Dev Functions ################################################################################################
 -- ####################################################################################################################
 
---Function to add a bright border around a given frame to help seeing it and its size.
+--- Function to add a bright border around a given frame to help seeing it and its size.
+---@param frame Frame
 function LUI:HighlightBorder(frame)
 	local glowBackdrop = {
 		bgFile="Interface\\Tooltips\\UI-Tooltip-Background",

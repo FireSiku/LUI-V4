@@ -5,6 +5,7 @@
 -- ####################################################################################################################
 -- ##### Setup and Locals #############################################################################################
 -- ####################################################################################################################
+
 local addonName, LUI = ...
 LUI = LibStub("AceAddon-3.0"):NewAddon(LUI, addonName, "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0")
 LUI.L = LibStub("AceLocale-3.0"):GetLocale(addonName)
@@ -25,10 +26,12 @@ local GetAddOnMetadata = GetAddOnMetadata
 local IsAddOnLoaded = IsAddOnLoaded
 
 -- Constants
+
 local GAME_VERSION_LABEL = GAME_VERSION_LABEL
 local GENERAL = GENERAL
 
 -- Some calls are used in half the modules and result never changes, store them for convenience.
+
 LUI.playerClass = select(2, UnitClass("player"))
 LUI.playerRace = select(2, UnitRace("player"))
 LUI.playerFaction = UnitFactionGroup("player")
@@ -42,7 +45,6 @@ LUI.otherFaction = (LUI.playerFaction == "Alliance") and "Horde" or "Alliance"
 -- ####################################################################################################################
 
 LUI.defaults = {
-
 	profile = {
 		General = {
 			IsConfigured = false, -- Currently unused, will be when Install process is done
@@ -144,10 +146,7 @@ local cmdList = {
 }
 
 function LUI:OpenOptions()
-	if not IsAddOnLoaded("LUI4Options") then
-		LoadAddOn("LUI4Options")
-	end
-
+	LoadAddOn("LUI4Options")
 	self:NewOpen()
 end
 

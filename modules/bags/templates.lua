@@ -9,15 +9,18 @@ local CLEANUP_TEXTURE_ATLAS = "bags-button-autosort-up"
 local CLEANUP_TEXTURE = "Interface\\ContainerFrame\\Bags"
 local CLEANUP_SOUND = SOUNDKIT.UI_BAG_SORTING_01
 
+--luacheck: globals BAG_CLEANUP_BAGS BAG_CLEANUP_BANK BAG_CLEANUP_REAGENT_BANK
+--luacheck: globals PaperDollItemSlotButton_OnEvent PaperDollItemSlotButton_OnShow PaperDollItemSlotButton_OnHide
+--luacheck: globals BagSlotButton_OnEnter BankFrameItemButton_OnEnter BankFrameItemButtonBag_OnClick
+
 -- ####################################################################################################################
 -- ##### Templates: BagBar Slot Button ################################################################################
 -- ####################################################################################################################
-
 -- The end goal should be an identical button for Bags and Bank bars, but they use different APIs.
 -- Note: Probably good idea to replace button with bagsSlot
--- TODO: Clean up and make more uniform, stop relying on Blizzard API.
-function module:BagBarSlotButtonTemplate(index, id, name, parent)
 
+function module:BagBarSlotButtonTemplate(index, id, name, parent)
+	-- TODO: Clean up and make more uniform, stop relying on Blizzard API.
 	local button = module:CreateSlot(name, parent)
 	button.isBag = 1 -- Blizzard API support
 	button.id = id

@@ -21,7 +21,7 @@ local CanEditPublicNote = CanEditPublicNote
 local StaticPopup_Show = StaticPopup_Show
 local ShowUIPanel = ShowUIPanel
 local HideUIPanel = HideUIPanel
-local GuildRoster = GuildRoster
+local GuildRoster = C_GuildInfo.GuildRoster
 local SetItemRef = SetItemRef
 local IsInGuild = IsInGuild
 
@@ -56,6 +56,7 @@ local onBlock
 
 element.defaults = {
 	profile = {
+		Point = "TOP",
 		X = 1250,
 		showTotal = false,
 		hideRealm = true,
@@ -69,6 +70,7 @@ element.defaults = {
 		},
 	},
 }
+
 module:MergeDefaults(element.defaults, "Guild")
 
 -- ####################################################################################################################
@@ -376,7 +378,7 @@ function element.OnEnter(frame_)
 end
 
 function element.OnLeave(frame_)
-	if not infotip:IsMouseOver() then
+	if infotip and not infotip:IsMouseOver() then
 		infotip:Hide()
 		onBlock = false
 	end

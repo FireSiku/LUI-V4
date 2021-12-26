@@ -14,13 +14,14 @@ local colorPickerBonusHeight = 40
 local colorBuffer = {}
 local editingText
 
---Localized variables
+-- luacheck: globals OldColorSwatch ColorPickerFrame ColorPickerPaste CopyColorSwatch ColorSwatch OpacitySliderFrame
+-- luacheck: globals ColorPickerBox ColorPickerBoxR ColorPickerBoxG ColorPickerBoxB ColorPickerBoxA ColorPickerBoxLabelA
 
 -- ####################################################################################################################
 -- ##### Module Functions #############################################################################################
 -- ####################################################################################################################
 
- -- self: ColorPickerFrame
+-- self: ColorPickerFrame
 function element:ColorPickerFrameShow()
 	OldColorSwatch:SetColorTexture(ColorPickerFrame:GetColorRGB())
 	element:UpdateColorTexts()

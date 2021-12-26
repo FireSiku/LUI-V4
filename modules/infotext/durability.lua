@@ -14,12 +14,12 @@ local floor, format, pairs = floor, format, pairs
 local GetInventoryItemDurability = GetInventoryItemDurability
 local ToggleCharacter = ToggleCharacter
 
--- Constants
 local ARMOR = ARMOR
 
--- Local variables
 local itemDurability = {} --Holds the changing information based on slot.
 local sortedItems = {} -- Sorting table for itemDurability
+
+-- luacheck: push ignore
 
 -- Contains Constant Information about equipment.
 local EQUIP_SLOTS = {
@@ -34,6 +34,7 @@ local EQUIP_SLOTS = {
 	[(INVTYPE_WEAPONMAINHAND)] = 16,
 	[(INVTYPE_WEAPONOFFHAND)] = 17,
 }
+-- luacheck: pop
 
 -- ####################################################################################################################
 -- ##### Default Settings #############################################################################################
@@ -41,6 +42,7 @@ local EQUIP_SLOTS = {
 
 element.defaults = {
 	profile = {
+		Point = "TOP",
 		X = 300,
 	},
 }

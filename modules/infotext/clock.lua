@@ -28,6 +28,7 @@ local instanceInfo       -- Any instance tag would go in this.
 local invitesPending = false
 
 -- constants
+-- luacheck: push ignore
 local GAMETIME_TOOLTIP_TOGGLE_CALENDAR = GAMETIME_TOOLTIP_TOGGLE_CALENDAR
 local TIMEMANAGER_TOOLTIP_LOCALTIME = TIMEMANAGER_TOOLTIP_LOCALTIME
 local TIMEMANAGER_TOOLTIP_REALMTIME = TIMEMANAGER_TOOLTIP_REALMTIME
@@ -36,12 +37,12 @@ local TIMEMANAGER_PM = TIMEMANAGER_PM
 local TIMEMANAGER_AM = TIMEMANAGER_AM
 local CVAR_MILITARY = "timeMgrUseMilitaryTime"
 local CVAR_LOCAL = "timeMgrUseLocalTime"
-
 local CLOCK_UPDATE_TIME = 1
 
 --Instance Difficulty constants
 --local TAG_GUILD_GROUP = " |cff66c7ffG|r"
 local RAID_INFO_WORLD_BOSS = RAID_INFO_WORLD_BOSS
+-- luacheck: pop
 
 --Do not localize those strings. All of them have an associated localized InfoClock_Instance_* entry
 local INSTANCE_DIFFICULTY_FORMAT = {
@@ -97,6 +98,7 @@ local COLOR_CODES = {
 
 element.defaults = {
 	profile = {
+		Point = "TOP",
 		X = 1660,
 		instanceDifficulty = true,
 		showSavedRaids = true,

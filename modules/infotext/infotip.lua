@@ -26,7 +26,6 @@ local GAP = 10
 
 -- locals
 local infotipStorage = {}
-local highlight
 
 -- ####################################################################################################################
 -- ##### Infotip: Line Mixin ##########################################################################################
@@ -149,15 +148,19 @@ function element.OnLineScroll(line, delta)
 end
 
 function element.OnLineEnter(line)
-	highlight:ClearAllPoints()
-	highlight:SetAllPoints(line)
-	highlight:Show()
+	local infotip = line:GetParent()
+
+	infotip.highlight:ClearAllPoints()
+	infotip.highlight:SetAllPoints(line)
+	infotip.highlight:Show()
 end
 
 function element.OnLineLeave(line)
-	highlight:ClearAllPoints()
-	highlight:Hide()
 	local infotip = line:GetParent()
+
+	infotip.highlight:ClearAllPoints()
+	infotip.highlight:Hide()
+	
 	if not infotip:IsMouseOver() then infotip:Hide() end
 end
 
@@ -237,9 +240,9 @@ function module:NewInfotip(infotext)
 	newtip:SetScript("OnLeave", infotext.OnLeave)
 
 	-- Load highlight texture
-	highlight = newtip:CreateTexture()
-	highlight:SetTexture([[Interface\QuestFrame\UI-QuestTitleHighlight]])
-	highlight:SetBlendMode("ADD")
+	newtip.highlight = newtip:CreateTexture()
+	newtip.highlight:SetTexture([[Interface\QuestFrame\UI-QuestTitleHighlight]])
+	newtip.highlight:SetBlendMode("ADD")
 
 	-- Enforce Infotip minimum width.
 	newtip.minWidth = INFOTIP_MIN_WIDTH

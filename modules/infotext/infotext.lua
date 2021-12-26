@@ -47,11 +47,13 @@ module.defaults = {
 	profile = {
 		['**'] = {
 			Enable = true, -- Placeholder
-			Y = 0,
+			Point = "BOTTOM",
 			X = 0,
+			Y = 0,
+			Colors = {},
 		},
 		General = {
-			AllowY = false,
+			HideTooltipCombat = true,
 		},
 		Colors = {
 			Title  = { r = 0.4, g = 0.8, b = 1  , },
@@ -77,6 +79,19 @@ end
 
 function InfoMixin:GetFrame()
 	return elementFrames[self:GetName()]
+end
+
+function InfoMixin:GetDB(subTable)
+	local elementDB
+
+	if db[self:GetName()] then
+		elementDB = db[self:GetName()]
+	end
+	if elementDB and subTable and type(elementDB[subTable] == "table") then
+		return elementDB[subTable]
+	end
+
+	return elementDB
 end
 
 function InfoMixin:TooltipHeader(headerName, handleGT)
@@ -181,24 +196,26 @@ end
 -- TODO: Change elemnent style to be more akin to data providers? (which is what they are)
 function module:NewElement(name, ...)
 	local element = LDB:NewDataObject(name, {type = "data source", text = name})
+
+	LUI:EmbedModule(element)
+
 	for k, v in pairs(InfoMixin) do
 		element[k] = v
 	end
+
 	-- Add Embeddable Ace Libraries.
 	for i=1, select("#", ...) do
 		LibStub(select(i, ...)):Embed(element)
 	end
+
 	elementStorage[name] = element
+
 	return element
 end
 
 --Override the module iterator
 function module:IterateModules()
 	return pairs(elementFrames)
-end
-
-function module:IsPositionSet(name)
-	return (db[name].X ~= 0) and true or false
 end
 
 -- ####################################################################################################################
@@ -227,21 +244,26 @@ function module:DataObjectCreated(name, element)
 	frame:SetScript("OnLeave", module.OnLeaveHandler)
 
 	--Do some element based stuff here
-	if elementStorage[name] then LUI:EmbedModule(element) end
+	--if elementStorage[name] then LUI:EmbedModule(element) end
+
+	-- Overriding this here until we fix it
+	-- element.GetDB = function(_, subTable)
+	-- 	return db[name][subTable]
+	-- end
+
 	if element.OnCreate then element:OnCreate(frame) end
 
-	if module:IsPositionSet(name) then
-		local anchor = module:GetAnchor("top")
+	--if module:IsPositionSet(name) then
+		local anchor = module:GetAnchor(db[name].Point)
 		frame:SetParent(anchor)
-		-- To remove "or 0" when nil issue is fixed.
-		frame.text:SetPoint("TOPLEFT", anchor, "TOPLEFT", db[name].X, db[name].Y or 0)
-	else
-		local anchor = module:GetAnchor("bottom")
-		frame:SetParent(anchor)
-		defaultPositions = defaultPositions + 1
-		local defaultX = -100 + (145 * defaultPositions)
-		frame.text:SetPoint("BOTTOMLEFT", anchor, "BOTTOMLEFT", defaultX, db[name].Y)
-	end
+		frame.text:SetPoint(db[name].Point.."LEFT", anchor, db[name].Point.."LEFT", db[name].X, db[name].Y)
+	-- else
+	-- 	local anchor = module:GetAnchor("bottom")
+	-- 	frame:SetParent(anchor)
+	-- 	defaultPositions = defaultPositions + 1
+	-- 	local defaultX = -100 + (145 * defaultPositions)
+	-- 	frame.text:SetPoint("BOTTOMLEFT", anchor, "BOTTOMLEFT", defaultX, db[name].Y)
+	-- end
 	frame:SetAllPoints(frame.text)
 
 	frame.text:SetText(element.text)
@@ -269,7 +291,8 @@ function module.OnClickHandler(self, ...)
 end
 
 function module.OnEnterHandler(self, ...)
-	--TODO: Have a way to not show them in combat.
+	--if db.General.HideTooltipCombat then return end
+
 	local element = self.element
 	if element.OnEnter then
 		element.OnEnter(self, ...)
@@ -317,6 +340,14 @@ function module:ToggleInfotext(name)
 		frame:Show()
 		db[name].Enable = true
 	end
+end
+
+-- ####################################################################################################################
+-- ##### Module Refresh ###############################################################################################
+-- ####################################################################################################################
+
+function module:Refresh()
+
 end
 
 -- ####################################################################################################################

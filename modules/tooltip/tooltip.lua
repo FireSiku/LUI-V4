@@ -29,7 +29,6 @@ local IsInGuild = IsInGuild
 local UnitRace = UnitRace
 local UnitName = UnitName
 
--- Constants
 local CHAT_FLAG_DND = CHAT_FLAG_DND
 local CHAT_FLAG_AFK = CHAT_FLAG_AFK
 local PVP_ENABLED = PVP_ENABLED

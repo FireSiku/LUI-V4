@@ -1,6 +1,7 @@
 -- ####################################################################################################################
 -- ##### Setup and Locals #############################################################################################
 -- ####################################################################################################################
+
 ---@type Opt
 local optName, Opt = ...
 local LUI = LibStub("AceAddon-3.0"):GetAddon("LUI4")
@@ -11,13 +12,20 @@ local L = LUI.L
 -- ####################################################################################################################
 -- ##### Utility Functions ############################################################################################
 -- ####################################################################################################################
+
+local infotextAnchors = {
+    TOP = L["Point_Top"],
+    BOTTOM = L["Point_Bottom"],
+}
+
 local colorGet, colorSet = Opt.ColorGetSet(db.Colors)
 
 local function InfoTextGroup(name, order)
     local group = Opt:Group(name, nil, order, nil, nil, nil, Opt.GetSet(db[name]))
     group.args.Header = Opt:Header(name, 1)
-    group.args.Enable = Opt:Toggle("Enable", nil, 2)
-	group.args.X = Opt:Input("X Value", nil, 3)
+	group.args.X = Opt:Input(L["API_XValue_Name"], format(L["API_XValue_Desc"], "element"), 10) -- 10 so that we can add element specific options
+	group.args.Y = Opt:Input(L["API_YValue_Name"], format(L["API_YValue_Desc"], "element"), 11)
+	group.args.Point = Opt:Select(L["Anchor"], L["AnchorDesc"],  12, infotextAnchors)
 
     return group
 end
@@ -25,18 +33,19 @@ end
 -- ####################################################################################################################
 -- ##### Options Tables ###############################################################################################
 -- ####################################################################################################################
+
 Opt.options.args.Infotext = Opt:Group("Infotexts", nil, nil, "tab", Opt.IsModDisabled, nil, Opt.GetSet(db))
 Opt.options.args.Infotext.handler = module
 
 local Infotext = {
-	Header = Opt:Header("Infotext", 1),
-	Settings = Opt:Group("Individual Settings", nil, 2),
-	General = Opt:Group("Global Settings", nil, 3),
+	Header = Opt:Header(L["Info_Name"], 1),
+	Settings = Opt:Group(L["Info_Individual_Name"], nil, 2),
+	General = Opt:Group(L["Info_Global_Name"], nil, 3),
 }
 
 Infotext.General.args = {
-	Title = Opt:Color("Title Color", nil, 2, false, nil, nil, nil, colorGet, colorSet),
-	Hint = Opt:Color("Hint Color", nil, 3, false, nil, nil, nil, colorGet, colorSet),
+	Title = Opt:Color(L["Info_TitleColor_Name"], nil, 2, false, nil, nil, nil, colorGet, colorSet),
+	Hint = Opt:Color(L["Info_HintColor_Name"], nil, 3, false, nil, nil, nil, colorGet, colorSet),
 	--Infotext = Opt:FontMenu("Infotext Font", nil, 4),
 }
 
@@ -46,44 +55,9 @@ for name, obj in module:IterateModules() do
     count = count + 1
 end
 
+-- Currency specific options
+local currencyColorGet, currencyColorSet = Opt.ColorGetSet(db.Currency.Colors)
+Infotext.Settings.args.Currency.args.HideEmptyCurrency = Opt:Toggle(L["InfoCurrency_Hide_Name"], L["InfoCurrency_Hide_Desc"], 2)
+Infotext.Settings.args.Currency.args.Tracked = Opt:Color(L["InfoCurrency_Tracked_Name"], L["InfoCurrency_Tracked_Desc"], 3, true, "full", nil, nil, currencyColorGet, currencyColorSet)
+
 Opt.options.args.Infotext.args = Infotext
-
---[[
-	function element:LoadOptions()
-	local function MilitaryTime(info_, value)
-		--Set
-		if type(value) == "boolean" then
-			SetCVar(CVAR_MILITARY, value and 1 or 0, true)
-			element:UpdateCVar()
-		--Get
-		else
-			return cvarMilitary
-		end
-	end
-	local function LocalTime(info_, value)
-		--Set
-		if type(value) == "boolean" then
-			SetCVar(CVAR_LOCAL, value and 1 or 0, true)
-			element:UpdateCVar()
-		--Get
-		else
-			return cvarLocal
-		end
-	end
-	local militaryMeta = { get = MilitaryTime, set = MilitaryTime }
-	local localMeta = { get = LocalTime, set = LocalTime }
-
-	local options = {
-		setClock24h = element:NewToggle(TIMEMANAGER_24HOURMODE, nil, 1, militaryMeta, "normal"),
-		setClockLocal = element:NewToggle(TIMEMANAGER_LOCALTIME, nil, 2, localMeta, "normal"),
-		instanceDifficulty = element:NewToggle(L["InfoClock_InstanceDifficulty_Name"],
-		                                       L["InfoClock_InstanceDifficulty_Desc"], 3, "UpdateClock"),
-		showSavedRaids = element:NewToggle(L["InfoClock_ShowSavedRaids_Name"],
-		                                   L["InfoClock_ShowSavedRaids_Desc"], 5, "UpdateTooltip"),
-		showWorldBosses = element:NewToggle(L["InfoClock_ShowWorldBosses_Name"],
-		                                    L["InfoClock_ShowWorldBosses_Desc"], 6, "UpdateTooltip"),
-
-	}
-	return options
-end
-]]

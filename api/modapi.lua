@@ -6,13 +6,13 @@
 -- ####################################################################################################################
 
 -- Addon building reference.
+
 local _, LUI = ...
 local Media = LibStub("LibSharedMedia-3.0")
 
 --local copies
 local pairs = pairs
 
---Local variables
 ---@class LUIModule
 local ModuleMixin = {}
 
@@ -201,7 +201,7 @@ function ModuleMixin:RefreshFontString(fs, mFont)
 end
 
 --- Returns the profile database table.
---- -@param subTable string|nil @ Optional: Return the requested subtable if found. Otherwise return the module's db.
+--- @param subTable string|nil @ Optional: Return the requested subtable if found. Otherwise return the module's db.
 --- @return AceDB
 function ModuleMixin:GetDB(subTable)
 	local db
@@ -249,6 +249,7 @@ end
 ---@param source table
 ---@param name string
 function ModuleMixin:MergeDefaults(source, name)
+	
 	if not self.defaults then self.defaults = {} end
 	for i, scope in ipairs(LUI.DB_TYPES) do
 		if source[scope] then

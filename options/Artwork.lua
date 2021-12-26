@@ -1,6 +1,7 @@
 -- ####################################################################################################################
 -- ##### Setup and Locals #############################################################################################
 -- ####################################################################################################################
+
 ---@type Opt
 local optName, Opt = ...
 local LUI = LibStub("AceAddon-3.0"):GetAddon("LUI4")
@@ -31,6 +32,7 @@ local nameInput
 -- ##### Utility Functions ############################################################################################
 -- ####################################################################################################################
 -- info[#info-1] inside an PanelOptionGroup returns the texture's name, setPanels[name] returns the frame
+
 local function IsAnchorParentDisabled(info) return not db.Textures[info[#info-1]].Anchored end
 local function IsTexCoordsHidden(info) return not db.Textures[info[#info-1]].CustomTexCoords end
 local function IsTextureInputHidden(info) return db.Textures[info[#info-1]].TexMode == 1 end
@@ -118,7 +120,8 @@ end
 
 -- ####################################################################################################################
 -- ##### Options Table ################################################################################################
--- ###################################################################################################################w#
+-- ####################################################################################################################
+
 Opt.options.args.Artwork = Opt:Group("Artwork", nil, nil, "tab", nil, nil, Opt.GetSet(db))
 Opt.options.args.Artwork.handler = module
 local Artwork = {

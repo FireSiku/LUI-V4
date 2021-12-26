@@ -3,13 +3,11 @@
 	By default it will serves as an experience bar under the action bars
 	This main bar will split off in two if you are watching a reputation or honor.
 	[Rep  <--] [-->   XP]
-
 	Honor takes priority over faction reputations.
 	If displaying Azerite is enabled, it becomes AP / XP.
 	At max level, the XP bar is fully replaced by a rep/honor tracking bar. Hidden if not tracking either of them.
 	
 	Upcoming new feautre: Letting users create an additional customizable tracking bar.
-
 	This file handles the handling of the bars, XP/Rep data handling should be in their own files.
 ]]
 

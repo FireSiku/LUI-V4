@@ -12,6 +12,7 @@ local db
 local Media = LibStub("LibSharedMedia-3.0")
 
 -- Spec constants
+
 local SPEC_MAGE_ARCANE = 1
 local SPEC_MONK_WINDWALKER = 3
 local SPEC_PALADIN_RETRIBUTION = 3

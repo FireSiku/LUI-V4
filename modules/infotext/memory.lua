@@ -31,6 +31,7 @@ local KB_PER_MB = 1024
 
 element.defaults = {
 	profile = {
+		Point = "TOP",
 		X = 600,
 	},
 }

@@ -14,10 +14,11 @@ local floor, format = floor, format
 local GetFramerate = GetFramerate
 local GetNetStats = GetNetStats
 
--- Constants
 local MILLISECONDS_ABBR = MILLISECONDS_ABBR
 local FRAMERATE_LABEL = FRAMERATE_LABEL
 local FPS_ABBR = FPS_ABBR
+
+-- luacheck: globals PERFORMANCEBAR_MEDIUM_LATENCY
 
 local GRADIENT_LAG_TOLERANCE = PERFORMANCEBAR_MEDIUM_LATENCY -- 600
 local DEFAULT_REFRESH_RATE = 60
@@ -30,6 +31,7 @@ local KB_PER_MB = 1024
 
 element.defaults = {
 	profile = {
+		Point = "TOP",
 		X = 450,
 	},
 }

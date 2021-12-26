@@ -82,6 +82,7 @@ end
 -- ##### SpawnMixin ###################################################################################################
 -- ####################################################################################################################
 -- Every function under SpawnMixin will become available to all spawned unitframes.
+
 local SpawnMixin = {}
 
 -- Version of module:RGB tailored for unitframes, with support for additional types (ie: Color Based On Type)

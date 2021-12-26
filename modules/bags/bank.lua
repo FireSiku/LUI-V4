@@ -1,12 +1,15 @@
 -- ####################################################################################################################
 -- ##### Setup and Locals #############################################################################################
 -- ####################################################################################################################
+
 local _, LUI = ...
 local module = LUI:GetModule("Bags")
 
 local format = format
 
 -- Constants
+-- luacheck: globals CONFIRM_BUY_BANK_SLOT BANK_BAG_PURCHASE
+
 local BANK_SLOT_MAIN_TEMPLATE = "BankItemButtonGenericTemplate"
 local BANK_SLOT_TEMPLATE = "ContainerFrameItemButtonTemplate"
 local BANK_SLOT_NAME_FORMAT = "LUIBank_Item%d_%d"

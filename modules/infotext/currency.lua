@@ -25,6 +25,19 @@ local currencyString = {}
 -- ##### Default Settings #############################################################################################
 -- ####################################################################################################################
 
+element.defaults = {
+	profile = {
+		Point = "TOP",
+		X = 750,
+		HideEmptyCurrency = false,
+		Colors = {
+			Tracked = { r = 0.5, g = 1, b = 0.5 },
+		},
+	},
+}
+
+module:MergeDefaults(element.defaults, "Currency")
+
 -- ####################################################################################################################
 -- ##### Module Functions #############################################################################################
 -- ####################################################################################################################
@@ -33,8 +46,8 @@ function element:GetCurrencyString()
 	wipe(currencyString)
 	for i = 1, MAX_WATCHED_TOKENS do
 		local info = C_CurrencyInfo.GetBackpackCurrencyInfo(i)
-		if info.name and info.discovered then
-			currencyString[i] = format(CURRENCY_FORMAT, info.quantity, info.iconFielID, 0, 0)
+		if info and info.name then
+			currencyString[i] = format(CURRENCY_FORMAT, info.quantity, info.iconFileID, 0, 0)
 		end
 	end
 	return tconcat(currencyString, " ")
@@ -61,20 +74,32 @@ end
 function element.OnTooltipShow(GameTooltip)
 	element:TooltipHeader(CURRENCY)
 
+	local db = module:GetDB("Currency")
+	
+	local firstHeader = true
+
 	for i = 1, C_CurrencyInfo.GetCurrencyListSize() do
 		local info = C_CurrencyInfo.GetCurrencyListInfo(i)
 		if info.isHeader then
-			--Do not add an empty space for the first header.
-			if i > 1 then GameTooltip:AddLine(" ") end
-			GameTooltip:AddLine(info.name)
-		elseif info.discovered and info.name then
+			-- Only display header if expanded
+			if info.isHeaderExpanded then
+				--Do not add an empty space for the first header.
+				if not firstHeader then
+					GameTooltip:AddLine(" ")
+				else
+					firstHeader = false
+				end
+				GameTooltip:AddLine(info.name)
+			end
+		elseif info.name then
 			local r, g, b = 1, 1, 1
-			if info.isShowInBackpack then r, g, b = 0.5, 1, 0.5 end
+			if info.isShowInBackpack then r, g, b = element:RGB("Tracked") end
 			if info.quantity and info.quantity ~= 0 then
 				GameTooltip:AddDoubleLine(info.name, info.quantity, r,g,b, r,g,b)
 			else
-				--TODO: Ability to not show those at all.
-				GameTooltip:AddDoubleLine(info.name, "--", r,g,b, r,g,b)
+				if not db.HideEmptyCurrency then
+					GameTooltip:AddDoubleLine(info.name, "--", r,g,b, r,g,b)
+				end
 			end
 		end
 	end

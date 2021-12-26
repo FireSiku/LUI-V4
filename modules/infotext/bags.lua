@@ -15,6 +15,7 @@ local GetContainerNumFreeSlots = GetContainerNumFreeSlots
 local GetContainerNumSlots = GetContainerNumSlots
 
 -- Constants
+--luacheck: globals NUM_BAG_SLOTS
 local NUM_BAG_SLOTS = NUM_BAG_SLOTS
 local BAG_TYPES = { -- List of bagType Bitfields
 	[0x0000] = L["BagType_Normal"],            -- 0
@@ -48,6 +49,7 @@ local totalSlots = {}
 
 element.defaults = {
 	profile = {
+		Point = "TOP",
 		X = 150,
 	},
 }

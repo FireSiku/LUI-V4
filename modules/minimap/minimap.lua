@@ -15,6 +15,7 @@ local db
 -- luacheck: globals LUIMinimapZone LUIMinimapCoord LUIMinimapBorder
 
 -- Constants
+
 local MINIMAP_LABEL = MINIMAP_LABEL
 
 local MAIL_ICON_TEXTURE = "Interface\\AddOns\\LUI4\\media\\mail.tga"
