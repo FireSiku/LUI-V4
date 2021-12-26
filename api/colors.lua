@@ -14,7 +14,7 @@ local db
 -- constants
 -- luacheck: push ignore
 
-local SANCTUARY = SANCTUARY_TERRITORY:sub(2, -2)  -- Remove parenthesis.
+local SANCTUARY = SANCTUARY_TERRITORY:sub(2, -2)  -- Removed parenthesis.
 local FACTION_ALLIANCE = FACTION_ALLIANCE
 local FACTION_HORDE = FACTION_HORDE
 local MISCELLANEOUS = MISCELLANEOUS
@@ -112,9 +112,9 @@ module.defaults = {
 -- ####################################################################################################################
 
 --- Return r, g, b for any color stored by the color api.
---- If the color doesn't exist, return nil
+--- If the color doesn't exists, return nil
 --- @param colorName string
---- @return R number, G number, B number
+---@return R number, G number, B number
 local function GetColorRGB(colorName)
 	local color = db.Colors[colorName]
 	if color then
@@ -141,7 +141,6 @@ end
 function LUI:PositiveColor()
 	return GetColorRGB("Good")
 end
-
 --- Convenience wrapper for "Bad" color.
 function LUI:NegativeColor()
 	return GetColorRGB("Bad")
@@ -195,6 +194,7 @@ end
 function LUI:GetDifficultyColor(level)
 	local color = GetQuestDifficultyColor(level)
 	return color.r, color.g, color.b
+	
 end
 
 -- ####################################################################################################################

@@ -11,13 +11,12 @@ local module = LUI:NewModule("Minimap")
 local L = LUI.L
 local db
 
--- luacheck: globals Minimap MinimapZoomIn MinimapZoomOut GarrisonLandingPageMinimapButton MiniMapTrackingDropDown
--- luacheck: globals LUIMinimapZone LUIMinimapCoord LUIMinimapBorder
+-- luacheck: globals MinimapZoomIn MinimapZoomOut GarrisonLandingPageMinimapButton MiniMapTrackingDropDown
+-- luacheck: globals LUIMinimapZone LUIMinimapCoord LUIMinimapBorder Minimap_OnClick
 
 -- Constants
 
 local MINIMAP_LABEL = MINIMAP_LABEL
-
 local MAIL_ICON_TEXTURE = "Interface\\AddOns\\LUI4\\media\\mail.tga"
 local MINIMAP_SQUARE_TEXTURE_MASK = "Interface\\ChatFrame\\ChatFrameBackground"
 local MINIMAP_ROUND_TEXTURE_MASK = "Textures\\MinimapMask"
@@ -35,6 +34,7 @@ local COORD_FORMAT_LIST = {
 
 -- local variables
 --local MINIMAP_SIZE = 140      -- Base size for the minimap, based on default minimap.
+
 local minimapShape = "ROUND"  -- Shape of the minimap, used for GetMinimapShape() community api.
 local oldDefault = {}         -- Keep information on default minimap
 
@@ -77,8 +77,8 @@ module.defaults = {
 function GetMinimapShape() return minimapShape end
 
 -- luacheck: push ignore
-function module:HideDefaultMinimap()
 
+function module:HideDefaultMinimap()
 	-- Hide Several Frames surrounding minimap
 	MinimapCluster:Hide()          --Minimap Original Parent, contains ZoneText, InstanceDifficulties
 	MinimapBorder:Hide()           --Borders
