@@ -3,6 +3,7 @@
 -- ####################################################################################################################
 -- ##### Setup and Locals #############################################################################################
 -- ####################################################################################################################
+
 local optName, Opt = ...
 
 ---@class Opt
@@ -20,15 +21,11 @@ local OPTION_PANEL_HEIGHT = 660
 -- ####################################################################################################################
 -- ##### Utility Functions ############################################################################################
 -- ####################################################################################################################
-
---- Infotable Shorthands
--- Type: info.type
--- Name: info[#info]
--- Table: info.option
+--- Note: info[#info] returns the name of the current option
 
 --- Fetch the option's parent table
--- @param info Ace3 info table
--- @return The parent table
+---@param info InfoTable
+---@return table
 local function GetParentTable(info)
 	local parentTable = info.options.args
 	for i=1, #info-1 do
@@ -37,6 +34,12 @@ local function GetParentTable(info)
 	return parentTable
 end
 
+--- Add a confirmation dialog to an option before changing the value. Behavior determined by `confirm` param.
+---- boolean: Prompt for confirmation using "name - desc"
+---- string: Prompt for confirmation with the provided string as confirmation text.
+---- function: Provide a function that either return a string (prompt display with text), true (same as above) or false to skip the confirmation.
+---@param option AceOption
+---@param confirm boolean|string|function
 function Opt.AddConfirm(option, confirm)
 	if confirm then
 		local confirmType = type(confirm)
@@ -51,6 +54,8 @@ function Opt.AddConfirm(option, confirm)
 	end
 end
 
+---Check if module is disabled
+---@param info InfoTable
 function Opt.IsModDisabled(info)
 	if info.handler and info.handler.IsEnabled then
 		return not info.handler:IsEnabled()
@@ -62,7 +67,7 @@ end
 --- AceOptions validate that num is a number.
 --- @param info InfoTable
 --- @param num any
---- @return boolea|string
+--- @return boolean|string
 function Opt.IsNumber(info, num)
 	if not num or not tonumber(num) then
 		return L["API_InputNumber"]
@@ -70,6 +75,7 @@ function Opt.IsNumber(info, num)
 	return true
 end
 
+--- Force AceOptions to refresh the option panel.
 function Opt:RefreshOptionsPanel()
 	ACR:NotifyChange(optName)
 end
@@ -141,6 +147,7 @@ end
 ---@param hidden boolean|function
 ---@param get function
 ---@param set function
+---@return AceOptionGroup
 function Opt:Group(name, desc, order, childGroups, disabled, hidden, get, set)
 	return { type = "group", childGroups = childGroups, name = name, desc = desc, order = order, disabled = disabled, hidden = hidden, get = get, set = set, args = {} }
 end
@@ -148,6 +155,7 @@ end
 ---@param name string|function
 ---@param order number
 ---@param hidden boolean|function
+---@return AceOptionHeader
 function Opt:Header(name, order, hidden)
 	return { type = "header", name = name, order = order, hidden = hidden }
 end
@@ -161,6 +169,7 @@ end
 ---@param hidden boolean|function
 ---@param get function
 ---@param set function
+---@return AceOptionColor
 function Opt:Color(name, desc, order, alpha, width, disabled, hidden, get, set)
 	return { type = "color", name = name, desc = desc, order = order, hasAlpha = alpha, width = width, disabled = disabled, hidden = hidden, get = get, set = set }
 end
@@ -168,6 +177,7 @@ end
 ---@param name string|function
 ---@param order number
 ---@param width string|"normal"|"half"|"double"|"full"
+---@return AceOptionDesc
 function Opt:Spacer(order, width)
 	return { name = "", type = "description", order = order, width = width }
 end
@@ -181,6 +191,7 @@ end
 ---@param imageHeight number
 ---@param width string|"normal"|"half"|"double"|"full"
 ---@param hidden boolean|function
+---@return AceOptionDesc
 function Opt:Desc(name, order, fontSize, image, imageCoords, imageWidth, imageHeight, width, hidden)
 	return { type = "description", name = name, order = order, fontSize = fontSize, image = image, imageCoords = imageCoords, imageWidth = imageWidth, imageHeight = imageHeight, width = width, hidden = hidden }
 end
@@ -194,6 +205,7 @@ end
 ---@param hidden boolean|function
 ---@param get function
 ---@param set function
+---@return AceOptionToggle
 function Opt:Toggle(name, desc, order, tristate, width, disabled, hidden, get, set)
 	return { type = "toggle", name = name, desc = desc, order = order, tristate = tristate, width = width, disabled = disabled, hidden = hidden, get = get, set = set }
 end
@@ -205,6 +217,7 @@ end
 ---@param width string|"normal"|"half"|"double"|"full"
 ---@param disabled boolean|function
 ---@param hidden boolean|function
+---@return AceOptionExecute
 function Opt:Execute(name, desc, order, func, width, disabled, hidden)
 	return { type = "execute", name = name, desc = desc, order = order, func = func, width = width, disabled = disabled, hidden = hidden }
 end
@@ -218,6 +231,7 @@ end
 ---@param hidden boolean|function
 ---@param get function
 ---@param set function
+---@return AceOptionInput
 function Opt:Input(name, desc, order, multiline, width, disabled, hidden, validate, get, set)
 	return { type = "input", name = name, desc = desc, order = order, multiline = multiline, width = width, disabled = disabled, hidden = hidden, validate = validate, get = get, set = set }
 end
@@ -231,29 +245,21 @@ end
 ---@param hidden boolean|function
 ---@param get function
 ---@param set function
+---@return AceOptionInput
 function Opt:InputNumber(name, desc, order, multiline, width, disabled, hidden, validate, get, set)
 	return { type = "input", name = name, desc = desc, order = order, multiline = multiline, width = width, disabled = disabled, hidden = hidden, validate = Opt.IsNumber, get = get, set = set }
 end
 
---[[ slider values:
-	smin (number) - "Soft" minimal value of the slider, represented in the UI
-	smax (number) - "Soft" maximal value of the slider, represented in the UI
-	min (number) - absolute minimal value
-	max (number) - absolute maximum value
-	step (number) - absolute minimum step that doesnt break code
-	bigStep (number) - Useful step size for the slider.
-	isPercent (boolean) - If true, will display 1.0 as 100%
---]]
-
 ---@param name string|function
 ---@param desc string|function
 ---@param order number
----@param values table|"smin"|"smax"|"min"|"max"|"step"|"bigStep"|"isPercent"
+---@param values table @ `{ smin, smax, min, max, step, bigStep, isPercent }`
 ---@param width string|"normal"|"half"|"double"|"full"
 ---@param disabled boolean|function
 ---@param hidden boolean|function
 ---@param get function
 ---@param set function
+---@return AceOptionRange
 function Opt:Slider(name, desc, order, values, width, disabled, hidden, get, set)
 	local t = { type = "range", name = name, desc = desc, order = order, width = width, disabled = disabled, hidden = hidden, get = get, set = set }
 	for key, value in pairs(values) do
@@ -272,6 +278,7 @@ end
 ---@param hidden boolean|function
 ---@param get function
 ---@param set function
+---@return AceOptionSelect
 function Opt:Select(name, desc, order, values, width, disabled, hidden, get, set)
 	return { type = "select", name = name, desc = desc, order = order, values = values, width = width, disabled = disabled, hidden = hidden, get = get, set = set }
 end
@@ -285,6 +292,7 @@ end
 ---@param hidden boolean|function
 ---@param get function
 ---@param set function
+---@return AceOptionMultiSelect
 function Opt:MultiSelect(name, desc, order, values, width, disabled, hidden, get, set)
 	return { type = "multiselect", name = name, desc = desc, order = order, values = values, width = width, disabled = disabled, hidden = hidden, get = get, set = set }
 end
@@ -297,6 +305,7 @@ end
 ---@param hidden boolean|function
 ---@param get function
 ---@param set function
+---@return AceOptionSelect
 function Opt:MediaBackground(name, desc, order, width, disabled, hidden, get, set)
 	return { type = "select", dialogControl = "LSM30_Background", name = name, desc = desc, order = order, width = width, disabled = disabled, hidden = hidden, get = get, set = set, values = function() return LSM:HashTable("background") end }
 end
@@ -309,6 +318,7 @@ end
 ---@param hidden boolean|function
 ---@param get function
 ---@param set function
+---@return AceOptionSelect
 function Opt:MediaBorder(name, desc, order, width, disabled, hidden, get, set)
 	return { type = "select", dialogControl = "LSM30_Border", name = name, desc = desc, order = order, width = width, disabled = disabled, hidden = hidden, get = get, set = set, values = function() return LSM:HashTable("border") end }
 end
@@ -321,6 +331,7 @@ end
 ---@param hidden boolean|function
 ---@param get function
 ---@param set function
+---@return AceOptionSelect
 function Opt:MediaStatusbar(name, desc, order, width, disabled, hidden, get, set)
 	return { type = "select", dialogControl = "LSM30_Statusbar", name = name, desc = desc, order = order, width = width, disabled = disabled, hidden = hidden, get = get, set = set, values = function() return LSM:HashTable("statusbar") end }
 end
@@ -333,6 +344,7 @@ end
 ---@param hidden boolean|function
 ---@param get function
 ---@param set function
+---@return AceOptionSelect
 function Opt:MediaSound(name, desc, order, width, disabled, hidden, get, set)
 	return { type = "select", dialogControl = "LSM30_Sound", name = name, desc = desc, order = order, width = width, disabled = disabled, hidden = hidden, get = get, set = set, values = function() return LSM:HashTable("sound") end }
 end
@@ -345,6 +357,7 @@ end
 ---@param hidden boolean|function
 ---@param get function
 ---@param set function
+---@return AceOptionSelect
 function Opt:MediaFont(name, desc, order, width, disabled, hidden, get, set)
 	return { type = "select", dialogControl = "LSM30_Font", name = name, desc = desc, order = order, width = width, disabled = disabled, hidden = hidden, get = get, set = set, values = function() return LSM:HashTable("font") end }
 end
@@ -356,6 +369,7 @@ end
 ---@param enableFunc function
 ---@param func function
 ---@param hidden boolean|function
+---@return AceOptionExecute
 function Opt:EnableButton(name, desc, order, enableFunc, func, hidden)
 	local nameFunc = function()
 		return format("%s: %s", name, (enableFunc() and L["API_BtnEnabled"] or L["API_BtnDisabled"]))
@@ -380,17 +394,31 @@ local function FontMenuSetter(info, value)
 	local font = info[#info-1]
 	local prop = info[#info]
 	
+	--for k, v in pairs(info) do LUI:Print(k, v) end
 	db[font][prop] = value
 end
 
 local sizeValues = {min = 4, max = 72, step = 1, softMin = 8, softMax = 36}
 
-function Opt:FontMenu(name, desc, order, disabled, hidden)
+--- Create an inline group containing font settings.
+---@param name string
+---@param desc string|function
+---@param order number
+---@param disabled boolean|function
+---@param hidden boolean|function
+---@param customFontLocation table @ table reference where the font settings (Size, Name, Flag) are being saved)
+---@return AceOptionGroup
+function Opt:FontMenu(name, desc, order, disabled, hidden, customFontLocation)
 	local group = Opt:Group(name, desc, order, nil, disabled, hidden)
 	group.args.Size = Opt:Slider("Size", nil, 1, sizeValues, nil, disabled, hidden, FontMenuGetter, FontMenuSetter)
 	group.args.Name = Opt:MediaFont("Font", nil, 2, nil, disabled, hidden, FontMenuGetter, FontMenuSetter)
 	group.args.Flag = Opt:Select("Outline", nil, 3, LUI.FontFlags, nil, disabled, hidden, FontMenuGetter, FontMenuSetter)
 	group.inline = true
+	if customFontLocation then
+		group.args.Size.arg = customFontLocation
+		group.args.Name.arg = customFontLocation
+		group.args.Flag.arg = customFontLocation
+	end
 	return group
 end
 
@@ -422,9 +450,16 @@ local function ColorMenuSetter(info, value, g, b, a)
 	end
 end
 
--- Generate a Color / Dropdown combo, the dropdown selection determines the color bypass. (Theme, Class, Spec, etc)
--- TODO: Show Alpha Slider when using Theme/Class Colors.
+--- Generate a Color / Dropdown combo, the dropdown selection determines the color bypass. (Theme, Class, Spec, etc)
+---@param parent AceOption
+---@param color string
+---@param desc string
+---@param order number
+---@param disabled boolean|function
+---@return AceOptionSelect
 function Opt:ColorMenu(parent, color, desc, order, disabled)
+	-- TODO: Show Alpha Slider when using Theme/Class Colors.
+
 	local hiddenFunc = function(info)
 		local db = info.handler.db.profile.Colors
 		
