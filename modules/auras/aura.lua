@@ -76,8 +76,8 @@ module.defaults = {
 -- ####################################################################################################################
 -- ##### Module Functions #############################################################################################
 -- ####################################################################################################################
-
 --Note: These functions may be generic enough for inclusion in LUI api if they find usage elsewhere
+
 local function GetTimeFactor(seconds)
 	local minuteSecs = 60
 	local hourSecs = 3600

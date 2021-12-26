@@ -4,19 +4,18 @@
 -- ####################################################################################################################
 -- ##### Setup and Locals #############################################################################################
 -- ####################################################################################################################
-
 -- Addon building reference.
+
 local _, LUI = ...
 local Media = LibStub("LibSharedMedia-3.0")
 
 --local copies
 local pairs = pairs
 
---Local variables
 ---@class LUIModule
 local ModuleMixin = {}
 
---- Embed the ModuleMixin into target object.
+--- Embed the ModuleMixin into target object.  
 --- Note: This is done automatically for modules created with :NewModule()
 function LUI:EmbedModule(target)
 	for k, v in pairs(ModuleMixin) do
@@ -125,9 +124,9 @@ function ModuleMixin:FetchBackground(name)
 end
 
 --- Function that creates a backdrop table for use with SetBackdrop and keeps a copy around based on name.
--- * When function is called on an existing backdrop, update it and return it.
--- * If Tile or Insets options aren't found in the DB, they can be optionally be set through parameters.
--- * Requires a DB.Backdrop entry based on name.
+---- When function is called on an existing backdrop, update it and return it.
+---- If Tile or Insets options aren't found in the DB, they can be optionally be set through parameters.
+---- Requires a DB.Backdrop entry based on name.
 ---@param name string
 ---@param tile boolean @ True = Tile, False = Stretch
 ---@param tileSize number @ Size of each tiled copy of bgFile

@@ -20,8 +20,8 @@ local editingText
 -- ####################################################################################################################
 -- ##### Module Functions #############################################################################################
 -- ####################################################################################################################
-
- -- self: ColorPickerFrame
+ 
+-- self: ColorPickerFrame
 function element:ColorPickerFrameShow()
 	OldColorSwatch:SetColorTexture(ColorPickerFrame:GetColorRGB())
 	element:UpdateColorTexts()

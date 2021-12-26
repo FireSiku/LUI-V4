@@ -49,6 +49,7 @@ local GAP = 10
 
 -- luacheck: push ignore
 -- BNET_CLIENT Constants
+
 local BNET_CLIENT_WOW       = BNET_CLIENT_WOW
 local BNET_CLIENT_SC        = BNET_CLIENT_SC
 local BNET_CLIENT_SC2       = BNET_CLIENT_SC2
@@ -63,6 +64,7 @@ local BNET_CLIENT_MOBILE    = "BSAp" -- Doesnt seem to have an official constant
 
 -- locals
 --local friendEntries = {}
+
 local totalFriends = 0
 local onlineFriends = 0
 local totalBNFriends = 0

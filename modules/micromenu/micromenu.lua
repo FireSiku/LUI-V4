@@ -8,8 +8,6 @@ local L = LUI.L
 local db
 
 local format = format
-
--- Local variables
 local microStorage = {}
 
 -- List of buttons, starting from the right.
@@ -31,6 +29,7 @@ local microList = {
 }
 
 -- Constants
+
 local TEXTURE_PATH_FORMAT = "Interface\\AddOns\\LUI4\\media\\textures\\micro_%s.tga"
 local BACKGROUND_TEXTURE_PATH = "Interface\\AddOns\\LUI4\\media\\textures\\micro_background.tga"
 local RIGHT_TEXTURE_SIZE_WIDTH = 46
@@ -41,12 +40,14 @@ local ALERT_ALPHA_MULT = 0.7
 
 -- the clickable area is only 27x24
 -- Wide buttons clickable area: 42x24
+
 local WIDE_TEXTURE_CLICK_HEIGHT = 24
 local WIDE_TEXTURE_CLICK_WIDTH = 42
 local TEXTURE_CLICK_HEIGHT = 24
 local TEXTURE_CLICK_WIDTH = 27
 
 -- Level Requirements
+
 local TALENT_LEVEL_REQ = 10
 local PVP_LEVEL_REQ = 10
 local LFG_LEVEL_REQ = 15
@@ -292,6 +293,7 @@ end
 -- ####################################################################################################################
 -- ##### MicroButton Creation #########################################################################################
 -- ####################################################################################################################
+
 local MicroButtonClickerMixin = {}
 
 function MicroButtonClickerMixin:OnEnter()

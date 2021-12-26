@@ -23,7 +23,7 @@ local MS_PER_SECOND = 1000
 -- ##### TexCoord Atlas API ###########################################################################################
 -- ####################################################################################################################
 
--- Instead of having TexCoords Constants peppered amongst various files, keep them all centralized in here.
+-- Instead of having TexCoords Constants peppered amongst various files, keep them all centralized in here.  
 -- TexCoords are calculated such as 2/64 means 2 pixels to the left of a 64px file.
 local gTexCoordAtlas = {
 	MicroBtn_Default = { 15/64, 48/64, 2/32, 30/32 },
@@ -32,7 +32,7 @@ local gTexCoordAtlas = {
 	CleanUp =          {  4/28, 24/28, 3/26, 22/26 },
 }
 
---Returns TexCoords based on the given string that matches the table above
+--- Returns TexCoords based on the given string that matches the table above
 function LUI:GetCoordAtlas(atlas)
 	local t = gTexCoordAtlas[atlas]
 	return t[1], t[2], t[3], t[4]
@@ -157,7 +157,8 @@ end
 -- ##### Dev Functions ################################################################################################
 -- ####################################################################################################################
 
---Function to add a bright border around a given frame to help seeing it and its size.
+--- Function to add a bright border around a given frame to help seeing it and its size.
+---@param frame Frame
 function LUI:HighlightBorder(frame)
 	local glowBackdrop = {
 		bgFile="Interface\\Tooltips\\UI-Tooltip-Background",

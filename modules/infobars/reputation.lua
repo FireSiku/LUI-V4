@@ -20,6 +20,7 @@ local SHORT_REPUTATION_NAMES = {
 -- ####################################################################################################################
 -- ##### ReputationDataMixin ##########################################################################################
 -- ####################################################################################################################
+
 local ReputationDataMixin = module:CreateNewDataMixin("Reputation")
 
 ReputationDataMixin.BAR_EVENTS = {
@@ -49,8 +50,9 @@ function ReputationDataMixin:GetParagonValues(factionID)
 	end
 end
 
---TODO: Add support for Friendships
+
 function ReputationDataMixin:Update()
+	-- TODO: Add support for Friendships
 	-- Blizzard store reputation in an interesting way.
 	-- barMin represents the minimum bound for the current standing, barMax represents the maximum bound.
 	-- For example, barMin for revered is 21000 (3000+6000+12000 from Neutral to Honored), barMax is 42000.

@@ -16,12 +16,11 @@ local CLEANUP_SOUND = SOUNDKIT.UI_BAG_SORTING_01
 -- ####################################################################################################################
 -- ##### Templates: BagBar Slot Button ################################################################################
 -- ####################################################################################################################
-
 -- The end goal should be an identical button for Bags and Bank bars, but they use different APIs.
 -- Note: Probably good idea to replace button with bagsSlot
--- TODO: Clean up and make more uniform, stop relying on Blizzard API.
-function module:BagBarSlotButtonTemplate(index, id, name, parent)
 
+function module:BagBarSlotButtonTemplate(index, id, name, parent)
+	-- TODO: Clean up and make more uniform, stop relying on Blizzard API.
 	local button = module:CreateSlot(name, parent)
 	button.isBag = 1 -- Blizzard API support
 	button.id = id

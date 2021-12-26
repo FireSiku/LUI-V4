@@ -29,6 +29,7 @@ local HideUIPanel = HideUIPanel
 
 -- constants
 -- luacheck: push ignore
+
 local LOOT_SPECIALIZATION_DEFAULT = strsplit("(", LOOT_SPECIALIZATION_DEFAULT):trim()
 local SELECT_LOOT_SPECIALIZATION = SELECT_LOOT_SPECIALIZATION
 local NUM_TALENT_COLUMNS = NUM_TALENT_COLUMNS
@@ -38,6 +39,7 @@ local TALENT_DELIMITER = ""
 -- luacheck: pop
 
 -- locals
+
 local specCache = {}  -- Keep information about specs.
 local talentCache = {} -- Keep information about talents.
 local inactiveCache = {} -- Keep information about inactive specs
@@ -136,9 +138,9 @@ function element:UpdateSpec()
 	element:UpdateTooltip()
 end
 
--- Left-Click: Switch to inactive spec 1
--- Right-Click: Switch to inactive spec 2
--- Middle-Click: Switch to inactive spec 3 ( druid only )
+-- Left-Click: Switch to inactive spec 1  
+-- Right-Click: Switch to inactive spec 2  
+-- Middle-Click: Switch to inactive spec 3 ( druid only )  
 -- Shift-Click: Toggle Talent Frame -- TODO causes tooltip background to turn white temporarily ??
 function element.OnClick(frame_, button)
 	--if IsShiftKeyDown() then

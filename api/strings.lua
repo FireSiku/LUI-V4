@@ -13,6 +13,7 @@ local L = LUI.L
 
 --constants
 -- luacheck: globals LOCALIZED_CLASS_NAMES_FEMALE LOCALIZED_CLASS_NAMES_MALE MALE FEMALE
+
 local LOCALIZED_CLASS_NAMES_FEMALE = LOCALIZED_CLASS_NAMES_FEMALE
 local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE
 
@@ -27,12 +28,29 @@ local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE
 -- ##### StringUtils: EmmyLua #########################################################################################
 -- ####################################################################################################################
 
----@alias FrameLayer string|"BACKGROUND"|"BORDER"|"ARTWORK"|"OVERLAY"|"HIGHLIGHT"
----@alias FrameStrata string|"BACKGROUND"|"LOW"|"MEDIUM"|"HIGH"|"DIALOG"|"FULLSCREEN"|"TOOLTIP"
----@alias DBScope string|"profile"|"global"|"char"|"realm"|"class"|"race"|"faction"|"factionrealm"
----@alias ClassToken string|"DEATHKNIGHT"|"DEMONHUNTER"|"DRUID"|"HUNTER"|"MAGE"|"MONK"|"PALADIN"|"PRIEST"|"ROGUE"|"SHAMAN"|"WARLOCK"|"WARRIOR"
----@alias UnitId string|"player"|"target"|"focus"|"mouseover"|"pet"|"vehicle"|"partyN"|"nameplateN"|"raidN"|"bossN"
----@alias Point string|"CENTER"|"TOP"|"BOTTOM"|"LEFT"|"RIGHT"|"TOPLEFT"|"TOPRIGHT"|"BOTTOMLEFT"|"BOTTOMRIGHT"
+---@alias DBScope
+---| '"profile"'
+---| '"global"'
+---| '"char"'
+---| '"realm"'
+---| '"class"'
+---| '"race"'
+---| '"faction"'
+---| '"factionrealm"'
+
+---@alias ClassToken
+---| '"DEATHKNIGHT"'
+---| '"DEMONHUNTER"'
+---| '"DRUID"'
+---| '"HUNTER"'
+---| '"MAGE"'
+---| '"MONK"'
+---| '"PALADIN"'
+---| '"PRIEST"'
+---| '"ROGUE"'
+---| '"SHAMAN"'
+---| '"WARLOCK"'
+---| '"WARRIOR"'
 
 -- ####################################################################################################################
 -- ##### StringUtils: Classes #########################################################################################
@@ -40,7 +58,7 @@ local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE
 
 local localClassNames
 --- Returns a locale-independant class token from a localized class name.
----@param className string @ Localized class name
+---@param className string @ locale-dependant class name
 ---@return ClassToken
 function LUI:GetTokenFromClassName(className)
 	if not localClassNames then

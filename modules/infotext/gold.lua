@@ -16,7 +16,6 @@ local BreakUpLargeNumbers = BreakUpLargeNumbers
 local GetMoneyString = GetMoneyString
 local GetMoney = GetMoney
 
--- constants
 local COPPER_AMOUNT_SYMBOL = COPPER_AMOUNT_SYMBOL
 local SILVER_AMOUNT_SYMBOL = SILVER_AMOUNT_SYMBOL
 local GOLD_AMOUNT_SYMBOL = GOLD_AMOUNT_SYMBOL
@@ -46,6 +45,7 @@ local FACTION_ORDER_GLOBAL = {
 }
 
 -- locals
+
 local moneyProfit = 0
 local moneySpent = 0
 local previousMoney = 0

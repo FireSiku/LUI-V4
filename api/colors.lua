@@ -13,7 +13,8 @@ local db
 
 -- constants
 -- luacheck: push ignore
-local SANCTUARY = SANCTUARY_TERRITORY:sub(2, -2)  -- Remove parenthesis.
+
+local SANCTUARY = SANCTUARY_TERRITORY:sub(2, -2)  -- Removed parenthesis.
 local FACTION_ALLIANCE = FACTION_ALLIANCE
 local FACTION_HORDE = FACTION_HORDE
 local MISCELLANEOUS = MISCELLANEOUS
