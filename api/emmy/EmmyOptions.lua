@@ -15,7 +15,17 @@
 ---| '"description"'
 ---| '"group"'
 
----@alias methodname string @ If string is given, it must point to a valid function found within handler: `option.handler[string](info, ...)`
+---@alias methodname string @ If a string is given, it must point to a valid function found within handler: `option.handler[string](info, ...)`
+
+---@class InfoTable
+---@field handler table @ Handler object for the current option
+---@field type AceOptionType @ Type of the current option
+---@field options AceOption @ Pointer for the root of the options table
+---@field option AceOption @ Pointer for the current AceOption table
+---@field arg any @ Value of the current option's "arg" node if it was set.
+---@field uiType string @ Parameter passed by AceConfigRegistry
+---@field uiName string @ Parameter passed by AceConfigRegistry
+---@field [0] string @ Name of the slash command used, or empty string ("") if not a slash
 
 ---[AceConfig Options Table Documentation](https://www.wowace.com/projects/ace3/pages/ace-config-3-0-options-tables)
 ---@class AceOption
@@ -29,10 +39,6 @@
 ---@field order number|methodname|function @ relative position of item (default = 100, 0=first, -1=last)
 ---@field disabled boolean|methodname|function @ option will be greyed out and disabled but still visible. Child options will inherit this value unless overridden.
 ---@field hidden boolean|methodname|function @ option will be hidden from sight. Child options will inherit this value unless overridden.
----@field guiHidden boolean @ hide this option from graphical UIs (dialog, dropdown)
----@field dialogHidden boolean @ hide this option from dialog UIs
----@field dropdownHidden boolean @ hide this option from dropdown UIs
----@field cmdHidden boolean @ hide this option from commandline
 ---@field icon string|function @ path to icon texture
 ---@field iconCoords table|methodname|function @ arguments to pass to SetTexCoord, e.g. {0.1,0.9,0.1,0.9}.
 ---@field handler table @ object on which functions are called if they are declared as strings rather than function references. Child options will inherit this value unless overridden.
@@ -47,7 +53,6 @@
 ---@field imageCoords table|methodname|function @ arguments to pass to SetTexCoord, e.g. {0.1,0.9,0.1,0.9}.
 ---@field imageWidth number @ Width of the displayed image
 ---@field imageHeight number @ Height of the displayed image
-
 
 ---A simple text input, with an optional validate string or function to match the text against.
 ---- [AceConfig Options Table Documentation](https://www.wowace.com/projects/ace3/pages/ace-config-3-0-options-tables)
@@ -104,8 +109,8 @@
 
 ---- [AceConfig Options Table Documentation](https://www.wowace.com/projects/ace3/pages/ace-config-3-0-options-tables)
 ---@class AceOptionKeybinding : AceOption
----@field get function|methodname
----@field set function|methodname
+---@field get function|methodname @ getter function
+---@field set function|methodname @ setter function
 
 ---A heading. In commandline and dropdown UIs shows as a heading, in a dialog UI it will additionaly provide a break in the layout.
 ---- [AceConfig Options Table Documentation](https://www.wowace.com/projects/ace3/pages/ace-config-3-0-options-tables)
@@ -129,28 +134,5 @@
 ---@field plugins table @ table containing named tables with more args in them. This allows modules and libraries to easily add more content to an addon's options table.
 ---@field childGroups string|"tree"|"tab"|"select" @ decides how children groups of this group are displayed. Default to `"tree"`. Only dialog-driven UIs are assumed to behave differently for all types.
 ---@field inline boolean @ show as a bordered box in a dialog UI, or at the parent's level with a separate heading in commandline and dropdown UIs.
----@field cmdInline boolean @ as above, only obeyed by commandline
----@field guiInline boolean @ as above, only obeyed by graphical UIs
----@field dropdownInline boolean @ as above, only obeyed by dropdown UIs
----@field dialogInline boolean @ as above, only obeyed by dialog UIs
 ---@field get function|methodname @ getter function. Child options will inherit this value unless overridden.
 ---@field set function|methodname @ setter function. Child options will inherit this value unless overridden.
-
-
----@param x AceOptionHeader
-local function test(x)
-    x.handler
-	x.validate
-	x.type
-end
-
--- ####################################################################################################################
--- ##### Ace3 Info Table ##############################################################################################
--- ####################################################################################################################
-
----@class InfoTable
----@field handler object @ Handler object for the current option
----@field type string @ Type of the current option
----@field option table @ Pointer for the current option table
----@field uiType string @ Parameter passed by AceConfigRegistry
----@field uiName string @ Parameter passed by AceConfigRegistry
