@@ -229,6 +229,7 @@ end
 ---@param width string|"normal"|"half"|"double"|"full"
 ---@param disabled boolean|function
 ---@param hidden boolean|function
+---@param validate boolean
 ---@param get function
 ---@param set function
 ---@return AceOptionInput
@@ -246,7 +247,7 @@ end
 ---@param get function
 ---@param set function
 ---@return AceOptionInput
-function Opt:InputNumber(name, desc, order, multiline, width, disabled, hidden, validate, get, set)
+function Opt:InputNumber(name, desc, order, multiline, width, disabled, hidden, get, set)
 	return { type = "input", name = name, desc = desc, order = order, multiline = multiline, width = width, disabled = disabled, hidden = hidden, validate = Opt.IsNumber, get = get, set = set }
 end
 
