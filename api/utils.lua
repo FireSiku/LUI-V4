@@ -181,12 +181,17 @@ end
 -- To rectify this behaviour, you should set your UI scale so that your screen height matches with the UI coordinates.
 
 local mult = 1
+
+--- Updates the scale factor for Scaling calculations. Only needs to be called at login or when resolution changes.
 function LUI:UpdateScaleMultiplier()
 	local screenHeight = string.match(GetCVar("gxWindowedResolution"), "%d+x(%d+)")
 	local uiScale = UIParent:GetScale()
 	mult = 768 / screenHeight / uiScale
 end
 
+--- Return a normalized value for pixel-perfect textures.
+---@param x number
+---@return number
 function LUI.Scale(x)
 	return mult * floor(x / mult + 0.5)
 end

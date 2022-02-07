@@ -111,10 +111,10 @@ module.defaults = {
 -- ##### Local Functions ##############################################################################################
 -- ####################################################################################################################
 
---- Return r, g, b for any color stored by the color api.
+--- Return r, g, b for any color stored by the color api.  
 --- If the color doesn't exists, return nil
---- @param colorName string
----@return R number, G number, B number
+---@param colorName string
+---@return number R, number G, number B
 local function GetColorRGB(colorName)
 	local color = db.Colors[colorName]
 	if color then
@@ -127,21 +127,25 @@ end
 -- ####################################################################################################################
 
 --- Return a Multiplier for RGB values to use for darker background colors.
----@return number
+---@return number mult
 function LUI:GetBGMultiplier()
 	return db.Advanced.BackgroundMultiplier
 end
 
 --- Utility function for other modules to fetch a color stored in Color module.
+---@return number R, number G, number B
 function LUI:GetFallbackRGB(colorName)
 	return GetColorRGB(colorName)
 end
 
 --- Convenience wrapper for "Good" color.
+---@return number R, number G, number B
 function LUI:PositiveColor()
 	return GetColorRGB("Good")
 end
+
 --- Convenience wrapper for "Bad" color.
+---@return number R, number G, number B
 function LUI:NegativeColor()
 	return GetColorRGB("Bad")
 end
@@ -153,6 +157,7 @@ end
 
 --- Return r, g, b for given class.
 ---@param class ClassToken
+---@return number R, number G, number B
 function LUI:GetClassColor(class)
 	local r, g, b = GetColorRGB(class)
 	if r and g and b then
@@ -164,6 +169,7 @@ end
 
 --- Return r, g, b for given faction
 ---@param faction string
+---@return number R, number G, number B
 function LUI:GetFactionColor(faction)
 	local r, g, b = GetColorRGB(faction)
 	if r and g and b then
@@ -176,7 +182,7 @@ end
 --- Return r, g, b based on reaction of unit towards another unit.
 ---@param unit UnitId
 ---@param otherUnit UnitId? @ Assume "player" if missing
----@return R, G, B
+---@return number R, number G, number B
 function LUI:GetReactionColor(unit, otherUnit)
 	local reaction = UnitReaction(unit, otherUnit or "player")
 	local colorName = format("Standing%d", reaction)
@@ -191,6 +197,7 @@ end
 
 --- Return r, g, b based on level difference.
 ---@param level number
+---@return number R, number G, number B
 function LUI:GetDifficultyColor(level)
 	local color = GetQuestDifficultyColor(level)
 	return color.r, color.g, color.b
@@ -201,9 +208,9 @@ end
 -- ##### Gradient Color API ###########################################################################################
 -- ####################################################################################################################
 
--- TODO: Possibly rename some variables inside to better names. (such as relperc.)
 --- Based on Wowpedia's ColorGradient. Use our three gradient colors to make a color based on a percentage
----@param perc number
+---@param perc number @ Percentage of the mix between the three colors defined as gradient.
+---@return number R, number G, number B
 function LUI:RGBGradient(perc)
 	if perc >= 1 then
 		return LUI:PositiveColor()
@@ -228,6 +235,8 @@ function LUI:RGBGradient(perc)
 end
 
 ---Wrapper for ColorGradient's that inverse the percent given.
+---@param perc number @ Percentage of the mix between the three colors defined as gradient.
+---@return number R, number G, number B
 function LUI:InverseGradient(perc)
 	return LUI:RGBGradient(1 - perc)
 end
@@ -235,18 +244,23 @@ end
 -- ####################################################################################################################
 -- ##### Color Callback API ###########################################################################################
 -- ####################################################################################################################
+--TODO: Possibly have a full callback system for API, otherwise we will just have more copies of this function.
 -- Provide callbacks for modules to use when colors are changed.
 
---TODO: Possibly have a full callback system for API, otherwise we will just have more copies of this function.
---Register a function that will be called back by the Options API when someone change BG Multiplier.
 local multiplierCallback = {}
+local colorCallback = {}
+
+--Register a function that will be called back by the Options API when someone change BG Multiplier.
+---@param id any @ Unique identifier for the callback. If it already exists, do nothing.
+---@param func function @ Function to be called back when event occurs.
 function LUI:AddBGMultiplierCallback(id, func)
 	if multiplierCallback[id] then return end
 	multiplierCallback[id] = func
 end
 
---Register a function that will be called back by the Options API when someone change class/theme colors.
-local colorCallback = {}
+--- Register a function that will be called back by the Options API when someone change class/theme colors.  
+---@param id any @ Unique identifier for the callback. If it already exists, do nothing.
+---@param func function @ Function to be called back when event occurs.
 function LUI:AddColorCallback(id, func)
 	if colorCallback[id] then return end
 	colorCallback[id] = func

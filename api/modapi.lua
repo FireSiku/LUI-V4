@@ -28,12 +28,10 @@ end
 -- ####################################################################################################################
 
 --- Fetch a color and return the r, g, b value
---- @param colorName string @ check module db first, then color module.
---- @return number r
---- @return number g
---- @return number b
---  TODO: Fix the issue with RGB colors as RGBA colors in the options
+---@param colorName string @ check module db first, then color module.
+---@return number R, number G, number B
 function ModuleMixin:RGB(colorName)
+	--  TODO: Fix the issue with RGB colors as RGBA colors in the options
 	local db = self:GetDB("Colors")
 	if db and db[colorName] then
 		-- TODO: Check for all planned types (.t)
@@ -48,10 +46,8 @@ function ModuleMixin:RGB(colorName)
 end
 
 --- Fetch a color and return the r, g, b, a values.
---- @param colorName string @ check module db first, then color module.
---- @return number r
---- @return number g
---- @return number b
+---@param colorName string @ check module db first, then color module.
+---@return number R, number G, number B
 function ModuleMixin:RGBA(colorName)
 	local db = self:GetDB("Colors")
 
@@ -73,8 +69,8 @@ function ModuleMixin:RGBA(colorName)
 end
 
 --- Fetch a color and creates a Blizzard Color with it.
---- @param colorName string @ check module db first, then color module.
---- @return ColorMixin
+---@param colorName string @ check module db first, then color module.
+---@return ColorMixin
 function ModuleMixin:Color(colorName)
 	local r, g, b, a = self:RGBA(colorName)
 	if r and g and b then
@@ -83,8 +79,8 @@ function ModuleMixin:Color(colorName)
 end
 
 --- Fetch a color and wrap text with its color code.
---- @param colorName string @ check module db first, then color module.
---- @return string coloredText
+---@param colorName string @ check module db first, then color module.
+---@return string coloredText
 function ModuleMixin:ColorText(text, colorName)
 	local color = self:Color(colorName)
 	if color then
@@ -192,6 +188,9 @@ function ModuleMixin:SetFontString(frame, name, mFont, layer, hJustify, vJustify
 	return fs
 end
 
+--- Reapply the font settings of a FontString based on the given font name.
+---@param fs FontString
+---@param mFont string @ Name of the entry to search in `module.db.Fonts`
 function ModuleMixin:RefreshFontString(fs, mFont)
 	local db = self:GetDB("Fonts")
 	local font = db[mFont]
@@ -200,8 +199,8 @@ function ModuleMixin:RefreshFontString(fs, mFont)
 end
 
 --- Returns the profile database table.
---- -@param subTable string|nil @ Optional: Return the requested subtable if found. Otherwise return the module's db.
---- @return AceDB
+---@param subTable string? @ Return the requested subtable if found. Otherwise return the module's db.
+---@return AceDB
 function ModuleMixin:GetDB(subTable)
 	local db
 	if self.db then
@@ -261,5 +260,5 @@ function ModuleMixin:MergeDefaults(source, name)
 	end
 end
 
---- Since we arent doing any closure shenanigans using OnModuleCreated, this accomplish the same in a much better way.
+--- Since we arent doing any closure shenanigans using OnModuleCreated anymore, this accomplish the same in a much better way.
 LUI:SetDefaultModulePrototype(ModuleMixin)
